@@ -1,9 +1,18 @@
 import { Link } from "react-router-dom";
 import { paths } from "../../utils/paths";
 import { Button, Form, Input } from "antd";
+import { useLoginMutation } from "./api";
+import { ILogin } from "./api/types";
+import { BASE_URL } from "../../settings";
 
 const Login = () => {
-  const onFinish = (values) => {};
+  const [loginUser] = useLoginMutation();
+
+  const onFinish = async (values: ILogin) => {
+    const res = await loginUser(values);
+
+    console.log("xx", res);
+  };
 
   return (
     <div>
