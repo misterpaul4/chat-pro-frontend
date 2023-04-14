@@ -12,19 +12,19 @@ const SignUp = () => {
 
       <Form layout="vertical">
         <Form.Item label="First Name" name="firstName">
-          <Input required className="border" />
+          <Input required className="border" size="large" />
         </Form.Item>
         <Form.Item label="Last Name" name="lastName">
-          <Input required className="border" />
+          <Input required className="border" size="large" />
         </Form.Item>
         <Form.Item label="E-Mail" name="email">
-          <Input type="email" required className="border" />
+          <Input type="email" required className="border" size="large" />
         </Form.Item>
         <Form.Item label="Password" name="password">
-          <Input.Password type="password" required />
+          <Input.Password type="password" required size="large" />
         </Form.Item>
         <Form.Item label="Verify Password" name="vpassword">
-          <Input.Password type="password" required />
+          <Input.Password type="password" required size="large" />
         </Form.Item>
 
         <Button
@@ -34,7 +34,7 @@ const SignUp = () => {
           className="mt-3"
           block
         >
-          Login
+          Create Account
         </Button>
       </Form>
     </div>
