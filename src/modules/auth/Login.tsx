@@ -3,15 +3,14 @@ import { paths } from "../../utils/paths";
 import { Button, Form, Input } from "antd";
 import { useLoginMutation } from "./api";
 import { ILogin } from "./api/types";
-import { BASE_URL } from "../../settings";
+import { apiResponseHandler } from "../../app/lib/helpers/responseHandler";
 
 const Login = () => {
-  const [loginUser] = useLoginMutation();
+  const [loginUser, { isLoading }] = useLoginMutation();
 
   const onFinish = async (values: ILogin) => {
     const res = await loginUser(values);
-
-    console.log("xx", res);
+    apiResponseHandler(res);
   };
 
   return (
@@ -33,6 +32,7 @@ const Login = () => {
         </Link>
 
         <Button
+          loading={isLoading}
           size="large"
           className="mt-5"
           htmlType="submit"
