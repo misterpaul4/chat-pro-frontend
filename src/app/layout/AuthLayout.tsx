@@ -27,7 +27,7 @@ const AuthLayout = () => {
           </Col>
           <Col span={12}>
             <Carousel
-              autoplay
+              // autoplay
               effect="fade"
               className="slider-container"
               dots={false}

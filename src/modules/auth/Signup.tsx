@@ -16,7 +16,8 @@ const SignUp = () => {
       onSuccess: {
         callBack: () =>
           setTimeout(() => {
-            navigate(paths.login);
+            navigate(paths.login, { state: values });
+            message.info("Login to your new account");
           }, 2000),
         message: "Account created successfully",
       },

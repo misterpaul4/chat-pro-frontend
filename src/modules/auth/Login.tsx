@@ -1,16 +1,34 @@
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { paths } from "../../utils/paths";
 import { Button, Form, Input } from "antd";
 import { useLoginMutation } from "./api";
 import { ILogin } from "./api/types";
 import { apiResponseHandler } from "../../app/lib/helpers/responseHandler";
+import { useDispatch, useSelector } from "react-redux";
+import { setAppState } from "./control/userSlice";
+import { RootState } from "../../store";
 
 const Login = () => {
   const [loginUser, { isLoading }] = useLoginMutation();
+  const dispatch = useDispatch();
+
+  const signupState = useLocation().state || {};
 
   const onFinish = async (values: ILogin) => {
-    const res = await loginUser(values);
-    apiResponseHandler(res);
+    const res: any = await loginUser(values);
+
+    apiResponseHandler(res, {
+      onSuccess: {
+        callBack: () => {
+          dispatch(
+            setAppState({
+              auth: { token: res.data.token },
+              user: res.data.user,
+            })
+          );
+        },
+      },
+    });
   };
 
   return (
@@ -19,7 +37,7 @@ const Login = () => {
         Don't have an account? <Link to={paths.signup}>Create an account.</Link>
       </p>
 
-      <Form layout="vertical" onFinish={onFinish}>
+      <Form layout="vertical" onFinish={onFinish} initialValues={signupState}>
         <Form.Item label="E-Mail" name="email">
           <Input type="email" required className="border" size="large" />
         </Form.Item>
