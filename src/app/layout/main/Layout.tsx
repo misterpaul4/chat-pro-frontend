@@ -25,9 +25,8 @@ const Layout = () => {
         } else {
           navigate(paths.login);
           setTimeout(() => {
-            notification.destroy();
             notification.error({ message: "You have been logged out!" });
-          }, 500);
+          }, 1000);
         }
       });
     }

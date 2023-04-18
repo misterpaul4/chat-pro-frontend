@@ -4,7 +4,12 @@ export const setLS = (key: string, value: any) =>
 export const getLs = (key: string) => {
   const item = localStorage.getItem(key);
   if (typeof item === "string") {
-    return JSON.parse(item);
+    try {
+      const result = JSON.parse(item);
+      return result;
+    } catch (error) {
+      return "";
+    }
   }
 };
 
