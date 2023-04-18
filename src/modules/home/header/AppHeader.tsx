@@ -1,17 +1,18 @@
-import { Avatar, Button, Dropdown, MenuProps, Space } from "antd";
-import { IUser } from "../../auth/control/types";
+import { Avatar, Button, Drawer, Dropdown, MenuProps, Space } from "antd";
+import { IBaseUser, IUser } from "../../auth/control/types";
 import {
   DownOutlined,
+  FormOutlined,
   LogoutOutlined,
   StarFilled,
-  StarOutlined,
+  TeamOutlined,
   UserOutlined,
 } from "@ant-design/icons";
 import { useDispatch } from "react-redux";
 import { logout } from "../../auth/control/userSlice";
 
 interface IProps {
-  user: IUser;
+  user: IBaseUser;
 }
 
 const AppHeader = ({ user }: IProps) => {
@@ -51,23 +52,31 @@ const AppHeader = ({ user }: IProps) => {
   ];
 
   return (
-    <div>
-      <Dropdown
-        menu={{
-          items,
-          className: "cursor-pointer",
-          selectable: false,
-        }}
-        trigger={["click"]}
-        placement="bottom"
-      >
-        <Space className="cursor-pointer">
-          <Avatar size={30} icon={<UserOutlined />} />
-          <strong>{user.firstName.toUpperCase()}</strong>
-          <DownOutlined />
-        </Space>
-      </Dropdown>
-    </div>
+    <>
+      <Space size="large">
+        <Button shape="circle" title="New Chat">
+          <FormOutlined />
+        </Button>
+        <Button shape="circle" title="Contact List">
+          <TeamOutlined />
+        </Button>
+        <Dropdown
+          menu={{
+            items,
+            className: "cursor-pointer",
+            selectable: false,
+          }}
+          trigger={["click"]}
+          placement="bottom"
+        >
+          <Space className="cursor-pointer">
+            <Avatar size={30} icon={<UserOutlined />} />
+            <strong>{user.firstName.toUpperCase()}</strong>
+            <DownOutlined />
+          </Space>
+        </Dropdown>
+      </Space>
+    </>
   );
 };
 

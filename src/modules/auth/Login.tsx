@@ -1,12 +1,11 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { paths } from "../../utils/paths";
-import { Button, Form, Input, notification } from "antd";
+import { Button, Form, Input } from "antd";
 import { useLoginMutation } from "./api";
 import { ILogin } from "./api/types";
 import { apiResponseHandler } from "../../app/lib/helpers/responseHandler";
 import { useDispatch } from "react-redux";
 import { setAppState } from "./control/userSlice";
-import { useEffect } from "react";
 
 const Login = () => {
   const [loginUser, { isLoading }] = useLoginMutation();

@@ -1,10 +1,10 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
-import { IAuth, IUser } from "./types";
+import { IAuth, IBaseUser, IUser } from "./types";
 import { clearLs, getLs, setLS } from "../../../app/lib/helpers/localStorage";
 
 export interface IUserSlice {
-  user: IUser;
+  user: IBaseUser;
   auth: IAuth;
 }
 
