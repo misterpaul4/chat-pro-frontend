@@ -1,5 +1,5 @@
 import apis from "../../../app/api";
-import { ILogin, ISignUp } from "./types";
+import { IGetSelf, ILogin, ISignUp } from "./types";
 
 const endpoints = apis.injectEndpoints({
   endpoints: (builder) => ({
@@ -9,8 +9,12 @@ const endpoints = apis.injectEndpoints({
     signup: builder.mutation<void, ISignUp>({
       query: (body) => ({ url: "auth/signup", method: "POST", body }),
     }),
+    getSelf: builder.query<IGetSelf, void>({
+      query: () => "auth/get-self",
+    }),
   }),
 });
 
-export const { useLoginMutation, useSignupMutation } = endpoints;
+export const { useLoginMutation, useSignupMutation, useLazyGetSelfQuery } =
+  endpoints;
 

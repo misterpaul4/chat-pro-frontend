@@ -1,16 +1,17 @@
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { paths } from "../../utils/paths";
-import { Button, Form, Input } from "antd";
+import { Button, Form, Input, notification } from "antd";
 import { useLoginMutation } from "./api";
 import { ILogin } from "./api/types";
 import { apiResponseHandler } from "../../app/lib/helpers/responseHandler";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { setAppState } from "./control/userSlice";
-import { RootState } from "../../store";
+import { useEffect } from "react";
 
 const Login = () => {
   const [loginUser, { isLoading }] = useLoginMutation();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const signupState = useLocation().state || {};
 
@@ -26,6 +27,7 @@ const Login = () => {
               user: res.data.user,
             })
           );
+          navigate(paths.home);
         },
       },
     });

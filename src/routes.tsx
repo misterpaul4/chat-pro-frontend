@@ -1,7 +1,7 @@
 import { RouteObject } from "react-router-dom";
-import Layout from "./app/layout/Layout";
+import Layout from "./app/layout/main/Layout";
 import Home from "./modules/home";
-import AuthLayout from "./app/layout/AuthLayout";
+import AuthLayout from "./app/layout/auth/AuthLayout";
 import Login from "./modules/auth/Login";
 import SignUp from "./modules/auth/Signup";
 import ForgotPassword from "./modules/auth/ForgotPassword";
