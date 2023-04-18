@@ -13,3 +13,4 @@ export const getLs = (key: string) => {
   }
 };
 
+export const clearLs = (key: string) => localStorage.removeItem(key);

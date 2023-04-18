@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { IAuth, IUser } from "./types";
-import { getLs, setLS } from "../../../app/lib/helpers/localStorage";
+import { clearLs, getLs, setLS } from "../../../app/lib/helpers/localStorage";
 
 export interface IUserSlice {
   user: IUser;
@@ -46,7 +46,10 @@ export const userSlice = createSlice({
         user: action.payload,
       };
     },
-    logout: () => initialState,
+    logout: () => {
+      clearLs("token");
+      return initialState;
+    },
   },
 });
 
