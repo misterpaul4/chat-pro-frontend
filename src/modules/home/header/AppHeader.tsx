@@ -67,7 +67,7 @@ const AppHeader = ({ user }: IProps) => {
             selectable: false,
           }}
           trigger={["click"]}
-          placement="bottom"
+          placement="bottomLeft"
         >
           <Space className="cursor-pointer">
             <Avatar size={30} icon={<UserOutlined />} />

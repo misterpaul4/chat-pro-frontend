@@ -1,4 +1,4 @@
-import { Layout, Skeleton } from "antd";
+import { Layout, Skeleton, Space } from "antd";
 import "./index.less";
 import AppHeader from "./header/AppHeader";
 import { useSelector } from "react-redux";
@@ -18,7 +18,11 @@ const Home = () => {
   return (
     <Layout className="message-container">
       <Sider className="siderStyle">
-        <Skeleton round avatar active></Skeleton>
+        <div>
+          <Skeleton round avatar active className="my-5" />
+          <Skeleton round avatar active className="my-5" />
+          <Skeleton round avatar active className="my-5" />
+        </div>
       </Sider>
       <Layout>
         <ContactActionModal />
@@ -28,7 +32,12 @@ const Home = () => {
           </div>
         </Header>
         <Content className="contentStyle">
-          <Skeleton avatar round active></Skeleton>
+          <div className="d-flex flex-column message-skeleton">
+            <Skeleton active></Skeleton>
+            <Skeleton className="flip-x" active></Skeleton>
+            <Skeleton active></Skeleton>
+            <Skeleton className="flip-x" active></Skeleton>
+          </div>
         </Content>
         <Footer className="footerStyle"></Footer>
       </Layout>
