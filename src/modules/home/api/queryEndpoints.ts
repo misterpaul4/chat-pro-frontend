@@ -1,6 +1,6 @@
 import apis from "../../../app/api";
 import { apiTags } from "../../../app/lib/constants/tags";
-import { IContact } from "./types";
+import { IChatRequest, IContact } from "./types";
 
 const endpoints = apis.injectEndpoints({
   endpoints: (builder) => ({
@@ -8,8 +8,11 @@ const endpoints = apis.injectEndpoints({
       query: () => "users/contacts",
       providesTags: [apiTags.CONTACTS],
     }),
+    getChatRequests: builder.query<IChatRequest[], void>({
+      query: () => "users/chat-requests/received",
+    }),
   }),
 });
 
-export const { useGetContactsQuery } = endpoints;
+export const { useGetContactsQuery, useLazyGetChatRequestsQuery } = endpoints;
 

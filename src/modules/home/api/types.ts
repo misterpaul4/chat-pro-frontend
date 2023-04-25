@@ -18,7 +18,7 @@ export interface IChatRequestPayload {
   message?: string;
 }
 
-export interface IChatRequest extends IChatRequestPayload {
+export interface IChatRequest extends IChatRequestPayload, IBaseType {
   senderId: string;
   status: StatusEnum;
   sender: IUser;

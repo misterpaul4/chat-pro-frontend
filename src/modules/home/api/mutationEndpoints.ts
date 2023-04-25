@@ -14,7 +14,7 @@ const endpoints = apis.injectEndpoints({
         method: "POST",
         body,
       }),
-      invalidatesTags: [apiTags.CONTACTS],
+      invalidatesTags: [apiTags.CONTACTS, apiTags.INBOX],
     }),
   }),
 });

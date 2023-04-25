@@ -1,18 +1,28 @@
 import { List, Space, Typography } from "antd";
-import { IContact } from "../api/types";
+import { IChatRequest, IContact } from "../api/types";
 import { capitalize } from "../../../utils/strings";
+import { $tabType } from "./types";
 
 interface IProps {
-  contactList: IContact[];
+  list: IContact[] | IChatRequest[];
+  activeTab: $tabType;
 }
 
-const SideBarBody = ({ contactList }) => {
+const SideBarBody = ({ list, activeTab }: IProps) => {
+  const key =
+    activeTab === "inbox"
+      ? {
+          detailsKey: "contact",
+          messageKey: "",
+        }
+      : { detailsKey: "sender", messageKey: "message" };
   return (
     <List
       className="border p-3 sidebar-message-container"
-      dataSource={contactList}
-      renderItem={(item: IContact) => {
-        const { firstName, lastName, email } = item.contact;
+      dataSource={list}
+      renderItem={(item: IContact | IChatRequest) => {
+        const { firstName, lastName, email } = item[key.detailsKey];
+        const message = item[key.messageKey];
         return (
           <List.Item className="cursor-pointer sidebar-message-item">
             <Space direction="vertical">
@@ -25,12 +35,7 @@ const SideBarBody = ({ contactList }) => {
               </Typography.Paragraph>
 
               <Typography.Paragraph ellipsis={{ rows: 3 }}>
-                In cupidatat esse irure aliquip laboris sint nostrud
-                reprehenderit reprehenderit excepteur. Aute ut laborum nostrud
-                duis Lorem Lorem excepteur excepteur ipsum in. Adipisicing esse
-                reprehenderit officia sint tempor sunt exercitation eu
-                exercitation voluptate do voluptate. Incididunt consequat ut
-                veniam sunt fugiat velit minim consectetur veniam fugiat id.
+                {message}
               </Typography.Paragraph>
             </Space>
           </List.Item>
