@@ -46,5 +46,21 @@
 
   :nth-child(even) {
     align-self: flex-end;
+    -moz-transform: scaleX(-1);
+    -webkit-transform: scaleX(-1);
+    -o-transform: scaleX(-1);
+    transform: scaleX(-1);
+  }
+}
+
+.new-chat-modal {
+  .ant-input-group-addon {
+    padding: 0;
+
+    button.ant-btn-icon-only {
+      &:hover, &:active {
+        background-color: initial;
+      }
+    }
   }
 }

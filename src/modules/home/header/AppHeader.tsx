@@ -10,6 +10,8 @@ import {
 } from "@ant-design/icons";
 import { useDispatch } from "react-redux";
 import { logout } from "../../auth/control/userSlice";
+import { useContext } from "react";
+import headerContext from "../context/headerContext";
 
 interface IProps {
   user: IBaseUser;
@@ -51,10 +53,12 @@ const AppHeader = ({ user }: IProps) => {
     },
   ];
 
+  const { onModalOpen } = useContext(headerContext);
+
   return (
     <>
       <Space size="large">
-        <Button shape="circle" title="New Chat">
+        <Button shape="circle" title="New Chat" onClick={onModalOpen}>
           <FormOutlined />
         </Button>
         <Button shape="circle" title="Contact List">

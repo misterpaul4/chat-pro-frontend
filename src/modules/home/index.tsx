@@ -4,8 +4,9 @@ import AppHeader from "./header/AppHeader";
 import { useSelector } from "react-redux";
 import { RootState } from "../../store";
 import { IBaseUser } from "../auth/control/types";
-import ContactActionModal from "./components/ContactActionModal";
+import NewChatModal from "./components/NewChatModal";
 import { useGetContactsQuery } from "./api/queryEndpoints";
+import { HeaderProvider } from "./context/headerContext";
 
 const { Sider, Content, Header, Footer } = Layout;
 
@@ -25,18 +26,20 @@ const Home = () => {
         </div>
       </Sider>
       <Layout>
-        <ContactActionModal />
         <Header className="headerStyle">
           <div className="float-end">
-            <AppHeader user={user} />
+            <HeaderProvider>
+              <NewChatModal contactList={contactList} />
+              <AppHeader user={user} />
+            </HeaderProvider>
           </div>
         </Header>
         <Content className="contentStyle">
           <div className="d-flex flex-column message-skeleton">
-            <Skeleton active></Skeleton>
-            <Skeleton className="flip-x" active></Skeleton>
-            <Skeleton active></Skeleton>
-            <Skeleton className="flip-x" active></Skeleton>
+            <Skeleton active />
+            <Skeleton active />
+            <Skeleton active />
+            <Skeleton active />
           </div>
         </Content>
         <Footer className="footerStyle"></Footer>

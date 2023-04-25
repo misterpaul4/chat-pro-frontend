@@ -1,6 +1,7 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { BASE_URL } from "../../settings";
 import { getLs } from "../lib/helpers/localStorage";
+import { apiTags } from "../lib/constants/tags";
 
 const apis = createApi({
   reducerPath: "apis",
@@ -14,6 +15,7 @@ const apis = createApi({
     },
   }),
   endpoints: () => ({}),
+  tagTypes: Object.values(apiTags),
 });
 
 export default apis;
