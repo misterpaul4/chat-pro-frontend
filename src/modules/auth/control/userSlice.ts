@@ -20,7 +20,7 @@ const initialState: IUserSlice = {
     loggedIn: false,
     token: "",
   },
-  darkMode: false,
+  darkMode: getLs("darkMode") ?? false,
 };
 
 type OmitLoggedInFromUser = Omit<IAuth, "loggedIn">;
@@ -57,7 +57,10 @@ export const userSlice = createSlice({
         darkMode: state.darkMode,
       };
     },
-    toggleDarkMode: (state) => ({ ...state, darkMode: !state.darkMode }),
+    toggleDarkMode: (state) => {
+      setLS("darkMode", !state.darkMode);
+      return { ...state, darkMode: !state.darkMode };
+    },
   },
 });
 
