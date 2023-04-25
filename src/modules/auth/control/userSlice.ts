@@ -6,6 +6,7 @@ import { clearLs, getLs, setLS } from "../../../app/lib/helpers/localStorage";
 export interface IUserSlice {
   user: IBaseUser;
   auth: IAuth;
+  darkMode: boolean;
 }
 
 const initialState: IUserSlice = {
@@ -19,6 +20,7 @@ const initialState: IUserSlice = {
     loggedIn: false,
     token: "",
   },
+  darkMode: false,
 };
 
 type OmitLoggedInFromUser = Omit<IAuth, "loggedIn">;
@@ -33,6 +35,7 @@ export const userSlice = createSlice({
       const token = action.payload.auth.token;
       setLS("token", token);
       return {
+        ..._,
         auth: { loggedIn: true, token },
         user: action.payload.user,
       };
@@ -42,19 +45,25 @@ export const userSlice = createSlice({
       // get token from LS
       const token = getLs("token");
       return {
+        ..._,
         auth: { loggedIn: true, token },
         user: action.payload,
       };
     },
-    logout: () => {
+    logout: (state) => {
       clearLs("token");
-      return initialState;
+      return {
+        ...initialState,
+        darkMode: state.darkMode,
+      };
     },
+    toggleDarkMode: (state) => ({ ...state, darkMode: !state.darkMode }),
   },
 });
 
 // Action creators are generated for each case reducer function
-export const { logout, setAppState, setGetSelf } = userSlice.actions;
+export const { logout, setAppState, setGetSelf, toggleDarkMode } =
+  userSlice.actions;
 
 export default userSlice.reducer;
 

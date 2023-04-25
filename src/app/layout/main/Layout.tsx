@@ -24,9 +24,6 @@ const Layout = () => {
           dispatch(setGetSelf(data));
         } else {
           navigate(paths.login);
-          // setTimeout(() => {
-          //   notification.error({ message: "You have been logged out!" });
-          // }, 1000);
         }
       });
     }

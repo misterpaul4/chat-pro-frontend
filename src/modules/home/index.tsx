@@ -12,13 +12,13 @@ import SideBar from "./sidebar";
 const { Sider, Content, Header, Footer } = Layout;
 
 const Home = () => {
-  const user: IBaseUser = useSelector((state: RootState) => state.user.user);
+  const { user, darkMode } = useSelector((state: RootState) => state.user);
 
   const { data: contactList, isFetching: fetchingContacts } =
-    useGetContactsQuery();
+    useGetContactsQuery(undefined, { refetchOnMountOrArgChange: true });
 
   return (
-    <Layout className="message-container">
+    <Layout hasSider className="message-container">
       <Sider className="siderStyle">
         <div>
           <Skeleton
@@ -46,12 +46,12 @@ const Home = () => {
           />
         </div>
       </Sider>
-      <Layout>
+      <Layout className="site-layout">
         <Header className="headerStyle">
           <div className="float-end">
             <HeaderProvider>
               <NewChatModal user={user} contactList={contactList} />
-              <AppHeader user={user} />
+              <AppHeader user={user} darkMode={darkMode} />
             </HeaderProvider>
           </div>
         </Header>

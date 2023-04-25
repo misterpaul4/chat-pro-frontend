@@ -1,6 +1,6 @@
 import { Avatar, Button, Drawer, Dropdown, MenuProps, Space } from "antd";
 import { IBaseUser, IUser } from "../../auth/control/types";
-import {
+import Icon, {
   DownOutlined,
   FormOutlined,
   LogoutOutlined,
@@ -9,15 +9,17 @@ import {
   UserOutlined,
 } from "@ant-design/icons";
 import { useDispatch } from "react-redux";
-import { logout } from "../../auth/control/userSlice";
+import { logout, toggleDarkMode } from "../../auth/control/userSlice";
 import { useContext } from "react";
 import headerContext from "../context/headerContext";
+import { DarkModeIcon, LightModeIcon } from "../../../utils/icons";
 
 interface IProps {
   user: IBaseUser;
+  darkMode: boolean;
 }
 
-const AppHeader = ({ user }: IProps) => {
+const AppHeader = ({ user, darkMode }: IProps) => {
   const dispatch = useDispatch();
 
   const items: MenuProps["items"] = [
@@ -55,6 +57,10 @@ const AppHeader = ({ user }: IProps) => {
 
   const { onModalOpen } = useContext(headerContext);
 
+  const darkModeConfig = darkMode
+    ? { icon: DarkModeIcon, title: "Switch to Light Mode" }
+    : { icon: LightModeIcon, title: "Switch to Dark Mode" };
+
   return (
     <>
       <Space size="large">
@@ -63,6 +69,13 @@ const AppHeader = ({ user }: IProps) => {
         </Button>
         <Button shape="circle" title="Contact List">
           <TeamOutlined />
+        </Button>
+        <Button
+          shape="circle"
+          onClick={() => dispatch(toggleDarkMode())}
+          title={darkModeConfig.title}
+        >
+          <Icon component={darkModeConfig.icon} />
         </Button>
         <Dropdown
           menu={{

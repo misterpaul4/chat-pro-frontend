@@ -9,18 +9,20 @@ interface IProps {
 const SideBarBody = ({ contactList }) => {
   return (
     <List
-      className="border p-3"
+      className="border p-3 sidebar-message-container"
       dataSource={contactList}
       renderItem={(item: IContact) => {
         const { firstName, lastName, email } = item.contact;
         return (
-          <List.Item>
+          <List.Item className="cursor-pointer sidebar-message-item">
             <Space direction="vertical">
-              <Space>
-                <strong>{capitalize(firstName)}</strong>
-                <strong>{capitalize(lastName)}</strong>
-                {`(${email})`}
-              </Space>
+              <Typography.Paragraph ellipsis={{ rows: 2 }} className="m-0">
+                <Space>
+                  <strong>{capitalize(firstName)}</strong>
+                  <strong>{capitalize(lastName)}</strong>
+                  {`(${email})`}
+                </Space>
+              </Typography.Paragraph>
 
               <Typography.Paragraph ellipsis={{ rows: 3 }}>
                 In cupidatat esse irure aliquip laboris sint nostrud
