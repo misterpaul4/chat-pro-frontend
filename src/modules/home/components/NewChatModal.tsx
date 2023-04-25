@@ -18,11 +18,12 @@ import {
   useVerifyEmailMutation,
 } from "../api/mutationEndpoints";
 import { apiResponseHandler } from "../../../app/lib/helpers/responseHandler";
-import { IUser } from "../../auth/control/types";
+import { IBaseUser, IUser } from "../../auth/control/types";
 import { toTitleCase } from "../../../utils/strings";
 
 interface IProps {
   contactList: IContact[] | undefined;
+  user: IBaseUser;
 }
 
 interface IVerified {
@@ -64,7 +65,7 @@ const EMAIL_IS_NOT_VERIFIED: IVerified = {
   ),
 };
 
-const NewChatModal = ({ contactList }: IProps) => {
+const NewChatModal = ({ contactList, user }: IProps) => {
   const { visibility, onModalClose } = useContext(headerContext);
   const [recipient, setRecipient] = useState<IUser>();
 
@@ -92,6 +93,13 @@ const NewChatModal = ({ contactList }: IProps) => {
         onSuccess: { callBack: onClose, message: "Success" },
       });
     } else {
+      // prevent sending request to self
+      if (user.email === values.email) {
+        notification.error({
+          message: "You cannot send chat request to yourself",
+        });
+        return;
+      }
       // check if in contact list
       const inContactList = contactList?.find(
         (contact) => contact.contact.email === values.email

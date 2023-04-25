@@ -7,6 +7,7 @@ import { IBaseUser } from "../auth/control/types";
 import NewChatModal from "./components/NewChatModal";
 import { useGetContactsQuery } from "./api/queryEndpoints";
 import { HeaderProvider } from "./context/headerContext";
+import SideBar from "./sidebar";
 
 const { Sider, Content, Header, Footer } = Layout;
 
@@ -20,16 +21,36 @@ const Home = () => {
     <Layout className="message-container">
       <Sider className="siderStyle">
         <div>
-          <Skeleton round avatar active className="my-5" />
-          <Skeleton round avatar active className="my-5" />
-          <Skeleton round avatar active className="my-5" />
+          <Skeleton
+            round
+            avatar
+            active
+            className="my-5"
+            loading={fetchingContacts}
+          >
+            <SideBar contactList={contactList} />
+          </Skeleton>
+          <Skeleton
+            round
+            avatar
+            active
+            className="my-5"
+            loading={fetchingContacts}
+          />
+          <Skeleton
+            round
+            avatar
+            active
+            className="my-5"
+            loading={fetchingContacts}
+          />
         </div>
       </Sider>
       <Layout>
         <Header className="headerStyle">
           <div className="float-end">
             <HeaderProvider>
-              <NewChatModal contactList={contactList} />
+              <NewChatModal user={user} contactList={contactList} />
               <AppHeader user={user} />
             </HeaderProvider>
           </div>
