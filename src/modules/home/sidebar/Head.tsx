@@ -1,14 +1,15 @@
 import { Input, Space, Typography, TypographyProps } from "antd";
 import { layoutPrimaryColor, transparentTextColor } from "../../../settings";
-import { IContact } from "../api/types";
 import { $tabType } from "./types";
+import { useDispatch } from "react-redux";
+import { setActiveTab } from "../slice/homeSlice";
 
 interface IProps {
   activeTab: string;
-  setActiveTab: (activeTab: $tabType) => void;
 }
 
-const SideBarHead = ({ activeTab, setActiveTab }: IProps) => {
+const SideBarHead = ({ activeTab }: IProps) => {
+  const dispatch = useDispatch();
   const tabProps: Partial<TypographyProps["Title"]["defaultProps"]> = {
     className: "cursor-pointer",
     level: 2,
@@ -21,7 +22,7 @@ const SideBarHead = ({ activeTab, setActiveTab }: IProps) => {
             color:
               activeTab === "inbox" ? layoutPrimaryColor : transparentTextColor,
           }}
-          onClick={() => setActiveTab("inbox")}
+          onClick={() => dispatch(setActiveTab("inbox"))}
           {...tabProps}
         >
           Inbox
@@ -33,7 +34,7 @@ const SideBarHead = ({ activeTab, setActiveTab }: IProps) => {
                 ? layoutPrimaryColor
                 : transparentTextColor,
           }}
-          onClick={() => setActiveTab("request")}
+          onClick={() => dispatch(setActiveTab("request"))}
           {...tabProps}
         >
           Requests

@@ -1,14 +1,19 @@
 import { List, Space, Typography } from "antd";
-import { IChatRequest, IContact } from "../api/types";
+import { $activeContact, IChatRequest, IContact } from "../api/types";
 import { capitalize } from "../../../utils/strings";
 import { $tabType } from "./types";
+import { useDispatch } from "react-redux";
+import { setActiveContact } from "../slice/homeSlice";
+import { hoverColor } from "../../../settings";
 
 interface IProps {
   list: IContact[] | IChatRequest[];
   activeTab: $tabType;
+  activeContactId?: string;
 }
 
-const SideBarBody = ({ list, activeTab }: IProps) => {
+const SideBarBody = ({ list, activeTab, activeContactId }: IProps) => {
+  const dispatch = useDispatch();
   const key =
     activeTab === "inbox"
       ? {
@@ -18,13 +23,19 @@ const SideBarBody = ({ list, activeTab }: IProps) => {
       : { detailsKey: "sender", messageKey: "message" };
   return (
     <List
-      className="border p-3 sidebar-message-container"
+      className="border-top border-bottom sidebar-message-container"
       dataSource={list}
-      renderItem={(item: IContact | IChatRequest) => {
+      renderItem={(item: $activeContact) => {
         const { firstName, lastName, email } = item[key.detailsKey];
         const message = item[key.messageKey];
         return (
-          <List.Item className="cursor-pointer sidebar-message-item">
+          <List.Item
+            className="cursor-pointer sidebar-message-item p-3"
+            onClick={() => dispatch(setActiveContact(item))}
+            style={{
+              backgroundColor: item.id === activeContactId ? hoverColor : "",
+            }}
+          >
             <Space direction="vertical">
               <Typography.Paragraph ellipsis={{ rows: 2 }} className="m-0">
                 <Space>

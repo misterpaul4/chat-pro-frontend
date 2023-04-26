@@ -1,13 +1,14 @@
-import { Layout, Skeleton, Space } from "antd";
+import { Layout } from "antd";
 import "./index.less";
 import AppHeader from "./header/AppHeader";
 import { useSelector } from "react-redux";
 import { RootState } from "../../store";
-import { IBaseUser } from "../auth/control/types";
 import NewChatModal from "./components/NewChatModal";
 import { useGetContactsQuery } from "./api/queryEndpoints";
 import { HeaderProvider } from "./context/headerContext";
 import SideBar from "./sidebar";
+import { ContentLoader, SiderLoader } from "./components/Loaders";
+import MessageContent from "./content";
 
 const { Sider, Content, Header, Footer } = Layout;
 
@@ -17,32 +18,15 @@ const Home = () => {
   const { data: contactList, isFetching: fetchingContacts } =
     useGetContactsQuery(undefined, { refetchOnMountOrArgChange: true });
 
+  const loading = fetchingContacts;
+
   return (
     <Layout hasSider className="message-container">
       <Sider className="siderStyle">
-        <div>
-          <Skeleton
-            round
-            avatar
-            active
-            className="my-5"
-            loading={fetchingContacts}
-          >
-            <SideBar contactList={contactList} />
-          </Skeleton>
-          <Skeleton
-            round
-            avatar
-            active
-            className="my-5"
-            loading={fetchingContacts}
-          />
-          <Skeleton
-            round
-            avatar
-            active
-            className="my-5"
-            loading={fetchingContacts}
+        <div className="p-3">
+          <SiderLoader
+            component={<SideBar contactList={contactList} />}
+            loading={loading}
           />
         </div>
       </Sider>
@@ -57,10 +41,7 @@ const Home = () => {
         </Header>
         <Content className="contentStyle">
           <div className="d-flex flex-column message-skeleton">
-            <Skeleton active />
-            <Skeleton active />
-            <Skeleton active />
-            <Skeleton active />
+            <ContentLoader loading={loading} component={<MessageContent />} />
           </div>
         </Content>
         <Footer className="footerStyle"></Footer>

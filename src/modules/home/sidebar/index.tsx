@@ -1,17 +1,17 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import SideBarHead from "./Head";
-import { $tabType } from "./types";
 import SideBarBody from "./Body";
 import { useLazyGetChatRequestsQuery } from "../api/queryEndpoints";
-import { Skeleton } from "antd";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../store";
 
 const SideBar = ({ contactList }) => {
-  const [activeTab, setActiveTab] = useState<$tabType>("request");
+  const { activeTab, activeContact } = useSelector(
+    (state: RootState) => state.app
+  );
 
-  const [
-    getChatRequests,
-    { isFetching: fetchingRequests, currentData: chatRequets },
-  ] = useLazyGetChatRequestsQuery();
+  const [getChatRequests, { currentData: chatRequets }] =
+    useLazyGetChatRequestsQuery();
 
   useEffect(() => {
     if (activeTab === "request") {
@@ -21,15 +21,14 @@ const SideBar = ({ contactList }) => {
 
   return (
     <>
-      <SideBarHead activeTab={activeTab} setActiveTab={setActiveTab} />
-      <Skeleton loading={fetchingRequests} round avatar className="p-3">
-        <div className="mt-2">
-          <SideBarBody
-            activeTab={activeTab}
-            list={activeTab === "inbox" ? contactList : chatRequets}
-          />
-        </div>
-      </Skeleton>
+      <SideBarHead activeTab={activeTab} />
+      <div className="mt-2">
+        <SideBarBody
+          activeContactId={activeContact?.id}
+          activeTab={activeTab}
+          list={activeTab === "inbox" ? contactList : chatRequets}
+        />
+      </div>
     </>
   );
 };

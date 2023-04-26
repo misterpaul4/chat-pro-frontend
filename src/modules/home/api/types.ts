@@ -1,4 +1,7 @@
-import { IBaseType } from "../../../app/lib/types/baseType";
+import {
+  IBaseCrudResponseType,
+  IBaseType,
+} from "../../../app/lib/types/baseType";
 import { IBaseUser, IUser } from "../../auth/control/types";
 
 export interface IContact extends IBaseType {
@@ -30,3 +33,19 @@ export enum StatusEnum {
   Approved = "Approved",
 }
 
+export interface IMessage extends IBaseType {
+  message: string;
+  starred: boolean;
+  sender: IUser;
+  receiver: IUser;
+  senderId: string;
+  receiverId: string;
+  replyingTo?: string;
+  read: boolean;
+}
+
+export interface IMessageReponse extends IBaseCrudResponseType {
+  data: IMessage[];
+}
+
+export type $activeContact = IChatRequest | IContact
