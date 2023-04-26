@@ -1,10 +1,8 @@
 import { Skeleton } from "antd";
 
-export const ContentLoader = ({ loading, component }) => (
+export const ContentLoader = ({ loading }) => (
   <>
-    <Skeleton loading={loading} active>
-      {component}
-    </Skeleton>
+    <Skeleton loading={loading} active />
     <Skeleton loading={loading} active />
     <Skeleton loading={loading} active />
     <Skeleton loading={loading} active />

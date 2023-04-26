@@ -41,8 +41,9 @@ const Home = () => {
         </Header>
         <Content className="contentStyle">
           <div className="d-flex flex-column message-skeleton">
-            <ContentLoader loading={loading} component={<MessageContent />} />
+            <ContentLoader loading={loading} />
           </div>
+          {!loading && <MessageContent />}
         </Content>
         <Footer className="footerStyle"></Footer>
       </Layout>
