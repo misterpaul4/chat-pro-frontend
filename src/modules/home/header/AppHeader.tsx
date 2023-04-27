@@ -1,11 +1,10 @@
-import { Avatar, Button, Drawer, Dropdown, MenuProps, Space } from "antd";
-import { IBaseUser, IUser } from "../../auth/control/types";
+import { Avatar, Button, Dropdown, MenuProps, Space } from "antd";
+import { IBaseUser } from "../../auth/control/types";
 import Icon, {
   DownOutlined,
   FormOutlined,
   LogoutOutlined,
   StarFilled,
-  TeamOutlined,
   UserOutlined,
   UsergroupAddOutlined,
   UsergroupDeleteOutlined,
@@ -23,6 +22,9 @@ interface IProps {
 
 const AppHeader = ({ user, darkMode }: IProps) => {
   const dispatch = useDispatch();
+
+  const { onNewChatModalOpen, onContactListOpen, onBlockedContactListOpen } =
+    useContext(headerContext);
 
   const items: MenuProps["items"] = [
     {
@@ -57,8 +59,6 @@ const AppHeader = ({ user, darkMode }: IProps) => {
     },
   ];
 
-  const { onModalOpen } = useContext(headerContext);
-
   const darkModeConfig = darkMode
     ? { icon: DarkModeIcon, title: "Switch to Light Mode" }
     : { icon: LightModeIcon, title: "Switch to Dark Mode" };
@@ -66,13 +66,18 @@ const AppHeader = ({ user, darkMode }: IProps) => {
   return (
     <>
       <Space size="large">
-        <Button shape="circle" title="New Chat" onClick={onModalOpen}>
+        <Button shape="circle" title="New Chat" onClick={onNewChatModalOpen}>
           <FormOutlined />
         </Button>
-        <Button shape="circle" title="Contact List">
+        <Button shape="circle" title="Contact List" onClick={onContactListOpen}>
           <UsergroupAddOutlined />
         </Button>
-        <Button shape="circle" title="Block List" type="primary">
+        <Button
+          shape="circle"
+          title="Block List"
+          type="primary"
+          onClick={onBlockedContactListOpen}
+        >
           <UsergroupDeleteOutlined />
         </Button>
         <Button

@@ -1,27 +1,75 @@
 import { createContext, useState } from "react";
 
 interface IContext {
-  visibility: boolean;
-  onModalOpen: () => void;
-  onModalClose: () => void;
+  // new chat
+  newChatVisibility: boolean;
+  onNewChatModalOpen: () => void;
+  onNewChatModalClose: () => void;
+
+  // contact list
+  contactListVisibility: boolean;
+  onContactListOpen: () => void;
+  onContactListClose: () => void;
+
+  // blocked contact list
+  blockedContactListVisibility: boolean;
+  onBlockedContactListOpen: () => void;
+  onBlockedContactListClose: () => void;
 }
 
 const initialValue: IContext = {
-  visibility: false,
-  onModalOpen: () => undefined,
-  onModalClose: () => undefined,
+  // new chat
+  newChatVisibility: false,
+  onNewChatModalOpen: () => undefined,
+  onNewChatModalClose: () => undefined,
+  // contact list
+  contactListVisibility: false,
+  onContactListOpen: () => undefined,
+  onContactListClose: () => undefined,
+  // blocked contact list
+  blockedContactListVisibility: false,
+  onBlockedContactListOpen: () => undefined,
+  onBlockedContactListClose: () => undefined,
 };
 
 const headerContext = createContext(initialValue);
 
 export const HeaderProvider = ({ children }) => {
-  const [visibility, setVisibilty] = useState(initialValue.visibility);
+  const [newChatVisibility, setNewChatVisibilty] = useState(
+    initialValue.newChatVisibility
+  );
 
-  const onModalOpen = () => setVisibilty(true);
-  const onModalClose = () => setVisibilty(false);
+  const onNewChatModalOpen = () => setNewChatVisibilty(true);
+  const onNewChatModalClose = () => setNewChatVisibilty(false);
+
+  const [contactListVisibility, setContactVisibilty] = useState(
+    initialValue.contactListVisibility
+  );
+
+  const onContactListOpen = () => setContactVisibilty(true);
+  const onContactListClose = () => setContactVisibilty(false);
+
+  const [blockedContactListVisibility, setBlockedContactListVisibility] =
+    useState(initialValue.blockedContactListVisibility);
+
+  const onBlockedContactListOpen = () => setBlockedContactListVisibility(true);
+  const onBlockedContactListClose = () =>
+    setBlockedContactListVisibility(false);
 
   return (
-    <headerContext.Provider value={{ visibility, onModalOpen, onModalClose }}>
+    <headerContext.Provider
+      value={{
+        newChatVisibility,
+        onNewChatModalOpen,
+        onNewChatModalClose,
+        onContactListClose,
+        onContactListOpen,
+        contactListVisibility,
+        blockedContactListVisibility,
+        onBlockedContactListClose,
+        onBlockedContactListOpen,
+      }}
+    >
       {children}
     </headerContext.Provider>
   );

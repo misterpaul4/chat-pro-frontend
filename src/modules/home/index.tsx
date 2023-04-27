@@ -9,6 +9,8 @@ import { HeaderProvider } from "./context/headerContext";
 import SideBar from "./sidebar";
 import { ContentLoader, SiderLoader } from "./components/Loaders";
 import MessageContent from "./content";
+import ContactListDrawer from "./components/ContactListDrawer";
+import BlockedUsersDrawer from "./components/BlockedUsersDrawer";
 
 const { Sider, Content, Header, Footer } = Layout;
 
@@ -26,7 +28,7 @@ const Home = () => {
         <div className="p-3">
           <SiderLoader
             component={<SideBar contactList={contactList} />}
-            loading={loading}
+            loading={!contactList}
           />
         </div>
       </Sider>
@@ -35,6 +37,8 @@ const Home = () => {
           <div className="float-end">
             <HeaderProvider>
               <NewChatModal user={user} contactList={contactList} />
+              <ContactListDrawer contactList={contactList} />
+              <BlockedUsersDrawer contactList={contactList} />
               <AppHeader user={user} darkMode={darkMode} />
             </HeaderProvider>
           </div>

@@ -66,7 +66,7 @@ const EMAIL_IS_NOT_VERIFIED: IVerified = {
 };
 
 const NewChatModal = ({ contactList, user }: IProps) => {
-  const { visibility, onModalClose } = useContext(headerContext);
+  const { newChatVisibility, onNewChatModalClose } = useContext(headerContext);
   const [recipient, setRecipient] = useState<IUser>();
 
   const [verifyEmail, { isLoading }] = useVerifyEmailMutation();
@@ -78,7 +78,7 @@ const NewChatModal = ({ contactList, user }: IProps) => {
     : EMAIL_IS_NOT_VERIFIED;
 
   const onClose = () => {
-    onModalClose();
+    onNewChatModalClose();
     setRecipient(undefined);
   };
 
@@ -123,7 +123,7 @@ const NewChatModal = ({ contactList, user }: IProps) => {
 
   return (
     <Modal
-      open={visibility}
+      open={newChatVisibility}
       onCancel={onClose}
       title={<Typography.Title>New Chat</Typography.Title>}
       cancelButtonProps={{ className: "d-none" }}
