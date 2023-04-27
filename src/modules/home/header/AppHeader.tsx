@@ -7,6 +7,8 @@ import Icon, {
   StarFilled,
   TeamOutlined,
   UserOutlined,
+  UsergroupAddOutlined,
+  UsergroupDeleteOutlined,
 } from "@ant-design/icons";
 import { useDispatch } from "react-redux";
 import { logout, toggleDarkMode } from "../../auth/control/userSlice";
@@ -68,7 +70,10 @@ const AppHeader = ({ user, darkMode }: IProps) => {
           <FormOutlined />
         </Button>
         <Button shape="circle" title="Contact List">
-          <TeamOutlined />
+          <UsergroupAddOutlined />
+        </Button>
+        <Button shape="circle" title="Block List" type="primary" danger>
+          <UsergroupDeleteOutlined />
         </Button>
         <Button
           shape="circle"

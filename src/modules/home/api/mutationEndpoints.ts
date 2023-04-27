@@ -1,7 +1,12 @@
 import apis from "../../../app/api";
 import { apiTags } from "../../../app/lib/constants/tags";
 import { IUser } from "../../auth/control/types";
-import { IChatRequest, IChatRequestPayload, IVerifyEmail } from "./types";
+import {
+  IChatRequest,
+  IChatRequestPayload,
+  IContact,
+  IVerifyEmail,
+} from "./types";
 
 const endpoints = apis.injectEndpoints({
   endpoints: (builder) => ({
@@ -14,10 +19,31 @@ const endpoints = apis.injectEndpoints({
         method: "POST",
         body,
       }),
-      invalidatesTags: [apiTags.CONTACTS, apiTags.INBOX],
+      invalidatesTags: (x) => (x ? [apiTags.CONTACTS, apiTags.INBOX] : []),
+    }),
+    approveRequest: builder.mutation<IContact, string>({
+      query: (id) => ({
+        url: `users/chat-requests/approve/${id}`,
+        method: "POST",
+      }),
+      invalidatesTags: (result) =>
+        result ? [apiTags.CONTACTS, apiTags.CHAT_REQUESTS] : [],
+    }),
+    declineRequest: builder.mutation<IContact, string>({
+      query: (id) => ({
+        url: `users/chat-requests/decline/${id}`,
+        method: "POST",
+      }),
+      invalidatesTags: (result) =>
+        result ? [apiTags.CONTACTS, apiTags.CHAT_REQUESTS] : [],
     }),
   }),
 });
 
-export const { useVerifyEmailMutation, useSendChatRequestMutation } = endpoints;
+export const {
+  useVerifyEmailMutation,
+  useSendChatRequestMutation,
+  useApproveRequestMutation,
+  useDeclineRequestMutation,
+} = endpoints;
 

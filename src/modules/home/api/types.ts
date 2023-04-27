@@ -31,6 +31,7 @@ export interface IChatRequest extends IChatRequestPayload, IBaseType {
 export enum StatusEnum {
   Pending = "Pending",
   Approved = "Approved",
+  Rejected = "Rejected",
 }
 
 export interface IMessage extends IBaseType {
@@ -48,4 +49,4 @@ export interface IMessageReponse extends IBaseCrudResponseType {
   data: IMessage[];
 }
 
-export type $activeContact = IChatRequest | IContact
+export type $activeContact = IChatRequest | IContact;

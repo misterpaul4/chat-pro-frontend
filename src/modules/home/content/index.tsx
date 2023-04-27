@@ -14,7 +14,7 @@ const MessageContent = () => {
       <ActionHeader
         activeContact={activeContact["sender"] || activeContact["contact"]}
       />
-      {activeContact["contact"] ? (
+      {activeContact["contactId"] ? (
         <InboxContent />
       ) : (
         <RequestContent {...activeContact} />

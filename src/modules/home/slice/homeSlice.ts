@@ -17,17 +17,26 @@ export const homeSlice = createSlice({
   name: "app-slice",
   initialState,
   reducers: {
-    setActiveContact: (state, action: PayloadAction<$activeContact>) => {
+    setActiveContact: (
+      state,
+      action: PayloadAction<$activeContact | undefined>
+    ) => {
       return { ...state, activeContact: action.payload };
     },
     setActiveTab: (state, action: PayloadAction<$tabType>) => {
       return { ...state, activeTab: action.payload };
     },
+    setRequestApproval: (state, action: PayloadAction<IHomeSlice>) => ({
+      ...state,
+      activeContact: action.payload.activeContact,
+      activeTab: action.payload.activeTab,
+    }),
   },
 });
 
 // Action creators are generated for each case reducer function
-export const { setActiveContact, setActiveTab } = homeSlice.actions;
+export const { setActiveContact, setActiveTab, setRequestApproval } =
+  homeSlice.actions;
 
 export default homeSlice.reducer;
 

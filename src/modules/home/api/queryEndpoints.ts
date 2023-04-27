@@ -10,6 +10,7 @@ const endpoints = apis.injectEndpoints({
     }),
     getChatRequests: builder.query<IChatRequest[], void>({
       query: () => "users/chat-requests/received",
+      providesTags: [apiTags.CHAT_REQUESTS],
     }),
   }),
 });
