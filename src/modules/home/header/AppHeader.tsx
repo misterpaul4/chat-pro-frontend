@@ -72,7 +72,7 @@ const AppHeader = ({ user, darkMode }: IProps) => {
         <Button shape="circle" title="Contact List">
           <UsergroupAddOutlined />
         </Button>
-        <Button shape="circle" title="Block List" type="primary" danger>
+        <Button shape="circle" title="Block List" type="primary">
           <UsergroupDeleteOutlined />
         </Button>
         <Button

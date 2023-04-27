@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { $tabType } from "../sidebar/types";
 import { $activeContact } from "../api/types";
+import { getLs, setLS } from "../../../app/lib/helpers/localStorage";
 
 export interface IHomeSlice {
   activeContact: $activeContact | undefined;
@@ -10,7 +11,7 @@ export interface IHomeSlice {
 
 const initialState: IHomeSlice = {
   activeContact: undefined,
-  activeTab: "request",
+  activeTab: getLs("activeTab") ?? "request",
 };
 
 export const homeSlice = createSlice({
@@ -24,13 +25,17 @@ export const homeSlice = createSlice({
       return { ...state, activeContact: action.payload };
     },
     setActiveTab: (state, action: PayloadAction<$tabType>) => {
+      setLS("activeTab", action.payload);
       return { ...state, activeTab: action.payload };
     },
-    setRequestApproval: (state, action: PayloadAction<IHomeSlice>) => ({
-      ...state,
-      activeContact: action.payload.activeContact,
-      activeTab: action.payload.activeTab,
-    }),
+    setRequestApproval: (state, action: PayloadAction<IHomeSlice>) => {
+      setLS("activeTab", action.payload.activeTab);
+      return {
+        ...state,
+        activeContact: action.payload.activeContact,
+        activeTab: action.payload.activeTab,
+      };
+    },
   },
 });
 

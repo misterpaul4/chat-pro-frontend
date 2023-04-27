@@ -70,7 +70,6 @@ const RequestContent = (props) => {
                 </span>
               }
               okText="Confirm"
-              okButtonProps={{ danger: true }}
               onConfirm={decline}
               key="block"
             >
@@ -78,7 +77,6 @@ const RequestContent = (props) => {
                 icon={<CloseOutlined />}
                 loading={declining}
                 type="primary"
-                danger
               >
                 Block
               </Button>
