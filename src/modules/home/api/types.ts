@@ -45,6 +45,10 @@ export interface IMessage extends IBaseType {
   read: boolean;
 }
 
+export interface IInbox extends IBaseCrudResponseType {
+  data: IMessage[];
+}
+
 export interface IMessageReponse extends IBaseCrudResponseType {
   data: IMessage[];
 }

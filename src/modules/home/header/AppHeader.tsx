@@ -1,4 +1,4 @@
-import { Avatar, Button, Dropdown, MenuProps, Space } from "antd";
+import { Avatar, Button, Dropdown, MenuProps, Space, Typography } from "antd";
 import { IBaseUser } from "../../auth/control/types";
 import Icon, {
   DownOutlined,
@@ -27,6 +27,10 @@ const AppHeader = ({ user, darkMode }: IProps) => {
     useContext(headerContext);
 
   const items: MenuProps["items"] = [
+    {
+      label: <Typography.Text copyable>{user.email}</Typography.Text>,
+      type: "group",
+    },
     {
       label: (
         <Button type="text">

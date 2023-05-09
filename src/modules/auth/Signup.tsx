@@ -1,31 +1,38 @@
 import { Link, useNavigate } from "react-router-dom";
 import { paths } from "../../utils/paths";
-import { Button, Form, Input, message } from "antd";
+import { Button, Form, Input, Spin, message } from "antd";
 import { passwordRule } from "../../app/lib/helpers/form";
 import { useSignupMutation } from "./api";
 import { ISignUp } from "./api/types";
 import { apiResponseHandler } from "../../app/lib/helpers/responseHandler";
+import { useState } from "react";
+import { LoadingOutlined } from "@ant-design/icons";
 
 const SignUp = () => {
   const navigate = useNavigate();
   const [createAccount, { isLoading }] = useSignupMutation();
 
+  const [customLoading, setCustomLoading] = useState(false);
+
   const onFinish = async (values: ISignUp) => {
     const res = await createAccount(values);
     apiResponseHandler(res, {
       onSuccess: {
-        callBack: () =>
+        callBack: () => {
+          setCustomLoading(true);
           setTimeout(() => {
             navigate(paths.login, { state: values });
             message.info("Login to your new account");
-          }, 2000),
+            setCustomLoading(false);
+          }, 2000);
+        },
         message: "Account created successfully",
       },
     });
   };
 
   return (
-    <div>
+    <Spin indicator={<LoadingOutlined />} spinning={customLoading}>
       <p>
         Already have an account?{" "}
         <Link to={paths.login}>Login to your account.</Link>
@@ -91,7 +98,7 @@ const SignUp = () => {
           Create Account
         </Button>
       </Form>
-    </div>
+    </Spin>
   );
 };
 

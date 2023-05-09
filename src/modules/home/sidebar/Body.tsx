@@ -7,7 +7,7 @@ import { setActiveContact } from "../slice/homeSlice";
 import { hoverColor } from "../../../settings";
 
 interface IProps {
-  list: IContact[] | IChatRequest[] | undefined;
+  list;
   activeTab: $tabType;
   activeContactId?: string;
 }
@@ -17,8 +17,8 @@ const SideBarBody = ({ list, activeTab, activeContactId }: IProps) => {
   const key =
     activeTab === "inbox"
       ? {
-          detailsKey: "contact",
-          messageKey: "",
+          detailsKey: "sender",
+          messageKey: "message",
         }
       : { detailsKey: "sender", messageKey: "message" };
   return (
