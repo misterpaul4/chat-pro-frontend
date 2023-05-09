@@ -7,7 +7,7 @@ import { setActiveContact } from "../slice/homeSlice";
 import { hoverColor } from "../../../settings";
 
 interface IProps {
-  list: IContact[] | IChatRequest[];
+  list: IContact[] | IChatRequest[] | undefined;
   activeTab: $tabType;
   activeContactId?: string;
 }

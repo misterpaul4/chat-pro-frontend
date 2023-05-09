@@ -116,6 +116,7 @@ const NewChatModal = ({ contactList, user }: IProps) => {
       apiResponseHandler(resp, {
         onSuccess: {
           callBack: () => setRecipient(resp.data),
+          display: false,
         },
       });
     }

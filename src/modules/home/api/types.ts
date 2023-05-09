@@ -50,3 +50,4 @@ export interface IMessageReponse extends IBaseCrudResponseType {
 }
 
 export type $activeContact = IChatRequest | IContact;
+

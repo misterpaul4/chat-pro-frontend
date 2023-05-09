@@ -1,7 +1,10 @@
 import { useEffect } from "react";
 import SideBarHead from "./Head";
 import SideBarBody from "./Body";
-import { useLazyGetChatRequestsQuery } from "../api/queryEndpoints";
+import {
+  useLazyGetChatRequestsQuery,
+  useLazyGetShallowInboxQuery,
+} from "../api/queryEndpoints";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../store";
 
@@ -13,9 +16,14 @@ const SideBar = ({ contactList }) => {
   const [getChatRequests, { currentData: chatRequets }] =
     useLazyGetChatRequestsQuery();
 
+  const [getShallowInbox, { currentData: shallowInbox }] =
+    useLazyGetShallowInboxQuery();
+
   useEffect(() => {
     if (activeTab === "request") {
       getChatRequests();
+    } else {
+      getShallowInbox();
     }
   }, [activeTab]);
 
@@ -26,7 +34,7 @@ const SideBar = ({ contactList }) => {
         <SideBarBody
           activeContactId={activeContact?.id}
           activeTab={activeTab}
-          list={activeTab === "inbox" ? contactList : chatRequets}
+          list={activeTab === "inbox" ? [] : chatRequets}
         />
       </div>
     </>
