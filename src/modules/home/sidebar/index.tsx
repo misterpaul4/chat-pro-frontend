@@ -1,10 +1,7 @@
-import { useEffect } from "react";
 import SideBarHead from "./Head";
-import SideBarBody from "./Body";
 import {
-  useLazyGetAllInboxQuery,
-  useLazyGetChatRequestsQuery,
-  useLazyGetShallowInboxQuery,
+  useGetChatRequestsQuery,
+  useGetShallowInboxQuery,
 } from "../api/queryEndpoints";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../store";
@@ -14,28 +11,18 @@ const SideBar = ({ contactList }) => {
     (state: RootState) => state.app
   );
 
-  const [getChatRequests, { currentData: chatRequets }] =
-    useLazyGetChatRequestsQuery();
-
-  const [getInbox, { currentData: inbox }] = useLazyGetAllInboxQuery();
-
-  useEffect(() => {
-    if (activeTab === "request") {
-      getChatRequests();
-    } else {
-      getInbox();
-    }
-  }, [activeTab]);
+  const { currentData: chatRequets } = useGetChatRequestsQuery();
+  const { currentData: shallowInbox } = useGetShallowInboxQuery();
 
   return (
     <>
       <SideBarHead activeTab={activeTab} />
       <div className="mt-2">
-        <SideBarBody
+        {/* <SideBarBody
           activeContactId={activeContact?.id}
           activeTab={activeTab}
-          list={activeTab === "inbox" ? inbox?.data || [] : chatRequets}
-        />
+          list={activeTab === "inbox" ? shallowInbox || [] : chatRequets}
+        /> */}
       </div>
     </>
   );

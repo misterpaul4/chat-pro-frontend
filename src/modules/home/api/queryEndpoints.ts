@@ -1,6 +1,12 @@
 import apis from "../../../app/api";
 import { apiTags } from "../../../app/lib/constants/tags";
-import { IChatRequest, IContact, IInbox, IMessage } from "./types";
+import {
+  IChatRequest,
+  IContact,
+  IInbox,
+  IMessage,
+  IShallowInbox,
+} from "./types";
 
 const endpoints = apis.injectEndpoints({
   endpoints: (builder) => ({
@@ -12,8 +18,8 @@ const endpoints = apis.injectEndpoints({
       query: () => "users/chat-requests/received",
       providesTags: [apiTags.CHAT_REQUESTS],
     }),
-    getShallowInbox: builder.query<IMessage[], void>({
-      query: () => "inbox/shallow",
+    getShallowInbox: builder.query<IShallowInbox[], void>({
+      query: () => "users/contacts-inbox",
     }),
     getAllInbox: builder.query<IInbox, void>({
       query: () => "inbox?join=sender&join=receiver&sort=createdAt,DESC",
@@ -30,5 +36,7 @@ export const {
   useLazyGetShallowInboxQuery,
   useLazyGetAllInboxQuery,
   useLazyGetConversationQuery,
+  useGetChatRequestsQuery,
+  useGetShallowInboxQuery
 } = endpoints;
 

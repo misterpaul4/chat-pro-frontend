@@ -53,5 +53,14 @@ export interface IMessageReponse extends IBaseCrudResponseType {
   data: IMessage[];
 }
 
+export interface IShallowInbox extends IContact {
+  contact: IShallowBaseUser;
+}
+
+interface IShallowBaseUser extends IBaseUser {
+  sentMessages: IMessage[];
+  receivedMessages: IMessage[];
+}
+
 export type $activeContact = IChatRequest | IContact;
 
