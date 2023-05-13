@@ -26,10 +26,7 @@ const Home = () => {
     <Layout hasSider className="message-container">
       <Sider className="siderStyle">
         <div className="p-3">
-          <SiderLoader
-            component={<SideBar contactList={contactList} />}
-            loading={!contactList}
-          />
+          <SiderLoader component={<SideBar />} loading={!contactList} />
         </div>
       </Sider>
       <Layout className="site-layout">

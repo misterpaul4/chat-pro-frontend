@@ -11,7 +11,7 @@ export interface IHomeSlice {
 
 const initialState: IHomeSlice = {
   activeContact: undefined,
-  activeTab: getLs("activeTab") ?? "request",
+  activeTab: getLs("activeTab") ?? "inbox",
 };
 
 export const homeSlice = createSlice({

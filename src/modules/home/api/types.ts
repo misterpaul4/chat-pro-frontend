@@ -40,27 +40,20 @@ export interface IMessage extends IBaseType {
   sender: IUser;
   receiver: IUser;
   senderId: string;
-  receiverId: string;
   replyingTo?: string;
   read: boolean;
+  threadId: string;
 }
 
-export interface IInbox extends IBaseCrudResponseType {
-  data: IMessage[];
+export interface IThread extends IBaseType {
+  title: string;
+  description: string;
+  group: boolean;
+  messages: IMessage[];
+  users: IUser[];
 }
 
-export interface IMessageReponse extends IBaseCrudResponseType {
-  data: IMessage[];
-}
+export type IInbox = IThread[];
 
-export interface IShallowInbox extends IContact {
-  contact: IShallowBaseUser;
-}
-
-interface IShallowBaseUser extends IBaseUser {
-  sentMessages: IMessage[];
-  receivedMessages: IMessage[];
-}
-
-export type $activeContact = IChatRequest | IContact;
+export type $activeContact = IChatRequest | IThread;
 

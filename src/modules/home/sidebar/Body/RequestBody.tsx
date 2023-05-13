@@ -1,33 +1,24 @@
 import { List, Space, Typography } from "antd";
-import { $activeContact, IChatRequest, IContact } from "../api/types";
-import { capitalize } from "../../../utils/strings";
-import { $tabType } from "./types";
+import { IChatRequest } from "../../api/types";
+import { capitalize } from "../../../../utils/strings";
 import { useDispatch } from "react-redux";
-import { setActiveContact } from "../slice/homeSlice";
-import { hoverColor } from "../../../settings";
+import { setActiveContact } from "../../slice/homeSlice";
+import { hoverColor } from "../../../../settings";
 
 interface IProps {
-  list;
-  activeTab: $tabType;
+  list: IChatRequest[];
   activeContactId?: string;
 }
 
-const SideBarBody = ({ list, activeTab, activeContactId }: IProps) => {
+const SideBarRequestBody = ({ list, activeContactId }: IProps) => {
   const dispatch = useDispatch();
-  const key =
-    activeTab === "inbox"
-      ? {
-          detailsKey: "sender",
-          messageKey: "message",
-        }
-      : { detailsKey: "sender", messageKey: "message" };
   return (
     <List
       className="border-top border-bottom sidebar-message-container"
       dataSource={list}
-      renderItem={(item: $activeContact) => {
-        const { firstName, lastName, email } = item[key.detailsKey];
-        const message = item[key.messageKey];
+      renderItem={(item: IChatRequest) => {
+        const { firstName, lastName, email } = item.sender;
+        const message = item.message;
         return (
           <List.Item
             className="cursor-pointer sidebar-message-item p-3"
@@ -56,5 +47,5 @@ const SideBarBody = ({ list, activeTab, activeContactId }: IProps) => {
   );
 };
 
-export default SideBarBody;
+export default SideBarRequestBody;
 
