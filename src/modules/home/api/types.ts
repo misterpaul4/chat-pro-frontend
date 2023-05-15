@@ -48,7 +48,7 @@ export interface IMessage extends IBaseType {
 export interface IThread extends IBaseType {
   title: string;
   description: string;
-  group: boolean;
+  type: ThreadTypeEnum;
   messages: IMessage[];
   users: IUser[];
 }
@@ -56,4 +56,11 @@ export interface IThread extends IBaseType {
 export type IInbox = IThread[];
 
 export type $activeContact = IChatRequest | IThread;
+
+export enum ThreadTypeEnum {
+  Private = "Private",
+  Group = "Group",
+  Request = "Request",
+  Self = "Self",
+}
 

@@ -1,14 +1,12 @@
 import SideBarHead from "./Head";
 import {
-  useGetChatRequestsQuery,
   useGetInboxQuery,
-  useLazyGetChatRequestsQuery,
+  useLazyGetRequestsQuery,
 } from "../api/queryEndpoints";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../store";
 import { useEffect } from "react";
-import SideBarInboxBody from "./Body/InboxBody";
-import SideBarRequestBody from "./Body/RequestBody";
+import SideBarBody from "./Body";
 
 const SideBar = () => {
   const { activeTab, activeContact } = useSelector(
@@ -16,7 +14,7 @@ const SideBar = () => {
   );
 
   const [getChatRequests, { currentData: chatRequets }] =
-    useLazyGetChatRequestsQuery();
+    useLazyGetRequestsQuery();
   const { currentData: inbox } = useGetInboxQuery();
 
   useEffect(() => {
@@ -29,15 +27,13 @@ const SideBar = () => {
     <>
       <SideBarHead activeTab={activeTab} />
       <div className="mt-2">
-        {activeTab === "inbox" ? (
-          <SideBarInboxBody activeContactId={activeContact?.id} list={inbox} />
-        ) : (
-          <SideBarRequestBody activeContactId="sdasda" list={[]} />
-        )}
+        <SideBarBody
+          activeContactId={activeContact?.id}
+          list={activeTab === "inbox" ? inbox : chatRequets}
+        />
       </div>
     </>
   );
 };
 
 export default SideBar;
-
