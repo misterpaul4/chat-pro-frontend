@@ -1,30 +1,12 @@
-import {
-  Button,
-  Card,
-  Checkbox,
-  Drawer,
-  Input,
-  List,
-  Space,
-  Tag,
-  Typography,
-} from "antd";
-import { useContext, useEffect, useMemo, useState } from "react";
+import { Button, Drawer, Input, List, Space, Typography } from "antd";
+import { useContext, useEffect, useState } from "react";
 import headerContext from "../context/headerContext";
 import { drawerSharedProps } from "../constants/props";
 import { IContact, IMassUpdateContacts } from "../api/types";
-import Icon, {
-  FilterOutlined,
-  StarFilled,
-  StarOutlined,
-} from "@ant-design/icons";
+import Icon, { StarFilled, StarOutlined } from "@ant-design/icons";
 import { BlockIcon, PersonIcon, UnBlockIcon } from "../../../utils/icons";
 import { capitalize } from "../../../utils/strings";
-import {
-  hoverColor,
-  layoutPrimaryColor,
-  transparentTextColor,
-} from "../../../settings";
+import { layoutPrimaryColor, transparentTextColor } from "../../../settings";
 import { useMassUpdateContactsMutation } from "../api/mutationEndpoints";
 import { apiResponseHandler } from "../../../app/lib/helpers/responseHandler";
 
@@ -104,14 +86,6 @@ const ContactListDrawer = ({ contactList }: IProps) => {
         size="large"
         allowClear
       />
-      {/* information area */}
-      {/* <Card
-        className="mt-3"
-        bordered={false}
-        bodyStyle={{
-          padding: 10,
-        }}
-      ></Card> */}
       <List
         className="mt-3"
         dataSource={filteredList}
@@ -134,12 +108,12 @@ const ContactListDrawer = ({ contactList }: IProps) => {
               <Space>
                 <Button
                   type="ghost"
-                  onClick={(e) => {
+                  onClick={() =>
                     massUpdateContacts({
                       contactIds: [item.id],
                       blocked: !item.blocked,
-                    });
-                  }}
+                    })
+                  }
                   icon={
                     item.blocked ? (
                       <Icon style={{ color: "red" }} component={BlockIcon} />
