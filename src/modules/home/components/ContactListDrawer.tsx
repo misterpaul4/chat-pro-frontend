@@ -18,7 +18,7 @@ import Icon, {
   StarFilled,
   StarOutlined,
 } from "@ant-design/icons";
-import { BlockIcon, PersonIcon } from "../../../utils/icons";
+import { BlockIcon, PersonIcon, UnBlockIcon } from "../../../utils/icons";
 import { capitalize } from "../../../utils/strings";
 import {
   hoverColor,
@@ -141,10 +141,11 @@ const ContactListDrawer = ({ contactList }: IProps) => {
                     });
                   }}
                   icon={
-                    <Icon
-                      style={item.blocked ? { color: "red" } : {}}
-                      component={BlockIcon}
-                    />
+                    item.blocked ? (
+                      <Icon style={{ color: "red" }} component={BlockIcon} />
+                    ) : (
+                      <Icon component={UnBlockIcon} />
+                    )
                   }
                 />
 
