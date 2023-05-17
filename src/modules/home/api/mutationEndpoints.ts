@@ -26,14 +26,16 @@ const endpoints = apis.injectEndpoints({
         url: `thread/${id}/approve`,
         method: "POST",
       }),
-      invalidatesTags: (x) => (x ? [apiTags.CHAT_REQUESTS, apiTags.INBOX] : []),
+      invalidatesTags: (x) =>
+        x ? [apiTags.CHAT_REQUESTS, apiTags.INBOX, apiTags.CONTACTS] : [],
     }),
     declineRequest: builder.mutation<void, string>({
       query: (id) => ({
         url: `thread/${id}/decline`,
         method: "POST",
       }),
-      invalidatesTags: (x) => (x ? [apiTags.INBOX, apiTags.CHAT_REQUESTS] : []),
+      invalidatesTags: (x) =>
+        x ? [apiTags.INBOX, apiTags.CHAT_REQUESTS, apiTags.CONTACTS] : [],
     }),
     massUpdateContacts: builder.mutation<void, IMassUpdateContacts>({
       query: (body) => ({

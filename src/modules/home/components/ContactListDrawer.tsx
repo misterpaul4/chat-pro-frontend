@@ -80,12 +80,14 @@ const ContactListDrawer = ({ contactList }: IProps) => {
       }
     >
       {/* input area */}
-      <Input
-        onChange={(e) => applySearch(e.target.value.trim())}
-        placeholder="Search..."
-        size="large"
-        allowClear
-      />
+      {contactLength > 5 && (
+        <Input
+          onChange={(e) => applySearch(e.target.value.trim())}
+          placeholder="Search..."
+          size="large"
+          allowClear
+        />
+      )}
       <List
         className="mt-3"
         dataSource={filteredList}
