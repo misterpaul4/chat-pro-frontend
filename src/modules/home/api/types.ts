@@ -48,6 +48,8 @@ export interface IMessage extends IBaseType, IThreadMessagePayload {
 }
 
 export interface IThread extends IBaseType {
+  createdBy: string;
+  updatedBy: string;
   title: string;
   description: string;
   type: ThreadTypeEnum;
@@ -57,7 +59,7 @@ export interface IThread extends IBaseType {
 
 export type IInbox = IThread[];
 
-export type $activeContact = IThread;
+export type $activeThread = IThread;
 
 export enum ThreadTypeEnum {
   Private = "Private",

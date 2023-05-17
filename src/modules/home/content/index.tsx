@@ -7,18 +7,24 @@ import { TEMP_USER } from "../../../utils/temp";
 import { ThreadTypeEnum } from "../api/types";
 
 const MessageContent = () => {
-  const { activeContact } = useSelector((state: RootState) => state.app);
+  const { activeThread, userId } = useSelector((state: RootState) => ({
+    activeThread: state.app.activeThread,
+    userId: state.user.user.id,
+  }));
 
-  return activeContact ? (
+  if (!activeThread) return null;
+
+  return (
     <div className="w-100">
-      <ActionHeader activeContact={TEMP_USER} />
-      {activeContact.type === ThreadTypeEnum.Request ? (
-        <RequestContent {...activeContact} />
+      <ActionHeader activeThread={activeThread} userId={userId} />
+      {activeThread.type === ThreadTypeEnum.Request &&
+      activeThread.createdBy !== userId ? (
+        <RequestContent {...activeThread} />
       ) : (
         <InboxContent />
       )}
     </div>
-  ) : null;
+  );
 };
 
 export default MessageContent;

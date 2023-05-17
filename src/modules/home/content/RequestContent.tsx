@@ -7,7 +7,7 @@ import {
 } from "../api/mutationEndpoints";
 import { apiResponseHandler } from "../../../app/lib/helpers/responseHandler";
 import { useDispatch } from "react-redux";
-import { setActiveContact, setRequestApproval } from "../slice/homeSlice";
+import { setActiveThread, setRequestApproval } from "../slice/homeSlice";
 
 const RequestContent = (props) => {
   const dispatch = useDispatch();
@@ -25,7 +25,7 @@ const RequestContent = (props) => {
           dispatch(
             setRequestApproval({
               activeTab: "inbox",
-              activeContact: resp.data,
+              activeThread: resp.data,
             })
           );
         },
@@ -36,7 +36,7 @@ const RequestContent = (props) => {
   const decline = async () => {
     const resp = await declineRequest(props.id);
     apiResponseHandler(resp, {
-      onSuccess: { callBack: () => dispatch(setActiveContact(undefined)) },
+      onSuccess: { callBack: () => dispatch(setActiveThread(undefined)) },
     });
   };
 
