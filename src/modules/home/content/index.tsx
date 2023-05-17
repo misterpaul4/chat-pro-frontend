@@ -3,7 +3,6 @@ import ActionHeader from "./ActionHeader";
 import { RootState } from "../../../store";
 import InboxContent from "./InboxContent";
 import RequestContent from "./RequestContent";
-import { TEMP_USER } from "../../../utils/temp";
 import { ThreadTypeEnum } from "../api/types";
 
 const MessageContent = () => {

@@ -8,8 +8,9 @@ import {
 import { apiResponseHandler } from "../../../app/lib/helpers/responseHandler";
 import { useDispatch } from "react-redux";
 import { setActiveThread, setRequestApproval } from "../slice/homeSlice";
+import { IThread } from "../api/types";
 
-const RequestContent = (props) => {
+const RequestContent = (props: IThread) => {
   const dispatch = useDispatch();
   const [approveRequest, { isLoading: approving }] =
     useApproveRequestMutation();
@@ -25,7 +26,7 @@ const RequestContent = (props) => {
           dispatch(
             setRequestApproval({
               activeTab: "inbox",
-              activeThread: resp.data,
+              activeThread: { ...props, type: resp.data.type },
             })
           );
         },
@@ -40,11 +41,11 @@ const RequestContent = (props) => {
     });
   };
 
+  const { createdAt, message } = props.messages[0];
+
   return (
     <>
-      <Card className="m-3 message-width">
-        <MessageBox {...props} />
-      </Card>
+      <MessageBox createdAt={createdAt} message={message} fromUser={false} />
 
       <Card className="d-inline-block mt-5">
         <Result
