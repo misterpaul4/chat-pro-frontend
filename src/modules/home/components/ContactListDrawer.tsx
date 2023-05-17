@@ -38,13 +38,13 @@ const ContactListDrawer = ({ contactList }: IProps) => {
   const { onContactListClose, contactListVisibility } =
     useContext(headerContext);
 
-  const onClose = () => {
-    onContactListClose();
-  };
-
   const [filteredList, setFilteredList] = useState<IContact[] | undefined>(
     contactList
   );
+
+  const onClose = () => {
+    onContactListClose();
+  };
 
   const massUpdateContacts = async (payload: IMassUpdateContacts) => {
     const resp = await updateContacts(payload);
@@ -88,6 +88,7 @@ const ContactListDrawer = ({ contactList }: IProps) => {
       onClose={onClose}
       open={contactListVisibility}
       destroyOnClose
+      afterOpenChange={(open) => !open && setFilteredList(contactList)}
       footer={
         contactLength && (
           <div style={{ color: transparentTextColor }}>
