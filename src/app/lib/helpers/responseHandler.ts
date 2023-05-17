@@ -27,7 +27,7 @@ export const apiResponseHandler = (
     onError?.callBack && onError.callBack();
     return false;
   } else if (response.data) {
-    onSuccess?.display !== false &&
+    onSuccess?.display === true &&
       message.success(
         onSuccess?.message ||
           response.message ||

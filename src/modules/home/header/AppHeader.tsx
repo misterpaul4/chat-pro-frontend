@@ -23,8 +23,7 @@ interface IProps {
 const AppHeader = ({ user, darkMode }: IProps) => {
   const dispatch = useDispatch();
 
-  const { onNewChatModalOpen, onContactListOpen, onBlockedContactListOpen } =
-    useContext(headerContext);
+  const { onNewChatModalOpen, onContactListOpen } = useContext(headerContext);
 
   const items: MenuProps["items"] = [
     {
@@ -75,14 +74,6 @@ const AppHeader = ({ user, darkMode }: IProps) => {
         </Button>
         <Button shape="circle" title="Contact List" onClick={onContactListOpen}>
           <UsergroupAddOutlined />
-        </Button>
-        <Button
-          shape="circle"
-          title="Block List"
-          type="primary"
-          onClick={onBlockedContactListOpen}
-        >
-          <UsergroupDeleteOutlined />
         </Button>
         <Button
           shape="circle"

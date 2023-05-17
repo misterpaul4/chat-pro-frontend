@@ -10,7 +10,6 @@ import SideBar from "./sidebar";
 import { ContentLoader, SiderLoader } from "./components/Loaders";
 import MessageContent from "./content";
 import ContactListDrawer from "./components/ContactListDrawer";
-import BlockedUsersDrawer from "./components/BlockedUsersDrawer";
 
 const { Sider, Content, Header, Footer } = Layout;
 
@@ -35,7 +34,6 @@ const Home = () => {
             <HeaderProvider>
               <NewChatModal user={user} contactList={contactList} />
               <ContactListDrawer contactList={contactList} />
-              <BlockedUsersDrawer contactList={contactList} />
               <AppHeader user={user} darkMode={darkMode} />
             </HeaderProvider>
           </div>

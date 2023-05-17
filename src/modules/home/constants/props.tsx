@@ -10,5 +10,6 @@ export const drawerSharedProps: (
 ) => Partial<DrawerProps> = ({ title }: IDrawerSharedProps) => ({
   width: "50em",
   title: <Typography.Title className="m-0">{title}</Typography.Title>,
+  closable: false,
 });
 

@@ -1,7 +1,12 @@
 import apis from "../../../app/api";
 import { apiTags } from "../../../app/lib/constants/tags";
 import { IUser } from "../../auth/control/types";
-import { IChatRequestPayload, IInbox, IVerifyEmail } from "./types";
+import {
+  IChatRequestPayload,
+  IInbox,
+  IMassUpdateContacts,
+  IVerifyEmail,
+} from "./types";
 
 const endpoints = apis.injectEndpoints({
   endpoints: (builder) => ({
@@ -30,6 +35,14 @@ const endpoints = apis.injectEndpoints({
       }),
       invalidatesTags: (x) => (x ? [apiTags.INBOX, apiTags.CHAT_REQUESTS] : []),
     }),
+    massUpdateContacts: builder.mutation<void, IMassUpdateContacts>({
+      query: (body) => ({
+        url: `users/mass-update-contacts`,
+        method: "PATCH",
+        body,
+      }),
+      invalidatesTags: (x) => (x ? [apiTags.CONTACTS] : []),
+    }),
   }),
 });
 
@@ -38,5 +51,6 @@ export const {
   useSendChatRequestMutation,
   useApproveRequestMutation,
   useDeclineRequestMutation,
+  useMassUpdateContactsMutation,
 } = endpoints;
 

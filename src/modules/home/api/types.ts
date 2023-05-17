@@ -68,3 +68,9 @@ export enum ThreadTypeEnum {
   Self = "Self",
 }
 
+export interface IMassUpdateContacts {
+  contactIds: string[];
+  blocked?: boolean;
+  favourite?: boolean;
+}
+

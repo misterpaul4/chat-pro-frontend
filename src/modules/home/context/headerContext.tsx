@@ -10,11 +10,6 @@ interface IContext {
   contactListVisibility: boolean;
   onContactListOpen: () => void;
   onContactListClose: () => void;
-
-  // blocked contact list
-  blockedContactListVisibility: boolean;
-  onBlockedContactListOpen: () => void;
-  onBlockedContactListClose: () => void;
 }
 
 const initialValue: IContext = {
@@ -26,10 +21,6 @@ const initialValue: IContext = {
   contactListVisibility: false,
   onContactListOpen: () => undefined,
   onContactListClose: () => undefined,
-  // blocked contact list
-  blockedContactListVisibility: false,
-  onBlockedContactListOpen: () => undefined,
-  onBlockedContactListClose: () => undefined,
 };
 
 const headerContext = createContext(initialValue);
@@ -49,13 +40,6 @@ export const HeaderProvider = ({ children }) => {
   const onContactListOpen = () => setContactVisibilty(true);
   const onContactListClose = () => setContactVisibilty(false);
 
-  const [blockedContactListVisibility, setBlockedContactListVisibility] =
-    useState(initialValue.blockedContactListVisibility);
-
-  const onBlockedContactListOpen = () => setBlockedContactListVisibility(true);
-  const onBlockedContactListClose = () =>
-    setBlockedContactListVisibility(false);
-
   return (
     <headerContext.Provider
       value={{
@@ -65,9 +49,6 @@ export const HeaderProvider = ({ children }) => {
         onContactListClose,
         onContactListOpen,
         contactListVisibility,
-        blockedContactListVisibility,
-        onBlockedContactListClose,
-        onBlockedContactListOpen,
       }}
     >
       {children}
