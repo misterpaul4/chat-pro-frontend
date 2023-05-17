@@ -86,31 +86,15 @@ const NewChatModal = ({ contactList, user }: IProps) => {
     if (recipient) {
       const resp: any = await sendChatRequest({
         receiverId: recipient.id,
-        message: values.message,
+        inbox: {
+          message: values.message,
+        },
       });
 
       apiResponseHandler(resp, {
         onSuccess: { callBack: onClose, message: "Success" },
       });
     } else {
-      // prevent sending request to self
-      if (user.email === values.email) {
-        notification.error({
-          message: "You cannot send chat request to yourself",
-        });
-        return;
-      }
-      // check if in contact list
-      const inContactList = contactList?.find(
-        (contact) => contact.contact.email === values.email
-      );
-
-      if (inContactList) {
-        notification.error({
-          message: "This user is already in your contact list",
-        });
-        return;
-      }
       // verify email
       const resp: any = await verifyEmail(values);
       apiResponseHandler(resp, {

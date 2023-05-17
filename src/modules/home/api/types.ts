@@ -16,9 +16,14 @@ export interface IVerifyEmail {
   email: string;
 }
 
+interface IThreadMessagePayload {
+  message: string;
+  starred?: boolean;
+}
+
 export interface IChatRequestPayload {
   receiverId: string;
-  message?: string;
+  inbox: IThreadMessagePayload;
 }
 
 export interface IChatRequest extends IChatRequestPayload, IBaseType {
@@ -34,11 +39,8 @@ export enum StatusEnum {
   Rejected = "Rejected",
 }
 
-export interface IMessage extends IBaseType {
-  message: string;
-  starred: boolean;
+export interface IMessage extends IBaseType, IThreadMessagePayload {
   sender: IUser;
-  receiver: IUser;
   senderId: string;
   replyingTo?: string;
   read: boolean;
@@ -55,7 +57,7 @@ export interface IThread extends IBaseType {
 
 export type IInbox = IThread[];
 
-export type $activeContact = IChatRequest | IThread;
+export type $activeContact = IThread;
 
 export enum ThreadTypeEnum {
   Private = "Private",

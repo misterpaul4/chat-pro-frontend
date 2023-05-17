@@ -1,6 +1,6 @@
 import SideBarHead from "./Head";
 import {
-  useGetInboxQuery,
+  useLazyGetInboxQuery,
   useLazyGetRequestsQuery,
 } from "../api/queryEndpoints";
 import { useSelector } from "react-redux";
@@ -9,19 +9,27 @@ import { useEffect } from "react";
 import SideBarBody from "./Body";
 
 const SideBar = () => {
-  const { activeTab, activeContact } = useSelector(
-    (state: RootState) => state.app
+  const { activeTab, activeContact, userId } = useSelector(
+    (state: RootState) => ({
+      activeTab: state.app.activeTab,
+      activeContact: state.app.activeContact,
+      userId: state.user.user.id,
+    })
   );
 
   const [getChatRequests, { currentData: chatRequets }] =
     useLazyGetRequestsQuery();
-  const { currentData: inbox } = useGetInboxQuery();
+  const [getInbox, { currentData: inbox }] = useLazyGetInboxQuery();
 
   useEffect(() => {
     if (activeTab === "request" && !chatRequets) {
-      getChatRequests();
+      getChatRequests(userId);
     }
-  }, [activeTab, chatRequets]);
+
+    if (activeTab === "inbox" && !inbox) {
+      getInbox(userId);
+    }
+  }, [activeTab, chatRequets, inbox]);
 
   return (
     <>
@@ -37,3 +45,4 @@ const SideBar = () => {
 };
 
 export default SideBar;
+

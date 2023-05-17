@@ -8,13 +8,13 @@ const endpoints = apis.injectEndpoints({
       query: () => "users/contacts",
       providesTags: [apiTags.CONTACTS],
     }),
-    getRequests: builder.query<IInbox, void>({
-      query: () =>
-        "inbox?join=threads&join=threads.messages&join=threads.users&sort=threads.messages.createdAt,DESC&filter=threads.type||eq||Request",
+    getRequests: builder.query<IInbox, string>({
+      query: (userId) =>
+        `inbox?join=threads&join=threads.messages&join=threads.users&sort=threads.messages.createdAt,DESC&filter=threads.type||eq||Request&filter=threads.createdBy||ne||${userId}`,
     }),
-    getInbox: builder.query<IInbox, void>({
-      query: () =>
-        "inbox?join=threads&join=threads.messages&join=threads.users&sort=threads.messages.createdAt,DESC&filter=threads.type||ne||Request",
+    getInbox: builder.query<IInbox, string>({
+      query: (userId) =>
+        `inbox?join=threads&join=threads.messages&join=threads.users&sort=threads.messages.createdAt,DESC&filter=threads.type||ne||Request&or=threads.createdBy||eq||${userId}`,
     }),
   }),
 });
@@ -22,5 +22,6 @@ const endpoints = apis.injectEndpoints({
 export const {
   useGetContactsQuery,
   useLazyGetRequestsQuery,
-  useGetInboxQuery,
+  useLazyGetInboxQuery,
 } = endpoints;
+

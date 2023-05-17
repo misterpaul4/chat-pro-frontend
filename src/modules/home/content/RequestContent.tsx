@@ -8,7 +8,6 @@ import {
 import { apiResponseHandler } from "../../../app/lib/helpers/responseHandler";
 import { useDispatch } from "react-redux";
 import { setActiveContact, setRequestApproval } from "../slice/homeSlice";
-import { IContact } from "../api/types";
 
 const RequestContent = (props) => {
   const dispatch = useDispatch();
@@ -26,7 +25,7 @@ const RequestContent = (props) => {
           dispatch(
             setRequestApproval({
               activeTab: "inbox",
-              activeContact: resp.data as IContact,
+              activeContact: resp.data,
             })
           );
         },
