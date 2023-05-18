@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { IAuth, IBaseUser, IUser } from "./types";
 import { clearLs, getLs, setLS } from "../../../app/lib/helpers/localStorage";
+import socket from "../../../app/api/socket";
 
 export interface IUserSlice {
   user: IBaseUser;
@@ -34,6 +35,7 @@ export const userSlice = createSlice({
     setAppState: (_, action: PayloadAction<IUserSliceOmited>) => {
       const token = action.payload.auth.token;
       setLS("token", token);
+      socket.connect();
       return {
         ..._,
         auth: { loggedIn: true, token },
@@ -44,6 +46,7 @@ export const userSlice = createSlice({
     setGetSelf: (_, action: PayloadAction<IUser>) => {
       // get token from LS
       const token = getLs("token");
+      socket.connect();
       return {
         ..._,
         auth: { loggedIn: true, token },
@@ -52,6 +55,7 @@ export const userSlice = createSlice({
     },
     logout: (state) => {
       clearLs("token");
+      socket.disconnect();
       return {
         ...initialState,
         darkMode: state.darkMode,
