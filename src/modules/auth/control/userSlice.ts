@@ -35,6 +35,7 @@ export const userSlice = createSlice({
     setAppState: (_, action: PayloadAction<IUserSliceOmited>) => {
       const token = action.payload.auth.token;
       setLS("token", token);
+      socket.auth = { token };
       socket.connect();
       return {
         ..._,
@@ -46,6 +47,7 @@ export const userSlice = createSlice({
     setGetSelf: (_, action: PayloadAction<IUser>) => {
       // get token from LS
       const token = getLs("token");
+      socket.auth = { token };
       socket.connect();
       return {
         ..._,
