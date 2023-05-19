@@ -16,23 +16,24 @@ const { Sider, Content, Header, Footer } = Layout;
 const Home = () => {
   const { user, darkMode } = useSelector((state: RootState) => state.user);
 
-  const { data: contactList, isFetching: fetchingContacts } =
-    useGetContactsQuery(undefined, { refetchOnMountOrArgChange: true });
+  const { data: contactList } = useGetContactsQuery(undefined, {
+    refetchOnMountOrArgChange: true,
+  });
 
-  const loading = fetchingContacts;
+  const loading = !contactList;
 
   return (
     <Layout hasSider className="message-container">
       <Sider className="siderStyle">
         <div className="p-3">
-          <SiderLoader component={<SideBar />} loading={!contactList} />
+          <SiderLoader component={<SideBar />} loading={loading} />
         </div>
       </Sider>
       <Layout className="site-layout">
         <Header className="headerStyle">
           <div className="float-end">
             <HeaderProvider>
-              <NewChatModal user={user} contactList={contactList} />
+              <NewChatModal />
               <ContactListDrawer contactList={contactList} />
               <AppHeader user={user} darkMode={darkMode} />
             </HeaderProvider>

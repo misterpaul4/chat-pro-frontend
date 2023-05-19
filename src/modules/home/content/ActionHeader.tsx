@@ -1,6 +1,5 @@
 import { Card, Typography } from "antd";
-import { IBaseUser } from "../../auth/control/types";
-import { $activeThread, IThread, ThreadTypeEnum } from "../api/types";
+import { IThread, ThreadTypeEnum } from "../api/types";
 import { capitalize } from "../../../utils/strings";
 import { getPrivateThreadRecipient } from "../helpers";
 
@@ -22,16 +21,18 @@ const getConfig: (activeThread: IThread, userId: string) => IConfig = (
   activeThread,
   userId
 ) => {
-  const configs: {
-    [key in ThreadTypeEnum]: IConfig;
-  } = {
-    Private: { title: getRecipient(activeThread.users, userId) },
-    Group: { title: capitalize(activeThread.title) },
-    Request: { title: getRecipient(activeThread.users, userId) },
-    Self: { title: "You" },
-  };
+  switch (activeThread.type) {
+    case ThreadTypeEnum.Private:
+      return { title: getRecipient(activeThread.users, userId) };
+    case ThreadTypeEnum.Group:
+      return { title: capitalize(activeThread.title) };
 
-  return configs[activeThread.type];
+    case ThreadTypeEnum.Request:
+      return { title: getRecipient(activeThread.users, userId) };
+
+    default:
+      return { title: "You" };
+  }
 };
 
 const ActionHeader = ({ activeThread, userId }: IProps) => {

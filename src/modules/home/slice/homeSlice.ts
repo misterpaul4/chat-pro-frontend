@@ -1,11 +1,11 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { $tabType } from "../sidebar/types";
-import { $activeThread } from "../api/types";
 import { getLs, setLS } from "../../../app/lib/helpers/localStorage";
+import { IThread } from "../api/types";
 
 export interface IHomeSlice {
-  activeThread: $activeThread | undefined;
+  activeThread: IThread | undefined;
   activeTab: $tabType;
 }
 
@@ -18,10 +18,7 @@ export const homeSlice = createSlice({
   name: "app-slice",
   initialState,
   reducers: {
-    setActiveThread: (
-      state,
-      action: PayloadAction<$activeThread | undefined>
-    ) => {
+    setActiveThread: (state, action: PayloadAction<IThread | undefined>) => {
       return { ...state, activeThread: action.payload };
     },
     setActiveTab: (state, action: PayloadAction<$tabType>) => {

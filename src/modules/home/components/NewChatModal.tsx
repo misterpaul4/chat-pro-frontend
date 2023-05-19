@@ -14,7 +14,7 @@ import { useContext, useState } from "react";
 import headerContext from "../context/headerContext";
 import { ArrowRightOutlined, LoadingOutlined } from "@ant-design/icons";
 import {
-  useSendChatRequestMutation,
+  useSendMessageMutation,
   useVerifyEmailMutation,
 } from "../api/mutationEndpoints";
 import { apiResponseHandler } from "../../../app/lib/helpers/responseHandler";
@@ -65,13 +65,12 @@ const EMAIL_IS_NOT_VERIFIED: IVerified = {
   ),
 };
 
-const NewChatModal = ({ contactList, user }: IProps) => {
+const NewChatModal = () => {
   const { newChatVisibility, onNewChatModalClose } = useContext(headerContext);
   const [recipient, setRecipient] = useState<IUser>();
 
   const [verifyEmail, { isLoading }] = useVerifyEmailMutation();
-  const [sendChatRequest, { isLoading: sending }] =
-    useSendChatRequestMutation();
+  const [sendChatRequest, { isLoading: sending }] = useSendMessageMutation();
 
   const { emailProps, restVisibility, alert }: IVerified = recipient
     ? EMAIL_IS_VERIFIED

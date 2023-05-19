@@ -59,8 +59,6 @@ export interface IThread extends IBaseType {
 
 export type IInbox = IThread[];
 
-export type $activeThread = IThread;
-
 export enum ThreadTypeEnum {
   Private = "Private",
   Group = "Group",

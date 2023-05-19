@@ -13,7 +13,7 @@ const endpoints = apis.injectEndpoints({
     verifyEmail: builder.mutation<IUser, IVerifyEmail>({
       query: (body) => ({ url: "users/verify-email", method: "POST", body }),
     }),
-    sendChatRequest: builder.mutation<IInbox, IChatRequestPayload>({
+    sendMessage: builder.mutation<IInbox, IChatRequestPayload>({
       query: (body) => ({
         url: "thread",
         method: "POST",
@@ -26,16 +26,16 @@ const endpoints = apis.injectEndpoints({
         url: `thread/${id}/approve`,
         method: "POST",
       }),
-      invalidatesTags: (x) =>
-        x ? [apiTags.CHAT_REQUESTS, apiTags.INBOX, apiTags.CONTACTS] : [],
+      // invalidatesTags: (x) =>
+      //   x ? [apiTags.CHAT_REQUESTS, apiTags.INBOX, apiTags.CONTACTS] : [],
     }),
     declineRequest: builder.mutation<void, string>({
       query: (id) => ({
         url: `thread/${id}/decline`,
         method: "POST",
       }),
-      invalidatesTags: (x) =>
-        x ? [apiTags.INBOX, apiTags.CHAT_REQUESTS, apiTags.CONTACTS] : [],
+      // invalidatesTags: (x) =>
+      //   x ? [apiTags.INBOX, apiTags.CHAT_REQUESTS, apiTags.CONTACTS] : [],
     }),
     massUpdateContacts: builder.mutation<void, IMassUpdateContacts>({
       query: (body) => ({
@@ -50,7 +50,7 @@ const endpoints = apis.injectEndpoints({
 
 export const {
   useVerifyEmailMutation,
-  useSendChatRequestMutation,
+  useSendMessageMutation,
   useApproveRequestMutation,
   useDeclineRequestMutation,
   useMassUpdateContactsMutation,
