@@ -20,6 +20,7 @@ import {
 import { apiResponseHandler } from "../../../app/lib/helpers/responseHandler";
 import { IBaseUser, IUser } from "../../auth/control/types";
 import { toTitleCase } from "../../../utils/strings";
+import { messageActionType } from "../context/messageReducer";
 
 interface IProps {
   contactList: IContact[] | undefined;
@@ -65,7 +66,7 @@ const EMAIL_IS_NOT_VERIFIED: IVerified = {
   ),
 };
 
-const NewChatModal = () => {
+const NewChatModal = ({ dispatchInbox }) => {
   const { newChatVisibility, onNewChatModalClose } = useContext(headerContext);
   const [recipient, setRecipient] = useState<IUser>();
 
@@ -91,7 +92,16 @@ const NewChatModal = () => {
       });
 
       apiResponseHandler(resp, {
-        onSuccess: { callBack: onClose, message: "Success" },
+        onSuccess: {
+          callBack: () => {
+            dispatchInbox({
+              type: messageActionType.Add_message,
+              payload: resp.data,
+            });
+            onClose();
+          },
+          message: "Success",
+        },
       });
     } else {
       // verify email

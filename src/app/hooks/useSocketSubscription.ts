@@ -7,9 +7,11 @@ interface IProps {
   handler: (data?: any) => void;
 }
 
-const useSocketSubscription = ({ event, handler }: IProps) => {
+const useSocketSubscription = (subscriptions: IProps[]) => {
   useEffect(() => {
-    socket.off(event).on(event, handler);
+    subscriptions.forEach(({ event, handler }) => {
+      socket.off(event).on(event, handler);
+    });
   }, []);
 };
 

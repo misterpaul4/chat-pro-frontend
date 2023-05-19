@@ -10,6 +10,13 @@ import SideBar from "./sidebar";
 import { ContentLoader, SiderLoader } from "./components/Loaders";
 import MessageContent from "./content";
 import ContactListDrawer from "./components/ContactListDrawer";
+import { useEffect, useReducer } from "react";
+import {
+  messageActionType,
+  messageInitialState,
+  messageReducer,
+} from "./context/messageReducer";
+import useSocketSubscription from "../../app/hooks/useSocketSubscription";
 
 const { Sider, Content, Header, Footer } = Layout;
 
@@ -22,18 +29,50 @@ const Home = () => {
 
   const loading = !contactList;
 
+  const [inbox, dispatchInbox] = useReducer(
+    messageReducer,
+    messageInitialState
+  );
+  const [request, dispatchRequest] = useReducer(
+    messageReducer,
+    messageInitialState
+  );
+
+  useSocketSubscription([
+    {
+      event: "inbox",
+      handler: (data) =>
+        dispatchInbox({ type: messageActionType.Add_message, payload: data }),
+    },
+    {
+      event: "request",
+      handler: (data) =>
+        dispatchRequest({ type: messageActionType.Add_message, payload: data }),
+    },
+  ]);
+
   return (
     <Layout hasSider className="message-container">
       <Sider className="siderStyle">
         <div className="p-3">
-          <SiderLoader component={<SideBar />} loading={loading} />
+          <SiderLoader
+            component={
+              <SideBar
+                dispatchInbox={dispatchInbox}
+                dispatchRequest={dispatchRequest}
+                inbox={inbox}
+                request={request}
+              />
+            }
+            loading={loading}
+          />
         </div>
       </Sider>
       <Layout className="site-layout">
         <Header className="headerStyle">
           <div className="float-end">
             <HeaderProvider>
-              <NewChatModal />
+              <NewChatModal dispatchInbox={dispatchInbox} />
               <ContactListDrawer contactList={contactList} />
               <AppHeader user={user} darkMode={darkMode} />
             </HeaderProvider>
