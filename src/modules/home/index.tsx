@@ -49,6 +49,11 @@ const Home = () => {
       handler: (data) =>
         dispatchRequest({ type: messageActionType.Add_message, payload: data }),
     },
+    {
+      event: "newMessage",
+      handler: (data) =>
+        dispatchInbox({ type: messageActionType.Insert, payload: data }),
+    },
   ]);
 
   return (
@@ -72,7 +77,7 @@ const Home = () => {
         <Header className="headerStyle">
           <div className="float-end">
             <HeaderProvider>
-              <NewChatModal dispatchInbox={dispatchInbox} />
+              <NewChatModal />
               <ContactListDrawer contactList={contactList} />
               <AppHeader user={user} darkMode={darkMode} />
             </HeaderProvider>
@@ -91,4 +96,3 @@ const Home = () => {
 };
 
 export default Home;
-

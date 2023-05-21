@@ -66,7 +66,7 @@ const EMAIL_IS_NOT_VERIFIED: IVerified = {
   ),
 };
 
-const NewChatModal = ({ dispatchInbox }) => {
+const NewChatModal = () => {
   const { newChatVisibility, onNewChatModalClose } = useContext(headerContext);
   const [recipient, setRecipient] = useState<IUser>();
 
@@ -93,13 +93,7 @@ const NewChatModal = ({ dispatchInbox }) => {
 
       apiResponseHandler(resp, {
         onSuccess: {
-          callBack: () => {
-            dispatchInbox({
-              type: messageActionType.Add_message,
-              payload: resp.data,
-            });
-            onClose();
-          },
+          callBack: onClose,
           message: "Success",
         },
       });
