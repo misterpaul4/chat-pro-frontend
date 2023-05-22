@@ -10,7 +10,7 @@ import SideBar from "./sidebar";
 import { ContentLoader, SiderLoader } from "./components/Loaders";
 import MessageContent from "./content";
 import ContactListDrawer from "./components/ContactListDrawer";
-import { useEffect, useReducer } from "react";
+import { useReducer } from "react";
 import {
   messageActionType,
   messageInitialState,
@@ -23,9 +23,12 @@ const { Sider, Content, Header, Footer } = Layout;
 const Home = () => {
   const { user, darkMode } = useSelector((state: RootState) => state.user);
 
-  const { data: contactList } = useGetContactsQuery(undefined, {
-    refetchOnMountOrArgChange: true,
-  });
+  const { data: contactList, refetch: refetchContacts } = useGetContactsQuery(
+    undefined,
+    {
+      refetchOnMountOrArgChange: true,
+    }
+  );
 
   const loading = !contactList;
 
@@ -41,18 +44,45 @@ const Home = () => {
   useSocketSubscription([
     {
       event: "inbox",
-      handler: (data) =>
-        dispatchInbox({ type: messageActionType.Add_message, payload: data }),
+      handler: (data) => {
+        dispatchInbox({ type: messageActionType.NewThread, payload: data });
+        refetchContacts();
+      },
     },
     {
       event: "request",
       handler: (data) =>
-        dispatchRequest({ type: messageActionType.Add_message, payload: data }),
+        dispatchRequest({ type: messageActionType.NewThread, payload: data }),
     },
     {
       event: "newMessage",
       handler: (data) =>
-        dispatchInbox({ type: messageActionType.Insert, payload: data }),
+        dispatchInbox({ type: messageActionType.NewMessage, payload: data }),
+    },
+    {
+      event: "approvedRequest",
+      handler: (data) => {
+        dispatchRequest({ type: "RemoveThread", payload: data });
+        dispatchInbox({ type: "NewThread", payload: data });
+        refetchContacts();
+      },
+    },
+    {
+      event: "approvedRequestUser",
+      handler: (data) =>
+        dispatchInbox({ type: "ApprovedThread", payload: data }),
+    },
+    {
+      event: "rejectedRequest",
+      handler: (data) => {
+        dispatchRequest({ type: "RemoveThread", payload: { id: data } });
+        refetchContacts();
+      },
+    },
+    {
+      event: "rejectedRequestUser",
+      handler: (data) =>
+        dispatchInbox({ type: "RemoveThread", payload: { id: data } }),
     },
   ]);
 
@@ -96,3 +126,4 @@ const Home = () => {
 };
 
 export default Home;
+
