@@ -1,4 +1,4 @@
-import { Outlet, useLocation } from "react-router-dom";
+import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import "./authLayout.less";
 import { Card, Carousel, Col, ConfigProvider, Row, Typography } from "antd";
 import s1 from "../../../../public/slide-1.jpg";
@@ -8,10 +8,32 @@ import s4 from "../../../../public/slide-4.jpg";
 import s5 from "../../../../public/slide-5.jpg";
 import { authLayoutPrimaryColor } from "../../../settings";
 import { paths } from "../../../utils/paths";
+import { useEffect } from "react";
+import { getLs } from "../../lib/helpers/localStorage";
+import { useLazyGetSelfQuery } from "../../../modules/auth/api";
+import { setGetSelf } from "../../../modules/auth/control/userSlice";
+import { useDispatch } from "react-redux";
 
 const AuthLayout = () => {
   const path = useLocation().pathname;
   const inForgotPassword = path.includes(paths.forgotPassword);
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const [getself, { isLoading }] = useLazyGetSelfQuery();
+
+  useEffect(() => {
+    const token = getLs("token");
+
+    if (token) {
+      getself().then(({ data, isSuccess }) => {
+        if (isSuccess) {
+          dispatch(setGetSelf(data));
+          navigate(paths.home);
+        }
+      });
+    }
+  }, []);
 
   return (
     <ConfigProvider theme={{ token: { colorPrimary: authLayoutPrimaryColor } }}>

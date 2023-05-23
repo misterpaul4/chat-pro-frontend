@@ -20,7 +20,7 @@ const MessageContent = () => {
       activeThread.createdBy !== userId ? (
         <RequestContent {...activeThread} />
       ) : (
-        <InboxContent />
+        <InboxContent thread={activeThread} />
       )}
     </div>
   );

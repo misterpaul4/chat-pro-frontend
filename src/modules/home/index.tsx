@@ -1,7 +1,7 @@
 import { Layout } from "antd";
 import "./index.less";
 import AppHeader from "./header/AppHeader";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../store";
 import NewChatModal from "./components/NewChatModal";
 import { useGetContactsQuery } from "./api/queryEndpoints";
@@ -17,11 +17,23 @@ import {
   messageReducer,
 } from "./context/messageReducer";
 import useSocketSubscription from "../../app/hooks/useSocketSubscription";
+import { IThread } from "./api/types";
+import {
+  setActiveThread,
+  setRequestApproval,
+  setRequestApprovalUpdate,
+} from "./slice/homeSlice";
 
 const { Sider, Content, Header, Footer } = Layout;
 
 const Home = () => {
-  const { user, darkMode } = useSelector((state: RootState) => state.user);
+  const { user, darkMode, activeThread } = useSelector((state: RootState) => ({
+    user: state.user.user,
+    darkMode: state.user.darkMode,
+    activeThread: state.app.activeThread,
+  }));
+
+  const dispatch = useDispatch();
 
   const { data: contactList, refetch: refetchContacts } = useGetContactsQuery(
     undefined,
@@ -69,20 +81,33 @@ const Home = () => {
     },
     {
       event: "approvedRequestUser",
-      handler: (data) =>
-        dispatchInbox({ type: "ApprovedThread", payload: data }),
+      handler: (data: IThread) => {
+        const index = inbox.findIndex((th: IThread) => th.id === data.id);
+        const _data = { ...inbox[index], ...data };
+
+        // if thread is currently opened by user, update content
+        dispatch(setRequestApprovalUpdate(_data));
+        dispatchInbox({
+          type: "ApprovedThread",
+          payload: { data: _data, index },
+        });
+      },
     },
     {
       event: "rejectedRequest",
-      handler: (data) => {
-        dispatchRequest({ type: "RemoveThread", payload: { id: data } });
+      handler: (id) => {
+        dispatchRequest({ type: "RemoveThread", payload: { id } });
         refetchContacts();
       },
     },
     {
       event: "rejectedRequestUser",
-      handler: (data) =>
-        dispatchInbox({ type: "RemoveThread", payload: { id: data } }),
+      handler: (id) => {
+        dispatchInbox({ type: "RemoveThread", payload: { id } });
+        if (activeThread?.id === id) {
+          dispatch(setActiveThread(undefined));
+        }
+      },
     },
   ]);
 

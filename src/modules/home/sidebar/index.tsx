@@ -7,7 +7,6 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../../store";
 import { useEffect } from "react";
 import SideBarBody from "./Body";
-import { $tabType } from "./types";
 import { messageActionType } from "../context/messageReducer";
 
 const SideBar = ({ dispatchInbox, dispatchRequest, inbox, request }) => {

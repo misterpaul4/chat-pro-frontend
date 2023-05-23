@@ -23,7 +23,7 @@ export function messageReducer(state: IInbox, action: IActionType) {
     case "NewThread":
       return [action.payload, ...state];
     case "NewMessage":
-      const stateClone: IInbox = cloneDeep(state); // temporary solution
+      const stateClone: IInbox = cloneDeep(state); // TODO: optimize
       const threadIndex = stateClone.findIndex(
         (th) => th.id === action.payload.threadId
       );
@@ -35,9 +35,11 @@ export function messageReducer(state: IInbox, action: IActionType) {
       return state.filter((thread) => thread.id !== action.payload.id);
 
     case "ApprovedThread":
-      const index = state.findIndex((th) => th.id === action.payload.id);
-      const _stateClone: IInbox = cloneDeep(state);
-      _stateClone[index] = { ..._stateClone[index], ...action.payload };
+      const _stateClone: IInbox = cloneDeep(state); // TODO: optimize
+      _stateClone[action.payload.index] = {
+        ..._stateClone[action.payload.index],
+        ...action.payload.data,
+      };
 
       return _stateClone;
 

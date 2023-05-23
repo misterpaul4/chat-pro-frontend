@@ -33,11 +33,17 @@ export const homeSlice = createSlice({
         activeTab: action.payload.activeTab,
       };
     },
+    setRequestApprovalUpdate: (state, action: PayloadAction<IThread>) => {
+      if (action.payload.id === state.activeThread?.id) {
+        return { ...state, activeThread: action.payload };
+      }
+      return state;
+    },
   },
 });
 
 // Action creators are generated for each case reducer function
-export const { setActiveThread, setActiveTab, setRequestApproval } =
+export const { setActiveThread, setActiveTab, setRequestApproval, setRequestApprovalUpdate } =
   homeSlice.actions;
 
 export default homeSlice.reducer;
