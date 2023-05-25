@@ -2,7 +2,8 @@ import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { $tabType } from "../sidebar/types";
 import { getLs, setLS } from "../../../app/lib/helpers/localStorage";
-import { IThread } from "../api/types";
+import { IMessage, IThread } from "../api/types";
+import { cloneDeep } from "lodash";
 
 export interface IHomeSlice {
   activeThread: IThread | undefined;
@@ -45,6 +46,14 @@ export const homeSlice = createSlice({
       }
       return state;
     },
+    setNewMessage: (state, action: PayloadAction<IMessage>) => {
+      if (action.payload.threadId === state.activeThread?.id) {
+        const activeThreadClone: IThread = cloneDeep(state.activeThread);
+        activeThreadClone.messages.unshift(action.payload);
+        return { ...state, activeThread: activeThreadClone };
+      }
+      return state;
+    },
   },
 });
 
@@ -55,6 +64,7 @@ export const {
   setRequestApproval,
   setRequestApprovalUpdate,
   setRequestRejectionUpdate,
+  setNewMessage,
 } = homeSlice.actions;
 
 export default homeSlice.reducer;

@@ -10,7 +10,7 @@ interface IProps {
 
 const MessageBox = ({ createdAt, message, fromUser }: IProps) => {
   return (
-    <Card className="m-3 message-width">
+    <Card className="m-3 message-width border">
       <Card className="border-0 text-start" bodyStyle={{ padding: 0 }}>
         <p className="m-0">{message}</p>
 

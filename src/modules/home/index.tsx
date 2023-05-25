@@ -19,6 +19,7 @@ import {
 import useSocketSubscription from "../../app/hooks/useSocketSubscription";
 import { IThread } from "./api/types";
 import {
+  setNewMessage,
   setRequestApprovalUpdate,
   setRequestRejectionUpdate,
 } from "./slice/homeSlice";
@@ -29,7 +30,6 @@ const Home = () => {
   const { user, darkMode } = useSelector((state: RootState) => ({
     user: state.user.user,
     darkMode: state.user.darkMode,
-    activeThread: state.app.activeThread,
   }));
 
   const dispatch = useDispatch();
@@ -70,8 +70,10 @@ const Home = () => {
     // appends new inbox message
     {
       event: "newMessage",
-      handler: (data) =>
-        dispatchInbox({ type: messageActionType.NewMessage, payload: data }),
+      handler: (data) => {
+        dispatch(setNewMessage(data));
+        dispatchInbox({ type: messageActionType.NewMessage, payload: data });
+      },
     },
     // controls request approval for recipients
     {
@@ -104,7 +106,7 @@ const Home = () => {
         refetchContacts();
       },
     },
-    // controls request rejection for user
+    // controls request  for user
     {
       event: "rejectedRequestUser",
       handler: (id: string) => {
