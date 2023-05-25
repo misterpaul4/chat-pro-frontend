@@ -1,4 +1,3 @@
-import { cloneDeep } from "lodash";
 import { IInbox } from "../api/types";
 
 export enum messageActionType {
@@ -23,25 +22,29 @@ export function messageReducer(state: IInbox, action: IActionType) {
     case "NewThread":
       return [action.payload, ...state];
     case "NewMessage":
-      const stateClone: IInbox = cloneDeep(state); // TODO: optimize
-      const threadIndex = stateClone.findIndex(
+      const threadIndex = state.findIndex(
         (th) => th.id === action.payload.threadId
       );
-      stateClone[threadIndex].messages.unshift(action.payload);
 
-      return stateClone;
+      const stateCopy = [...state];
+      stateCopy[threadIndex] = {
+        ...stateCopy[threadIndex],
+        messages: [action.payload, ...stateCopy[threadIndex].messages],
+      };
+
+      return stateCopy;
 
     case "RemoveThread":
       return state.filter((thread) => thread.id !== action.payload.id);
 
     case "ApprovedThread":
-      const _stateClone: IInbox = cloneDeep(state); // TODO: optimize
-      _stateClone[action.payload.index] = {
-        ..._stateClone[action.payload.index],
+      const _stateCopy = [...state];
+      _stateCopy[action.payload.index] = {
+        ..._stateCopy[action.payload.index],
         ...action.payload.data,
       };
 
-      return _stateClone;
+      return _stateCopy;
 
     default:
       return state;

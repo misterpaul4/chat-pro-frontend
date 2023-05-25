@@ -3,7 +3,6 @@ import type { PayloadAction } from "@reduxjs/toolkit";
 import { $tabType } from "../sidebar/types";
 import { getLs, setLS } from "../../../app/lib/helpers/localStorage";
 import { IMessage, IThread } from "../api/types";
-import { cloneDeep } from "lodash";
 
 export interface IHomeSlice {
   activeThread: IThread | undefined;
@@ -48,9 +47,11 @@ export const homeSlice = createSlice({
     },
     setNewMessage: (state, action: PayloadAction<IMessage>) => {
       if (action.payload.threadId === state.activeThread?.id) {
-        const activeThreadClone: IThread = cloneDeep(state.activeThread);
-        activeThreadClone.messages.unshift(action.payload);
-        return { ...state, activeThread: activeThreadClone };
+        const activeThreadCopy: IThread = {
+          ...state.activeThread,
+          messages: [action.payload, ...state.activeThread.messages],
+        };
+        return { ...state, activeThread: activeThreadCopy };
       }
       return state;
     },
