@@ -19,15 +19,14 @@ import {
 import useSocketSubscription from "../../app/hooks/useSocketSubscription";
 import { IThread } from "./api/types";
 import {
-  setActiveThread,
-  setRequestApproval,
   setRequestApprovalUpdate,
+  setRequestRejectionUpdate,
 } from "./slice/homeSlice";
 
 const { Sider, Content, Header, Footer } = Layout;
 
 const Home = () => {
-  const { user, darkMode, activeThread } = useSelector((state: RootState) => ({
+  const { user, darkMode } = useSelector((state: RootState) => ({
     user: state.user.user,
     darkMode: state.user.darkMode,
     activeThread: state.app.activeThread,
@@ -54,6 +53,7 @@ const Home = () => {
   );
 
   useSocketSubscription([
+    // controls inbox tab
     {
       event: "inbox",
       handler: (data) => {
@@ -61,16 +61,19 @@ const Home = () => {
         refetchContacts();
       },
     },
+    // controls request tab
     {
       event: "request",
       handler: (data) =>
         dispatchRequest({ type: messageActionType.NewThread, payload: data }),
     },
+    // appends new inbox message
     {
       event: "newMessage",
       handler: (data) =>
         dispatchInbox({ type: messageActionType.NewMessage, payload: data }),
     },
+    // controls request approval for recipients
     {
       event: "approvedRequest",
       handler: (data) => {
@@ -79,34 +82,34 @@ const Home = () => {
         refetchContacts();
       },
     },
+    // controls request approval for user
     {
       event: "approvedRequestUser",
       handler: (data: IThread) => {
         const index = inbox.findIndex((th: IThread) => th.id === data.id);
         const _data = { ...inbox[index], ...data };
 
-        // if thread is currently opened by user, update content
-        dispatch(setRequestApprovalUpdate(_data));
+        dispatch(setRequestApprovalUpdate(_data)); // if thread is currently opened by user, update content
         dispatchInbox({
           type: "ApprovedThread",
           payload: { data: _data, index },
         });
       },
     },
+    // controls request rejection for recipients
     {
       event: "rejectedRequest",
-      handler: (id) => {
+      handler: (id: string) => {
         dispatchRequest({ type: "RemoveThread", payload: { id } });
         refetchContacts();
       },
     },
+    // controls request rejection for user
     {
       event: "rejectedRequestUser",
-      handler: (id) => {
+      handler: (id: string) => {
+        dispatch(setRequestRejectionUpdate(id)); // if thread is currently opened by user, update content
         dispatchInbox({ type: "RemoveThread", payload: { id } });
-        if (activeThread?.id === id) {
-          dispatch(setActiveThread(undefined));
-        }
       },
     },
   ]);
