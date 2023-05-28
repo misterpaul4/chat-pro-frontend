@@ -4,9 +4,10 @@ import MessageBox from "./MessageBox";
 
 interface IProps {
   thread: IThread;
+  userId: string;
 }
 
-const InboxContent = ({ thread }: IProps) => {
+const InboxContent = ({ thread, userId }: IProps) => {
   const { type } = thread;
 
   return type === ThreadTypeEnum.Request ? (
@@ -15,13 +16,17 @@ const InboxContent = ({ thread }: IProps) => {
     <List
       dataSource={thread.messages}
       renderItem={(item) => {
-        const { message, createdAt } = item;
+        const { message, createdAt, senderId } = item;
+        const fromUser = senderId === userId;
+
         return (
-          <List.Item>
+          <List.Item
+            className={`border-0 justify-content-${fromUser ? "end" : "start"}`}
+          >
             <MessageBox
               createdAt={createdAt}
               message={message}
-              fromUser={true}
+              fromUser={fromUser}
             />
           </List.Item>
         );

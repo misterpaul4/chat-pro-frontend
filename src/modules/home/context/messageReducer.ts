@@ -26,13 +26,17 @@ export function messageReducer(state: IInbox, action: IActionType) {
         (th) => th.id === action.payload.threadId
       );
 
-      const stateCopy = [...state];
-      stateCopy[threadIndex] = {
-        ...stateCopy[threadIndex],
-        messages: [action.payload, ...stateCopy[threadIndex].messages],
-      };
+      const start = state.slice(0, threadIndex);
+      const end = state.slice(threadIndex + 1);
 
-      return stateCopy;
+      return [
+        {
+          ...state[threadIndex],
+          messages: [action.payload, ...state[threadIndex].messages],
+        },
+        ...start,
+        ...end,
+      ];
 
     case "RemoveThread":
       return state.filter((thread) => thread.id !== action.payload.id);
