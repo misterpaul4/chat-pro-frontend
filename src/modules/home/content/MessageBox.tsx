@@ -9,15 +9,19 @@ interface IProps {
 }
 
 const MessageBox = ({ createdAt, message, fromUser }: IProps) => {
+  const { timeStyle, bg } = fromUser
+    ? { timeStyle: "float-end", bg: "main-ms-bg" }
+    : { timeStyle: "float-start", bg: "bg-white" };
+
   return (
     <Card
-      className="border-0 text-start p-3 message-width"
+      className={`border-0 text-start p-3 message-width ${bg}`}
       bodyStyle={{ padding: 0 }}
     >
       <p className="m-0">{message}</p>
 
       <em
-        className={`mt-4 ${fromUser ? "float-end" : "float-start"}`}
+        className={`mt-4 ${timeStyle}`}
         style={{ color: transparentTextColor }}
       >
         {getMessageTime(createdAt)}

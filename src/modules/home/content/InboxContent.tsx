@@ -25,7 +25,9 @@ const InboxContent = ({ thread, userId }: IProps) => {
 
         return (
           <List.Item
-            className={`border-0 justify-content-${fromUser ? "end" : "start"}`}
+            className={`border-0 py-1 justify-content-${
+              fromUser ? "end" : "start"
+            }`}
           >
             <MessageBox
               createdAt={createdAt}
