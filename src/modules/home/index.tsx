@@ -23,6 +23,7 @@ import {
   setRequestApprovalUpdate,
   setRequestRejectionUpdate,
 } from "./slice/homeSlice";
+import MessageInput from "./components/MessageInput";
 
 const { Sider, Content, Header, Footer } = Layout;
 
@@ -149,7 +150,9 @@ const Home = () => {
           </div>
           {!loading && <MessageContent />}
         </Content>
-        <Footer className="footerStyle"></Footer>
+        <Footer className="footerStyle p-1">
+          <MessageInput />
+        </Footer>
       </Layout>
     </Layout>
   );

@@ -17,6 +17,7 @@ const InboxContent = ({ thread, userId }: IProps) => {
   ) : (
     <List
       dataSource={thread.messages}
+      className="border"
       renderItem={(_, index) => {
         const { message, createdAt, senderId } =
           thread.messages[messageLength - index];
