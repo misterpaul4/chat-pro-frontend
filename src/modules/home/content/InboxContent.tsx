@@ -10,13 +10,16 @@ interface IProps {
 const InboxContent = ({ thread, userId }: IProps) => {
   const { type } = thread;
 
+  const messageLength = thread.messages.length - 1;
+
   return type === ThreadTypeEnum.Request ? (
     <>Request not approved</>
   ) : (
     <List
       dataSource={thread.messages}
-      renderItem={(item) => {
-        const { message, createdAt, senderId } = item;
+      renderItem={(_, index) => {
+        const { message, createdAt, senderId } =
+          thread.messages[messageLength - index];
         const fromUser = senderId === userId;
 
         return (
