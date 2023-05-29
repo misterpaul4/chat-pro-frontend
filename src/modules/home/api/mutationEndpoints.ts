@@ -3,6 +3,7 @@ import { apiTags } from "../../../app/lib/constants/tags";
 import { IUser } from "../../auth/control/types";
 import {
   IChatRequestPayload,
+  ICreateMessage,
   IInbox,
   IMassUpdateContacts,
   IVerifyEmail,
@@ -13,29 +14,31 @@ const endpoints = apis.injectEndpoints({
     verifyEmail: builder.mutation<IUser, IVerifyEmail>({
       query: (body) => ({ url: "users/verify-email", method: "POST", body }),
     }),
-    sendMessage: builder.mutation<IInbox, IChatRequestPayload>({
+    createThread: builder.mutation<IInbox, IChatRequestPayload>({
       query: (body) => ({
         url: "thread",
         method: "POST",
         body,
       }),
-      invalidatesTags: (x) => (x ? [apiTags.INBOX] : []),
+    }),
+    sendMessage: builder.mutation<void, ICreateMessage>({
+      query: (body) => ({
+        url: "thread/send-message",
+        method: "POST",
+        body,
+      }),
     }),
     approveRequest: builder.mutation<void, string>({
       query: (id) => ({
         url: `thread/${id}/approve`,
         method: "POST",
       }),
-      // invalidatesTags: (x) =>
-      //   x ? [apiTags.CHAT_REQUESTS, apiTags.INBOX, apiTags.CONTACTS] : [],
     }),
     declineRequest: builder.mutation<void, string>({
       query: (id) => ({
         url: `thread/${id}/decline`,
         method: "POST",
       }),
-      // invalidatesTags: (x) =>
-      //   x ? [apiTags.INBOX, apiTags.CHAT_REQUESTS, apiTags.CONTACTS] : [],
     }),
     massUpdateContacts: builder.mutation<void, IMassUpdateContacts>({
       query: (body) => ({
@@ -50,9 +53,10 @@ const endpoints = apis.injectEndpoints({
 
 export const {
   useVerifyEmailMutation,
-  useSendMessageMutation,
+  useCreateThreadMutation,
   useApproveRequestMutation,
   useDeclineRequestMutation,
   useMassUpdateContactsMutation,
+  useSendMessageMutation,
 } = endpoints;
 

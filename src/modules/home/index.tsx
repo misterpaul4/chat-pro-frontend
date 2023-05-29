@@ -28,9 +28,10 @@ import MessageInput from "./components/MessageInput";
 const { Sider, Content, Header, Footer } = Layout;
 
 const Home = () => {
-  const { user, darkMode } = useSelector((state: RootState) => ({
+  const { user, darkMode, activeThread } = useSelector((state: RootState) => ({
     user: state.user.user,
     darkMode: state.user.darkMode,
+    activeThread: state.app.activeThread,
   }));
 
   const dispatch = useDispatch();
@@ -151,7 +152,7 @@ const Home = () => {
           {!loading && <MessageContent />}
         </Content>
         <Footer className="footerStyle p-1">
-          <MessageInput />
+          <MessageInput activeThread={activeThread} />
         </Footer>
       </Layout>
     </Layout>

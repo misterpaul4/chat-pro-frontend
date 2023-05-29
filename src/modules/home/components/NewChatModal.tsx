@@ -14,7 +14,7 @@ import { useContext, useState } from "react";
 import headerContext from "../context/headerContext";
 import { ArrowRightOutlined, LoadingOutlined } from "@ant-design/icons";
 import {
-  useSendMessageMutation,
+  useCreateThreadMutation,
   useVerifyEmailMutation,
 } from "../api/mutationEndpoints";
 import { apiResponseHandler } from "../../../app/lib/helpers/responseHandler";
@@ -71,7 +71,7 @@ const NewChatModal = () => {
   const [recipient, setRecipient] = useState<IUser>();
 
   const [verifyEmail, { isLoading }] = useVerifyEmailMutation();
-  const [sendChatRequest, { isLoading: sending }] = useSendMessageMutation();
+  const [sendChatRequest, { isLoading: sending }] = useCreateThreadMutation();
 
   const { emailProps, restVisibility, alert }: IVerified = recipient
     ? EMAIL_IS_VERIFIED

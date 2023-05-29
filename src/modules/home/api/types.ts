@@ -1,7 +1,4 @@
-import {
-  IBaseCrudResponseType,
-  IBaseType,
-} from "../../../app/lib/types/baseType";
+import { IBaseType } from "../../../app/lib/types/baseType";
 import { IBaseUser, IUser } from "../../auth/control/types";
 
 export interface IContact extends IBaseType {
@@ -70,5 +67,10 @@ export interface IMassUpdateContacts {
   contactIds: string[];
   blocked?: boolean;
   favourite?: boolean;
+}
+
+export interface ICreateMessage {
+  threadId: string;
+  message: string;
 }
 
