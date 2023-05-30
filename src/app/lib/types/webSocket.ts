@@ -6,4 +6,6 @@ export enum SocketEvents {
   APPROVED_REQUEST_USER = "approvedRequestUser",
   REJECTED_REQUEST = "rejectedRequest",
   REJECTED_REQUEST_USER = "rejectedRequestUser",
+  TYPING = "typing",
 }
+
