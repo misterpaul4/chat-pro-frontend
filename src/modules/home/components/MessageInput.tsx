@@ -3,8 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { useSendMessageMutation } from "../api/mutationEndpoints";
 import { IThread } from "../api/types";
 import { resizeContentHeight } from "../constants/helpers";
-import socket from "../../../app/api/socket";
-import { SocketEvents } from "../../../app/lib/types/webSocket";
+import { emitIsTyping } from "../api/sockets";
 
 interface IProps {
   activeThread: IThread | undefined;
@@ -27,7 +26,7 @@ const MessageInput = ({ activeThread }: IProps) => {
     let delay: number;
     if (message) {
       delay = setTimeout(() => {
-        socket.emit(SocketEvents.TYPING, false);
+        emitIsTyping({ isTyping: false, threadId: activeThread!.id });
         setIsTyping(false);
       }, 1000);
     }
@@ -51,10 +50,10 @@ const MessageInput = ({ activeThread }: IProps) => {
     }
   };
 
-  const notifyTyping = (value) => {
+  const notifyTyping = (value: string) => {
     if (!isTyping && value) {
       setIsTyping(true);
-      socket.emit(SocketEvents.TYPING, true);
+      emitIsTyping({ isTyping: true, threadId: activeThread.id });
     }
   };
 

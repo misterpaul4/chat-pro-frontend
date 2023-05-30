@@ -74,3 +74,8 @@ export interface ICreateMessage {
   message: string;
 }
 
+export interface IsTypingPayload {
+  isTyping: boolean;
+  threadId: string;
+}
+
