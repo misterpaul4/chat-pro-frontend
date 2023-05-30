@@ -40,6 +40,7 @@ const ActionHeader = ({ activeThread, userId }: IProps) => {
 
   return (
     <Card
+      id="action-header"
       className="text-start"
       style={{ borderRadius: 0 }}
       bodyStyle={{ padding: 15 }}

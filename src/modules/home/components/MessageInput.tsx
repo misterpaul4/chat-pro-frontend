@@ -2,6 +2,7 @@ import { Form, Input, InputRef } from "antd";
 import { useEffect, useRef } from "react";
 import { useSendMessageMutation } from "../api/mutationEndpoints";
 import { IThread } from "../api/types";
+import { resizeContentHeight } from "../constants/helpers";
 
 interface IProps {
   activeThread: IThread | undefined;
@@ -12,9 +13,15 @@ const MessageInput = ({ activeThread }: IProps) => {
   const ref = useRef<InputRef>(null);
   const [sendMessage] = useSendMessageMutation();
 
+  // place cursor on input
   useEffect(() => {
     activeThread && ref.current?.focus();
   }, [activeThread]);
+
+  // set height of content area
+  useEffect(() => {
+    resizeContentHeight();
+  }, []);
 
   if (!activeThread) {
     return null;
@@ -36,6 +43,7 @@ const MessageInput = ({ activeThread }: IProps) => {
     <Form form={form}>
       <Form.Item className="m-0" name="message">
         <Input.TextArea
+          onResize={resizeContentHeight}
           ref={ref}
           onPressEnter={({ shiftKey }) => !shiftKey && submitForm()}
           placeholder="Type your message..."
