@@ -2,6 +2,7 @@ import { List } from "antd";
 import { IThread, ThreadTypeEnum } from "../api/types";
 import MessageBox from "./MessageBox";
 import { useEffect, useRef } from "react";
+import { resizeContentHeight } from "../constants/helpers";
 
 interface IProps {
   thread: IThread;
@@ -17,6 +18,10 @@ const InboxContent = ({ thread, userId }: IProps) => {
       ref.current.scrollTop = ref.current.scrollHeight;
     }
   };
+
+  useEffect(() => {
+    resizeContentHeight();
+  }, []);
 
   useEffect(() => {
     chatScroll();

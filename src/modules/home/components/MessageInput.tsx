@@ -1,5 +1,5 @@
 import { Form, Input, InputRef } from "antd";
-import { ChangeEventHandler, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useSendMessageMutation } from "../api/mutationEndpoints";
 import { IThread } from "../api/types";
 import { resizeContentHeight } from "../constants/helpers";
@@ -21,11 +21,6 @@ const MessageInput = ({ activeThread }: IProps) => {
   useEffect(() => {
     activeThread && ref.current?.focus();
   }, [activeThread]);
-
-  // set height of content area
-  useEffect(() => {
-    resizeContentHeight();
-  }, []);
 
   // notify when not typing
   useEffect(() => {
