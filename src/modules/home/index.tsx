@@ -17,7 +17,7 @@ import {
   messageReducer,
 } from "./context/messageReducer";
 import useSocketSubscription from "../../app/hooks/useSocketSubscription";
-import { IThread } from "./api/types";
+import { IThread, ITypingResponse } from "./api/types";
 import {
   setNewMessage,
   setRequestApprovalUpdate,
@@ -114,6 +114,12 @@ const Home = () => {
       handler: (id: string) => {
         dispatch(setRequestRejectionUpdate(id)); // if thread is currently opened by user, update content
         dispatchInbox({ type: "RemoveThread", payload: { id } });
+      },
+    },
+    {
+      event: "typing",
+      handler: (data: ITypingResponse) => {
+        console.log("xx", data);
       },
     },
   ]);

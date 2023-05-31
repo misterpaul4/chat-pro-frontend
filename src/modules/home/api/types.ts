@@ -79,3 +79,9 @@ export interface IsTypingPayload {
   threadId: string;
 }
 
+export interface ITypingResponse {
+  isTyping: boolean;
+  threadId: string;
+  clientEmail: string;
+}
+
