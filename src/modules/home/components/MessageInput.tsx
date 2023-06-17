@@ -24,15 +24,17 @@ const MessageInput = ({ activeThread }: IProps) => {
   // notify when not typing
   useEffect(() => {
     let delay: number;
-    if (message) {
-      delay = setTimeout(() => {
-        emitIsTyping({ isTyping: false, threadId: activeThread!.id });
-        setIsTyping(false);
-      }, 1000);
+    if (message || isTyping) {
+      if (isTyping) {
+        delay = setTimeout(() => {
+          emitIsTyping({ isTyping: false, threadId: activeThread!.id });
+          setIsTyping(false);
+        }, 1000);
+      }
     }
 
     return () => clearTimeout(delay);
-  }, [message]);
+  }, [message, isTyping]);
 
   if (!activeThread) {
     return null;
@@ -51,7 +53,7 @@ const MessageInput = ({ activeThread }: IProps) => {
   };
 
   const notifyTyping = (value: string) => {
-    if (!isTyping && value) {
+    if (!isTyping && value && message) {
       setIsTyping(true);
       emitIsTyping({ isTyping: true, threadId: activeThread.id });
     }

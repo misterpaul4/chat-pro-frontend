@@ -7,7 +7,9 @@ import { hoverColor } from "../../../settings";
 import { RootState } from "../../../store";
 import { getPrivateThreadRecipient } from "../helpers";
 import ContactAvatar from "../../../app/common/ContactAvatar";
-import { IUser } from "../../auth/control/types";
+import { useContext } from "react";
+import { typingContext } from "../context/typingContext";
+import Typing from "../../../app/common/IsTyping";
 
 interface IProps {
   list: IInbox | undefined;
@@ -16,15 +18,19 @@ interface IProps {
 
 const SideBarBody = ({ list, activeThreadId }: IProps) => {
   const dispatch = useDispatch();
+  const typingState = useContext(typingContext);
 
   const userId = useSelector((state: RootState) => state.user.user.id);
 
-  const getContactInformation: (thread: IThread) => {
+  const getContactInfo: (thread: IThread) => {
     avatarProps: string;
     contactInfo: string | React.ReactElement;
   } = (thread) => {
     if (thread.type === ThreadTypeEnum.Group)
-      return { avatarProps: thread.title, contactInfo: thread.title };
+      return {
+        avatarProps: thread.title,
+        contactInfo: thread.title,
+      };
 
     const { firstName, lastName, email } =
       thread.type === ThreadTypeEnum.Self
@@ -49,24 +55,35 @@ const SideBarBody = ({ list, activeThreadId }: IProps) => {
       dataSource={list}
       renderItem={(item: IThread) => {
         const message = item.messages[0].message;
-        const { avatarProps, contactInfo } = getContactInformation(item);
+        const { avatarProps, contactInfo } = getContactInfo(item);
+        const typingClient = typingState[item.id];
         return (
           <List.Item
-            className="cursor-pointer sidebar-message-item p-3"
+            className="cursor-pointer sidebar-message-item pt-3 ps-3 pe-3"
             onClick={() => dispatch(setActiveThread(item))}
             style={{
               backgroundColor: item.id === activeThreadId ? hoverColor : "",
             }}
           >
-            <Space align="baseline">
+            <Space align="start">
               <ContactAvatar name={avatarProps} />
               <Space direction="vertical">
                 <Typography.Paragraph ellipsis={{ rows: 2 }} className="m-0">
-                  <Space>{contactInfo}</Space>
+                  {contactInfo}
                 </Typography.Paragraph>
-                <Typography.Paragraph ellipsis={{ rows: 3 }}>
+                <Typography.Paragraph className="mb-0" ellipsis={{ rows: 2 }}>
                   {message}
                 </Typography.Paragraph>
+                <div>
+                  {typingClient && (
+                    <Typing
+                      typingClient={typingClient}
+                      threadType={item.type}
+                      threadUsers={item.users}
+                    />
+                  )}
+                  <em style={{ visibility: "hidden" }}>"</em>
+                </div>
               </Space>
             </Space>
           </List.Item>

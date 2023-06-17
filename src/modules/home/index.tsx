@@ -24,6 +24,8 @@ import {
   setRequestRejectionUpdate,
 } from "./slice/homeSlice";
 import MessageInput from "./components/MessageInput";
+import { typingInitialState, typingReducer } from "./context/typingReducer";
+import { typingContext } from "./context/typingContext";
 
 const { Sider, Content, Header, Footer } = Layout;
 
@@ -52,6 +54,11 @@ const Home = () => {
   const [request, dispatchRequest] = useReducer(
     messageReducer,
     messageInitialState
+  );
+
+  const [typing, dispatchIsTyping] = useReducer(
+    typingReducer,
+    typingInitialState
   );
 
   useSocketSubscription([
@@ -116,10 +123,11 @@ const Home = () => {
         dispatchInbox({ type: "RemoveThread", payload: { id } });
       },
     },
+    // controls typing
     {
       event: "typing",
       handler: (data: ITypingResponse) => {
-        console.log("xx", data);
+        dispatchIsTyping({ type: "Update", payload: data });
       },
     },
   ]);
@@ -130,12 +138,14 @@ const Home = () => {
         <div className="p-3">
           <SiderLoader
             component={
-              <SideBar
-                dispatchInbox={dispatchInbox}
-                dispatchRequest={dispatchRequest}
-                inbox={inbox}
-                request={request}
-              />
+              <typingContext.Provider value={typing}>
+                <SideBar
+                  dispatchInbox={dispatchInbox}
+                  dispatchRequest={dispatchRequest}
+                  inbox={inbox}
+                  request={request}
+                />
+              </typingContext.Provider>
             }
             loading={loading}
           />

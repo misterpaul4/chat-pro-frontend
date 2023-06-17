@@ -85,3 +85,6 @@ export interface ITypingResponse {
   clientEmail: string;
 }
 
+// key is threadId
+export type $typing = { [key in string]: ITypingResponse["clientEmail"] };
+
