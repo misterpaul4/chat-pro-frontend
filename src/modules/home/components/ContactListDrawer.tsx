@@ -1,4 +1,4 @@
-import { Button, Drawer, Input, List, Space, Typography } from "antd";
+import { Avatar, Button, Drawer, Input, List, Space, Typography } from "antd";
 import { useContext, useEffect, useState } from "react";
 import headerContext from "../context/headerContext";
 import { drawerSharedProps } from "../constants/props";
@@ -9,6 +9,7 @@ import { capitalize } from "../../../utils/strings";
 import { layoutPrimaryColor, transparentTextColor } from "../../../settings";
 import { useMassUpdateContactsMutation } from "../api/mutationEndpoints";
 import { apiResponseHandler } from "../../../app/lib/helpers/responseHandler";
+import ContactAvatar from "../../../app/common/ContactAvatar";
 
 interface IProps {
   contactList: IContact[] | undefined;
@@ -97,7 +98,7 @@ const ContactListDrawer = ({ contactList }: IProps) => {
             <List.Item className="rounded px-3">
               <Typography.Text style={{ fontSize: "1.1rem" }}>
                 <Space>
-                  <Icon component={PersonIcon} className="me-2" />
+                  <ContactAvatar name={firstName} />
                   <span>
                     {capitalize(firstName)} {capitalize(lastName)}{" "}
                     <span

@@ -6,6 +6,8 @@ import { setActiveThread } from "../slice/homeSlice";
 import { hoverColor } from "../../../settings";
 import { RootState } from "../../../store";
 import { getPrivateThreadRecipient } from "../helpers";
+import ContactAvatar from "../../../app/common/ContactAvatar";
+import { IUser } from "../../auth/control/types";
 
 interface IProps {
   list: IInbox | undefined;
@@ -17,21 +19,28 @@ const SideBarBody = ({ list, activeThreadId }: IProps) => {
 
   const userId = useSelector((state: RootState) => state.user.user.id);
 
-  const getContactInformation = (thread: IThread) => {
-    if (thread.type === ThreadTypeEnum.Group) return thread.title;
+  const getContactInformation: (thread: IThread) => {
+    avatarProps: string;
+    contactInfo: string | React.ReactElement;
+  } = (thread) => {
+    if (thread.type === ThreadTypeEnum.Group)
+      return { avatarProps: thread.title, contactInfo: thread.title };
 
     const { firstName, lastName, email } =
       thread.type === ThreadTypeEnum.Self
         ? thread.users[0]
         : getPrivateThreadRecipient(thread.users, userId);
 
-    return (
-      <>
-        <strong>{capitalize(firstName)}</strong>
-        <strong>{capitalize(lastName)}</strong>
-        {`(${email})`}
-      </>
-    );
+    return {
+      avatarProps: firstName,
+      contactInfo: (
+        <>
+          <strong>{capitalize(firstName)}</strong>
+          <strong>{capitalize(lastName)}</strong>
+          {`(${email})`}
+        </>
+      ),
+    };
   };
 
   return (
@@ -40,6 +49,7 @@ const SideBarBody = ({ list, activeThreadId }: IProps) => {
       dataSource={list}
       renderItem={(item: IThread) => {
         const message = item.messages[0].message;
+        const { avatarProps, contactInfo } = getContactInformation(item);
         return (
           <List.Item
             className="cursor-pointer sidebar-message-item p-3"
@@ -48,14 +58,16 @@ const SideBarBody = ({ list, activeThreadId }: IProps) => {
               backgroundColor: item.id === activeThreadId ? hoverColor : "",
             }}
           >
-            <Space direction="vertical">
-              <Typography.Paragraph ellipsis={{ rows: 2 }} className="m-0">
-                <Space>{getContactInformation(item)}</Space>
-              </Typography.Paragraph>
-
-              <Typography.Paragraph ellipsis={{ rows: 3 }}>
-                {message}
-              </Typography.Paragraph>
+            <Space align="baseline">
+              <ContactAvatar name={avatarProps} />
+              <Space direction="vertical">
+                <Typography.Paragraph ellipsis={{ rows: 2 }} className="m-0">
+                  <Space>{contactInfo}</Space>
+                </Typography.Paragraph>
+                <Typography.Paragraph ellipsis={{ rows: 3 }}>
+                  {message}
+                </Typography.Paragraph>
+              </Space>
             </Space>
           </List.Item>
         );
