@@ -1,7 +1,10 @@
-import { Card, Typography } from "antd";
+import { Card, Space, Typography } from "antd";
 import { IThread, ThreadTypeEnum } from "../api/types";
 import { capitalize } from "../../../utils/strings";
 import { getPrivateThreadRecipient } from "../helpers";
+import { typingContext } from "../context/typingContext";
+import { useContext } from "react";
+import Typing from "../../../app/common/IsTyping";
 
 interface IProps {
   activeThread: IThread;
@@ -36,6 +39,9 @@ const getConfig: (activeThread: IThread, userId: string) => IConfig = (
 };
 
 const ActionHeader = ({ activeThread, userId }: IProps) => {
+  const typingState = useContext(typingContext);
+  const typingClient = typingState[activeThread.id];
+
   const { title } = getConfig(activeThread, userId);
 
   return (
@@ -45,9 +51,18 @@ const ActionHeader = ({ activeThread, userId }: IProps) => {
       style={{ borderRadius: 0 }}
       bodyStyle={{ padding: 15 }}
     >
-      <Typography.Title level={4} className="m-0">
-        {title}
-      </Typography.Title>
+      <Space align="end">
+        <Typography.Title level={4} className="m-0">
+          {title}
+        </Typography.Title>
+        {typingClient && (
+          <Typing
+            typingClient={typingClient}
+            threadType={activeThread.type}
+            threadUsers={activeThread.users}
+          />
+        )}
+      </Space>
     </Card>
   );
 };

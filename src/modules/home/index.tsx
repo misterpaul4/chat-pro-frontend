@@ -165,7 +165,9 @@ const Home = () => {
           <div className="d-flex flex-column message-skeleton">
             <ContentLoader loading={loading} />
           </div>
-          {!loading && <MessageContent />}
+          <typingContext.Provider value={typing}>
+            {!loading && <MessageContent />}
+          </typingContext.Provider>
         </Content>
         <Footer className="footerStyle p-1">
           <MessageInput activeThread={activeThread} />
