@@ -18,3 +18,5 @@ export const getMessageTime = (date: string) => {
   return `${formattedDate} ${relTime}`;
 };
 
+export const getLastMessageTime = (date: string) => dayjs(date).from(dayjs());
+

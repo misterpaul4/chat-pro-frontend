@@ -3,13 +3,14 @@ import { IInbox, IThread, ThreadTypeEnum } from "../api/types";
 import { capitalize } from "../../../utils/strings";
 import { useDispatch, useSelector } from "react-redux";
 import { setActiveThread } from "../slice/homeSlice";
-import { hoverColor } from "../../../settings";
+import { hoverColor, layoutPrimaryColor } from "../../../settings";
 import { RootState } from "../../../store";
 import { getPrivateThreadRecipient } from "../helpers";
 import ContactAvatar from "../../../app/common/ContactAvatar";
 import { useContext } from "react";
 import { typingContext } from "../context/typingContext";
 import Typing from "../../../app/common/IsTyping";
+import { getLastMessageTime } from "../../../app/lib/helpers/time";
 
 interface IProps {
   list: IInbox | undefined;
@@ -32,7 +33,7 @@ const SideBarBody = ({ list, activeThreadId }: IProps) => {
         contactInfo: thread.title,
       };
 
-    const { firstName, lastName, email } =
+    const { firstName, lastName } =
       thread.type === ThreadTypeEnum.Self
         ? thread.users[0]
         : getPrivateThreadRecipient(thread.users, userId);
@@ -41,9 +42,8 @@ const SideBarBody = ({ list, activeThreadId }: IProps) => {
       avatarProps: firstName,
       contactInfo: (
         <>
-          <strong>{capitalize(firstName)}</strong>
+          <strong className="me-2">{capitalize(firstName)}</strong>
           <strong>{capitalize(lastName)}</strong>
-          {`(${email})`}
         </>
       ),
     };
@@ -54,7 +54,7 @@ const SideBarBody = ({ list, activeThreadId }: IProps) => {
       className="border-top border-bottom sidebar-message-container"
       dataSource={list}
       renderItem={(item: IThread) => {
-        const message = item.messages[0].message;
+        const { message, createdAt } = item.messages[0] || {};
         const { avatarProps, contactInfo } = getContactInfo(item);
         const typingClient = typingState[item.id];
         return (
@@ -74,6 +74,10 @@ const SideBarBody = ({ list, activeThreadId }: IProps) => {
                 <Typography.Paragraph className="mb-0" ellipsis={{ rows: 2 }}>
                   {message}
                 </Typography.Paragraph>
+                <small style={{ color: layoutPrimaryColor }}>
+                  {getLastMessageTime(createdAt)}
+                </small>
+
                 <div>
                   {typingClient && (
                     <Typing
