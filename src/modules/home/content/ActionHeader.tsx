@@ -62,7 +62,11 @@ const ActionHeader = ({ activeThread, userId, onlineUsers }: IProps) => {
           <Typography.Title level={4} className="m-0">
             {title}
           </Typography.Title>
-          {isOnline && <Badge status="processing" />}
+          {isOnline && (
+            <span title="online">
+              <Badge status="processing" />
+            </span>
+          )}
         </Space>
         {typingClient && (
           <Typing
