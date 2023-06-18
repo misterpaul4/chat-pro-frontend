@@ -14,10 +14,10 @@ export const typingInitialState: $typing = {};
 export function typingReducer(state: $typing, action: IActionType) {
   switch (action.type) {
     case "Update":
-      const { isTyping, threadId, clientEmail } =
+      const { isTyping, threadId, clientId } =
         action.payload as ITypingResponse;
       if (isTyping) {
-        return { ...state, [threadId]: clientEmail };
+        return { ...state, [threadId]: clientId };
       } else {
         const { [threadId]: deletedKey, ...rest } = state;
         return rest;

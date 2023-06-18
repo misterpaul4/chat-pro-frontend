@@ -82,9 +82,9 @@ export interface IsTypingPayload {
 export interface ITypingResponse {
   isTyping: boolean;
   threadId: string;
-  clientEmail: string;
+  clientId: string;
 }
 
 // key is threadId
-export type $typing = { [key in string]: ITypingResponse["clientEmail"] };
+export type $typing = { [key in string]: ITypingResponse["clientId"] };
 

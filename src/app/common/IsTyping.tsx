@@ -11,7 +11,7 @@ const Typing = ({ typingClient, threadType, threadUsers }: IProps) => {
   let text = "typing...";
   if (threadType === ThreadTypeEnum.Group) {
     const typingClientName = threadUsers.find(
-      (user) => user.email === typingClient
+      (user) => user.id === typingClient
     )?.firstName;
     text = `${typingClientName} is ${text}`;
   }
