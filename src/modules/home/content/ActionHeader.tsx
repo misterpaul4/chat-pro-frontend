@@ -1,48 +1,54 @@
-import { Card, Space, Typography } from "antd";
-import { IThread, ThreadTypeEnum } from "../api/types";
+import { Badge, Card, Space, Typography } from "antd";
+import { $onlineStatus, IThread, ThreadTypeEnum } from "../api/types";
 import { capitalize } from "../../../utils/strings";
 import { getPrivateThreadRecipient } from "../helpers";
 import { typingContext } from "../context/typingContext";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import Typing from "../../../app/common/IsTyping";
+import { IUser } from "../../auth/control/types";
 
 interface IProps {
   activeThread: IThread;
   userId: string;
+  onlineUsers: $onlineStatus;
 }
 
 interface IConfig {
   title: string;
+  isOnline?: boolean;
 }
 
-const getRecipient = (users: IThread["users"], userId: string) => {
-  const { firstName, lastName } = getPrivateThreadRecipient(users, userId);
-  return `${capitalize(firstName)} ${capitalize(lastName)}`;
-};
-
-const getConfig: (activeThread: IThread, userId: string) => IConfig = (
+const getConfig: (params: IProps) => IConfig = ({
   activeThread,
-  userId
-) => {
+  userId,
+  onlineUsers,
+}) => {
+  let recipient: IUser;
+
   switch (activeThread.type) {
     case ThreadTypeEnum.Private:
-      return { title: getRecipient(activeThread.users, userId) };
+    case ThreadTypeEnum.Request:
+      recipient = getPrivateThreadRecipient(activeThread.users, userId);
+
+      return {
+        title: `${capitalize(recipient.firstName)} ${capitalize(
+          recipient.lastName
+        )}`,
+        isOnline: onlineUsers.includes(recipient.id),
+      };
     case ThreadTypeEnum.Group:
       return { title: capitalize(activeThread.title) };
-
-    case ThreadTypeEnum.Request:
-      return { title: getRecipient(activeThread.users, userId) };
 
     default:
       return { title: "You" };
   }
 };
 
-const ActionHeader = ({ activeThread, userId }: IProps) => {
+const ActionHeader = ({ activeThread, userId, onlineUsers }: IProps) => {
   const typingState = useContext(typingContext);
   const typingClient = typingState[activeThread.id];
 
-  const { title } = getConfig(activeThread, userId);
+  const { title, isOnline } = getConfig({ activeThread, userId, onlineUsers });
 
   return (
     <Card
@@ -52,9 +58,12 @@ const ActionHeader = ({ activeThread, userId }: IProps) => {
       bodyStyle={{ padding: 15 }}
     >
       <Space align="end">
-        <Typography.Title level={4} className="m-0">
-          {title}
-        </Typography.Title>
+        <Space>
+          <Typography.Title level={4} className="m-0">
+            {title}
+          </Typography.Title>
+          {isOnline && <Badge status="processing" />}
+        </Space>
         {typingClient && (
           <Typing
             typingClient={typingClient}

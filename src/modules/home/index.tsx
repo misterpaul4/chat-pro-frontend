@@ -4,7 +4,10 @@ import AppHeader from "./header/AppHeader";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../store";
 import NewChatModal from "./components/NewChatModal";
-import { useGetContactsQuery } from "./api/queryEndpoints";
+import {
+  useGetContactsQuery,
+  useGetOnlineContactsQuery,
+} from "./api/queryEndpoints";
 import { HeaderProvider } from "./context/headerContext";
 import SideBar from "./sidebar";
 import { ContentLoader, SiderLoader } from "./components/Loaders";
@@ -45,7 +48,9 @@ const Home = () => {
     }
   );
 
-  const loading = !contactList;
+  const { data: onlineContacts } = useGetOnlineContactsQuery();
+
+  const loading = !contactList || !onlineContacts;
 
   const [inbox, dispatchInbox] = useReducer(
     messageReducer,
@@ -162,7 +167,7 @@ const Home = () => {
             <ContentLoader loading={loading} />
           </div>
           <typingContext.Provider value={typing}>
-            {!loading && <MessageContent />}
+            {!loading && <MessageContent onlineContacts={onlineContacts} />}
           </typingContext.Provider>
         </Content>
         <Footer className="footerStyle p-1">

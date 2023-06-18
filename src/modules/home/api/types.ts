@@ -85,6 +85,13 @@ export interface ITypingResponse {
   clientId: string;
 }
 
+export interface IOnlineStatus {
+  user: string;
+  isOnline: boolean;
+}
+
 // key is threadId
 export type $typing = { [key in string]: ITypingResponse["clientId"] };
+
+export type $onlineStatus = string[];
 

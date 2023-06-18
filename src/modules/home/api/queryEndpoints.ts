@@ -1,6 +1,6 @@
 import apis from "../../../app/api";
 import { apiTags } from "../../../app/lib/constants/tags";
-import { IContact, IInbox } from "./types";
+import { $onlineStatus, IContact, IInbox } from "./types";
 
 const endpoints = apis.injectEndpoints({
   endpoints: (builder) => ({
@@ -16,6 +16,9 @@ const endpoints = apis.injectEndpoints({
       query: (userId) =>
         `inbox?join=threads&join=threads.messages&join=threads.users&sort=threads.messages.createdAt,DESC&filter=threads.type||ne||Request&or=threads.createdBy||eq||${userId}`,
     }),
+    getOnlineContacts: builder.query<$onlineStatus, void>({
+      query: () => "users/online-contacts",
+    }),
   }),
 });
 
@@ -23,5 +26,6 @@ export const {
   useGetContactsQuery,
   useLazyGetRequestsQuery,
   useLazyGetInboxQuery,
+  useGetOnlineContactsQuery,
 } = endpoints;
 

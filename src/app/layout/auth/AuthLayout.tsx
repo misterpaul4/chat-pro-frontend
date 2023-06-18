@@ -20,7 +20,7 @@ const AuthLayout = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const [getself, { isLoading }] = useLazyGetSelfQuery();
+  const [getself] = useLazyGetSelfQuery();
 
   useEffect(() => {
     const token = getLs("token");
