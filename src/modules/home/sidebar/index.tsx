@@ -8,8 +8,15 @@ import { RootState } from "../../../store";
 import { useEffect } from "react";
 import SideBarBody from "./Body";
 import { messageActionType } from "../context/messageReducer";
+import { SiderLoader } from "../components/Loaders";
 
-const SideBar = ({ dispatchInbox, dispatchRequest, inbox, request }) => {
+const SideBar = ({
+  dispatchInbox,
+  dispatchRequest,
+  inbox,
+  request,
+  loading,
+}) => {
   const { activeTab, activeThread, userId } = useSelector(
     (state: RootState) => ({
       activeTab: state.app.activeTab,
@@ -18,8 +25,9 @@ const SideBar = ({ dispatchInbox, dispatchRequest, inbox, request }) => {
     })
   );
 
-  const [getChatRequests] = useLazyGetRequestsQuery();
-  const [getInbox] = useLazyGetInboxQuery();
+  const [getChatRequests, { isFetching: requestsFetching }] =
+    useLazyGetRequestsQuery();
+  const [getInbox, { isFetching: inboxFetching }] = useLazyGetInboxQuery();
 
   const initializeInbox = async () => {
     const { data } = await getInbox(userId);
@@ -37,15 +45,20 @@ const SideBar = ({ dispatchInbox, dispatchRequest, inbox, request }) => {
   }, []);
 
   return (
-    <>
-      <SideBarHead activeTab={activeTab} />
-      <div className="mt-2">
-        <SideBarBody
-          activeThreadId={activeThread?.id}
-          list={activeTab === "inbox" ? inbox : request}
-        />
-      </div>
-    </>
+    <SiderLoader
+      loading={loading || requestsFetching || inboxFetching}
+      component={
+        <>
+          <SideBarHead activeTab={activeTab} />
+          <div className="mt-2">
+            <SideBarBody
+              activeThreadId={activeThread?.id}
+              list={activeTab === "inbox" ? inbox : request}
+            />
+          </div>
+        </>
+      }
+    />
   );
 };
 

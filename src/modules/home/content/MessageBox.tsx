@@ -11,7 +11,7 @@ interface IProps {
 
 const MessageBox = ({ message, fromUser, createdAt }: IProps) => {
   const style: CSSProperties = fromUser
-    ? { background: layoutPrimaryColor, color: "white" }
+    ? { background: "gray", color: "white" }
     : { background: "white" };
 
   return (

@@ -136,19 +136,15 @@ const Home = () => {
     <Layout hasSider className="message-container">
       <Sider className="siderStyle">
         <div className="p-3">
-          <SiderLoader
-            component={
-              <typingContext.Provider value={typing}>
-                <SideBar
-                  dispatchInbox={dispatchInbox}
-                  dispatchRequest={dispatchRequest}
-                  inbox={inbox}
-                  request={request}
-                />
-              </typingContext.Provider>
-            }
-            loading={loading}
-          />
+          <typingContext.Provider value={typing}>
+            <SideBar
+              loading={loading}
+              dispatchInbox={dispatchInbox}
+              dispatchRequest={dispatchRequest}
+              inbox={inbox}
+              request={request}
+            />
+          </typingContext.Provider>
         </div>
       </Sider>
       <Layout className="site-layout">
