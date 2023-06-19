@@ -11,7 +11,8 @@
 - fix bugs with new message request not showing for sender
 - read count
 - search
-- contact fix: redesign of actions
+- contact fix
+  + redesign of actions
 - starring messages
 - reply
 - remember typing message
