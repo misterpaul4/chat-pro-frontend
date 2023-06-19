@@ -3,6 +3,7 @@ import { IThread, ThreadTypeEnum } from "../api/types";
 import MessageBox from "./MessageBox";
 import { useEffect, useRef } from "react";
 import { resizeContentHeight } from "../constants/helpers";
+import { checkIfElementVisible } from "../../../utils/dom";
 
 interface IProps {
   thread: IThread;
@@ -12,10 +13,17 @@ interface IProps {
 const InboxContent = ({ thread, userId }: IProps) => {
   const { type } = thread;
   const ref = useRef<HTMLDivElement>(null);
+  const lastMessageRef = useRef<HTMLDivElement>(null);
 
   const chatScroll = () => {
-    if (ref?.current) {
-      ref.current.scrollTop = ref.current.scrollHeight;
+    if (ref.current && lastMessageRef.current) {
+      // scroll if last message is in viewport or if it's initial chat scroll
+      if (
+        !ref.current.scrollTop ||
+        checkIfElementVisible(lastMessageRef.current, true)
+      ) {
+        ref.current.scrollTop = ref.current.scrollHeight;
+      }
     }
   };
 
@@ -30,7 +38,7 @@ const InboxContent = ({ thread, userId }: IProps) => {
   const messageLength = thread.messages.length - 1;
 
   return type === ThreadTypeEnum.Request ? (
-    <>Request not approved</>
+    <span>Request is pending approval</span>
   ) : (
     <div ref={ref} id="message-list">
       <List
@@ -43,6 +51,7 @@ const InboxContent = ({ thread, userId }: IProps) => {
 
           return (
             <List.Item
+              ref={index === messageLength - 1 ? lastMessageRef : undefined}
               className={`border-0 py-1 justify-content-${
                 fromUser ? "end" : "start"
               }`}
