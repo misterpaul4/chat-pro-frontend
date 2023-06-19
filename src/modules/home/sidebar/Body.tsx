@@ -3,7 +3,12 @@ import { IInbox, IThread, ThreadTypeEnum } from "../api/types";
 import { capitalize } from "../../../utils/strings";
 import { useDispatch, useSelector } from "react-redux";
 import { setActiveThread } from "../slice/homeSlice";
-import { hoverColor, layoutPrimaryColor } from "../../../settings";
+import {
+  SETTINGS,
+  THREAD_LAST_SCROLL,
+  hoverColor,
+  layoutPrimaryColor,
+} from "../../../settings";
 import { RootState } from "../../../store";
 import { getPrivateThreadRecipient } from "../helpers";
 import ContactAvatar from "../../../app/common/ContactAvatar";
@@ -49,6 +54,23 @@ const SideBarBody = ({ list, activeThreadId }: IProps) => {
     };
   };
 
+  const onThreadClick = (thread: IThread) => {
+    const activeThreadScrollPos =
+      document.querySelector("#message-list")?.scrollTop;
+
+    if (activeThreadId) {
+      const threadLastScrollKeys = Array.from(THREAD_LAST_SCROLL.keys());
+
+      if (SETTINGS.maxLastScrolls === threadLastScrollKeys.length) {
+        THREAD_LAST_SCROLL.delete(threadLastScrollKeys[0]);
+      }
+
+      THREAD_LAST_SCROLL.set(activeThreadId, activeThreadScrollPos);
+    }
+
+    dispatch(setActiveThread(thread));
+  };
+
   return (
     <List
       className="border-top border-bottom sidebar-message-container"
@@ -60,7 +82,7 @@ const SideBarBody = ({ list, activeThreadId }: IProps) => {
         return (
           <List.Item
             className="cursor-pointer sidebar-message-item pt-3 ps-3 pe-3"
-            onClick={() => dispatch(setActiveThread(item))}
+            onClick={() => onThreadClick(item)}
             style={{
               backgroundColor: item.id === activeThreadId ? hoverColor : "",
             }}

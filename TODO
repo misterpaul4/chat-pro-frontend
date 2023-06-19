@@ -3,8 +3,9 @@
 # + sidebar
 # + content
 - message send status
-- remember scroll position for each thread
+# - remember scroll position for previous thread *
 # - prevent auto scroll if in current thread and there's an incoming message
+- fix bugs with new message request not showing for sender
 - read count
 - search
 - contact fix: redesign of actions
@@ -12,4 +13,10 @@
 - reply
 - remember typing message
 - fix sidebar scroll
+- basic e2e encryption
+- call (pairjs)
+- attachments
+  + image and pdf
+  + audio files
+  + video files
 

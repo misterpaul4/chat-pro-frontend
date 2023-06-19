@@ -4,6 +4,7 @@ import MessageBox from "./MessageBox";
 import { useEffect, useRef } from "react";
 import { resizeContentHeight } from "../constants/helpers";
 import { checkIfElementVisible } from "../../../utils/dom";
+import { THREAD_LAST_SCROLL } from "../../../settings";
 
 interface IProps {
   thread: IThread;
@@ -22,7 +23,10 @@ const InboxContent = ({ thread, userId }: IProps) => {
         !ref.current.scrollTop ||
         checkIfElementVisible(lastMessageRef.current, true)
       ) {
-        ref.current.scrollTop = ref.current.scrollHeight;
+        // get exiting thread's scroll position
+        const lastScroll = THREAD_LAST_SCROLL.get(thread.id);
+        const scrollHeight = lastScroll || ref.current.scrollHeight;
+        ref.current.scrollTop = scrollHeight;
       }
     }
   };
@@ -49,9 +53,17 @@ const InboxContent = ({ thread, userId }: IProps) => {
             thread.messages[messageLength - index];
           const fromUser = senderId === userId;
 
+          let shouldSetLastMessageRef = false;
+
+          if (messageLength - 1 > -1) {
+            shouldSetLastMessageRef = index === messageLength - 1;
+          } else {
+            shouldSetLastMessageRef = index === messageLength;
+          }
+
           return (
             <List.Item
-              ref={index === messageLength - 1 ? lastMessageRef : undefined}
+              ref={shouldSetLastMessageRef ? lastMessageRef : undefined}
               className={`border-0 py-1 justify-content-${
                 fromUser ? "end" : "start"
               }`}
