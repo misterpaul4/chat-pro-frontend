@@ -3,6 +3,9 @@
 # + sidebar
 # + content
 - message send status
+- new message alert
+  + if in active thread and lastmessage not in view, show pop up
+  + sound
 # - remember scroll position for previous thread *
 # - prevent auto scroll if in current thread and there's an incoming message
 - fix bugs with new message request not showing for sender
