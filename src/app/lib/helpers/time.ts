@@ -2,20 +2,23 @@ import relativeTime from "dayjs/plugin/relativeTime";
 import dayjs from "dayjs";
 
 dayjs.extend(relativeTime);
-const format = "(DD/MMM/YYYY) dddd h:mm A";
 
-export const getMessageTime = (date: string) => {
-  // Parse the input date string
-  const parsedDate = dayjs(date);
+export const getMessageTime: (dateString: string) => string = (dateString) => {
+  const date = dayjs(dateString);
+  const currentDate = dayjs();
+  const timeFormat = "h:mmA";
 
-  // Calculate the relative time from now
-  const relTime = parsedDate.fromNow();
-
-  // Format the date with the desired output format
-  const formattedDate = parsedDate.format(format);
-
-  // Combine the formatted date and relative time to create the final output
-  return `${formattedDate} ${relTime}`;
+  if (date.isSame(currentDate.subtract(1, "day"), "day")) {
+    return `yesterday at ${date.format(timeFormat)}`;
+  } else if (date.isSame(currentDate, "day")) {
+    return `today at ${date.format(timeFormat)}`;
+  } else if (date.isAfter(currentDate.subtract(7, "day"))) {
+    return `${date.format("dddd")} at ${date.format(timeFormat)}`;
+  } else if (date.isAfter(currentDate.startOf("year"))) {
+    return `${date.format("Do MMM")} at ${date.format(timeFormat)}`;
+  } else {
+    return `${date.format("Do MMM YY")} at ${date.format(timeFormat)}`;
+  }
 };
 
 export const getLastMessageTime = (date: string) => dayjs(date).from(dayjs());

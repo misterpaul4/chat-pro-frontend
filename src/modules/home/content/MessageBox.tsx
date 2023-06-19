@@ -1,7 +1,6 @@
 import { Card } from "antd";
-import { layoutPrimaryColor, transparentTextColor } from "../../../settings";
-import { getMessageTime } from "../../../app/lib/helpers/time";
 import { CSSProperties } from "react";
+import { getMessageTime } from "../../../app/lib/helpers/time";
 
 interface IProps {
   createdAt: string;
@@ -15,17 +14,18 @@ const MessageBox = ({ message, fromUser, createdAt }: IProps) => {
     : { background: "white" };
 
   return (
-    <Card
-      // extra={<em>test</em>}
-      className="border-0 text-start p-3 message-width"
-      style={style}
-      bodyStyle={{ padding: 0 }}
-    >
-      <div className="text-end" style={{ color: transparentTextColor }}>
-        {getMessageTime(createdAt)}
-      </div>
-      <p className="m-0">{message}</p>
-    </Card>
+    <>
+      <Card
+        className="border-0 text-start p-3 message-width"
+        style={style}
+        bodyStyle={{ padding: 0 }}
+      >
+        <p className="m-0">{message}</p>
+        <small className="text-start text-secondary bg-light px-2">
+          {getMessageTime(createdAt).toLowerCase()}
+        </small>
+      </Card>
+    </>
   );
 };
 

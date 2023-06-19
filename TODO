@@ -1,6 +1,7 @@
-- online feature
-- date fix
+# - online feature
 # - chat time fix
+# + sidebar
+# + content
 - remember scroll position for each thread
 - prevent auto scroll if in current thread and there's an incoming message
 - read count
@@ -8,3 +9,4 @@
 - contact fix: redesign of actions
 - starring messages
 - reply
+
