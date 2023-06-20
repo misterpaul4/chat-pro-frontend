@@ -53,8 +53,6 @@ const InboxContent = ({ thread, userId, isNewThread }: IProps) => {
           scrollTo(ref.current.scrollHeight);
         } else {
           setNewMessagePopUp(true);
-          // add event listener for scroll
-          // dispparear if last message in viewport
           ref.current.addEventListener("scroll", removeNewMessageIndicator);
         }
       }
