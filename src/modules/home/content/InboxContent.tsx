@@ -1,11 +1,11 @@
-import { List, Tag } from "antd";
+import { Button, List, Tag } from "antd";
 import { IThread, IThreadScroll, ThreadTypeEnum } from "../api/types";
 import MessageBox from "./MessageBox";
 import { useEffect, useRef, useState } from "react";
 import { resizeContentHeight } from "../constants/helpers";
 import { checkIfElementVisible, inputFocus } from "../../../utils/dom";
 import { THREAD_LAST_SCROLL, layoutPrimaryColor } from "../../../settings";
-import { ClockCircleOutlined } from "@ant-design/icons";
+import { ArrowDownOutlined, ClockCircleOutlined } from "@ant-design/icons";
 
 interface IProps {
   thread: IThread;
@@ -76,6 +76,15 @@ const InboxContent = ({ thread, userId, isNewThread }: IProps) => {
     setNewMessagePopUp(false);
   };
 
+  const onScrollBottomClick = () => {
+    if (ref.current) {
+      window.scrollTo({
+        top: ref.current.scrollHeight,
+        behavior: "smooth",
+      });
+    }
+  };
+
   return type === ThreadTypeEnum.Request ? (
     <span>Request is pending approval</span>
   ) : (
@@ -116,6 +125,12 @@ const InboxContent = ({ thread, userId, isNewThread }: IProps) => {
           New message
         </Tag>
       )}
+      <Button
+        onClick={onScrollBottomClick}
+        className="scroll-to-bottom-btn"
+        shape="circle"
+        icon={<ArrowDownOutlined />}
+      />
     </div>
   );
 };
