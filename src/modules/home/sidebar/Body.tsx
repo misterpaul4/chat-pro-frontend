@@ -117,7 +117,6 @@ const SideBarBody = ({ list, activeThread }: IProps) => {
                   )}
                   <em style={{ visibility: "hidden" }}>"</em>
                 </div>
-                {item.id}
               </Space>
             </Space>
           </List.Item>

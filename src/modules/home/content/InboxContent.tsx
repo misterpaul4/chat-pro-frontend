@@ -1,10 +1,11 @@
-import { List } from "antd";
+import { List, Tag } from "antd";
 import { IThread, IThreadScroll, ThreadTypeEnum } from "../api/types";
 import MessageBox from "./MessageBox";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { resizeContentHeight } from "../constants/helpers";
 import { checkIfElementVisible } from "../../../utils/dom";
-import { THREAD_LAST_SCROLL } from "../../../settings";
+import { THREAD_LAST_SCROLL, layoutPrimaryColor } from "../../../settings";
+import { ClockCircleOutlined } from "@ant-design/icons";
 
 interface IProps {
   thread: IThread;
@@ -13,11 +14,16 @@ interface IProps {
 }
 
 const InboxContent = ({ thread, userId, isNewThread }: IProps) => {
+  const [newMessagePopUp, setNewMessagePopUp] = useState(false);
   const { type } = thread;
   const ref = useRef<HTMLDivElement>(null);
   const lastMessageRef = useRef<HTMLDivElement>(null);
 
   const messageLength = thread.messages.length - 1;
+
+  const scrollTo = (pos: number) => {
+    ref.current!.scrollTop = pos;
+  };
 
   const chatScroll = () => {
     if (ref.current) {
@@ -25,18 +31,21 @@ const InboxContent = ({ thread, userId, isNewThread }: IProps) => {
         const savedScroll: IThreadScroll | undefined = THREAD_LAST_SCROLL.get(
           thread.id
         );
-        ref.current.scrollTop =
+        scrollTo(
           savedScroll?.mSize === messageLength + 1
             ? savedScroll.pos
-            : ref.current.scrollHeight;
+            : ref.current.scrollHeight
+        );
       } else {
+        const lastMessageSender = thread.messages[0].senderId;
         if (
-          lastMessageRef.current &&
-          checkIfElementVisible(lastMessageRef.current, true)
+          (lastMessageRef.current &&
+            checkIfElementVisible(lastMessageRef.current, true)) ||
+          lastMessageSender === userId
         ) {
-          ref.current.scrollTop = ref.current.scrollHeight;
+          scrollTo(ref.current.scrollHeight);
         } else {
-          // show pop up
+          setNewMessagePopUp(true);
         }
       }
     }
@@ -49,6 +58,14 @@ const InboxContent = ({ thread, userId, isNewThread }: IProps) => {
   useEffect(() => {
     chatScroll();
   }, [thread]);
+
+  const onIndicatorClick = () => {
+    if (ref.current) {
+      scrollTo(ref.current.scrollHeight);
+    }
+
+    setNewMessagePopUp(false);
+  };
 
   return type === ThreadTypeEnum.Request ? (
     <span>Request is pending approval</span>
@@ -86,6 +103,17 @@ const InboxContent = ({ thread, userId, isNewThread }: IProps) => {
           );
         }}
       />
+
+      {newMessagePopUp && (
+        <Tag
+          onClick={onIndicatorClick}
+          style={{ backgroundColor: "white", color: layoutPrimaryColor }}
+          icon={<ClockCircleOutlined />}
+          className="new-message-indicator border py-2 px-3"
+        >
+          New message
+        </Tag>
+      )}
     </div>
   );
 };
