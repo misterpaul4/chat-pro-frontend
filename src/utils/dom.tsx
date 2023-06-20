@@ -12,3 +12,7 @@ export const checkIfElementVisible = (
     : top >= 0 && left >= 0 && bottom <= innerHeight && right <= innerWidth;
 };
 
+export const inputFocus = () => {
+  const inputEle = document.getElementById("input-box");
+  inputEle?.focus();
+};

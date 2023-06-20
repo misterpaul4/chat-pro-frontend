@@ -66,6 +66,7 @@ const MessageInput = ({ activeThread }: IProps) => {
           onResize={resizeContentHeight}
           onChange={(e) => notifyTyping(e.target.value)}
           ref={ref}
+          id="input-box"
           onPressEnter={({ shiftKey }) => !shiftKey && submitForm()}
           placeholder="Type your message..."
         />

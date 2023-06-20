@@ -3,7 +3,7 @@ import { IThread, IThreadScroll, ThreadTypeEnum } from "../api/types";
 import MessageBox from "./MessageBox";
 import { useEffect, useRef, useState } from "react";
 import { resizeContentHeight } from "../constants/helpers";
-import { checkIfElementVisible } from "../../../utils/dom";
+import { checkIfElementVisible, inputFocus } from "../../../utils/dom";
 import { THREAD_LAST_SCROLL, layoutPrimaryColor } from "../../../settings";
 import { ClockCircleOutlined } from "@ant-design/icons";
 
@@ -62,6 +62,7 @@ const InboxContent = ({ thread, userId, isNewThread }: IProps) => {
   const onIndicatorClick = () => {
     if (ref.current) {
       scrollTo(ref.current.scrollHeight);
+      inputFocus();
     }
 
     setNewMessagePopUp(false);
