@@ -1,7 +1,7 @@
 import { List } from "antd";
-import { IThread, ThreadTypeEnum } from "../api/types";
+import { IThread, IThreadScroll, ThreadTypeEnum } from "../api/types";
 import MessageBox from "./MessageBox";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { resizeContentHeight } from "../constants/helpers";
 import { checkIfElementVisible } from "../../../utils/dom";
 import { THREAD_LAST_SCROLL } from "../../../settings";
@@ -9,40 +9,36 @@ import { THREAD_LAST_SCROLL } from "../../../settings";
 interface IProps {
   thread: IThread;
   userId: string;
+  isNewThread: boolean;
 }
 
-const InboxContent = ({ thread, userId }: IProps) => {
+const InboxContent = ({ thread, userId, isNewThread }: IProps) => {
   const { type } = thread;
   const ref = useRef<HTMLDivElement>(null);
   const lastMessageRef = useRef<HTMLDivElement>(null);
 
+  const messageLength = thread.messages.length - 1;
+
   const chatScroll = () => {
-    if (ref.current && lastMessageRef.current) {
-      const scrollHeight =
-        THREAD_LAST_SCROLL.get(thread.id) ?? ref.current.scrollHeight;
-
-      console.log("xx", scrollHeight);
-
-      if (
-        !scrollHeight ||
-        checkIfElementVisible(lastMessageRef.current, true)
-      ) {
-        ref.current.scrollTop = scrollHeight;
+    if (ref.current) {
+      if (isNewThread) {
+        const savedScroll: IThreadScroll | undefined = THREAD_LAST_SCROLL.get(
+          thread.id
+        );
+        ref.current.scrollTop =
+          savedScroll?.mSize === messageLength + 1
+            ? savedScroll.pos
+            : ref.current.scrollHeight;
       } else {
-        // show pop up
+        if (
+          lastMessageRef.current &&
+          checkIfElementVisible(lastMessageRef.current, true)
+        ) {
+          ref.current.scrollTop = ref.current.scrollHeight;
+        } else {
+          // show pop up
+        }
       }
-
-      // scroll if last message is in viewport or if it's initial chat scroll
-
-      // if (
-      //   !ref.current.scrollTop ||
-      //   checkIfElementVisible(lastMessageRef.current, true)
-      // ) {
-      //   // get exiting thread's scroll position
-      //   const lastScroll = THREAD_LAST_SCROLL.get(thread.id);
-      //   const scrollHeight = lastScroll || ref.current.scrollHeight;
-      //   ref.current.scrollTop = scrollHeight;
-      // }
     }
   };
 
@@ -53,8 +49,6 @@ const InboxContent = ({ thread, userId }: IProps) => {
   useEffect(() => {
     chatScroll();
   }, [thread]);
-
-  const messageLength = thread.messages.length - 1;
 
   return type === ThreadTypeEnum.Request ? (
     <span>Request is pending approval</span>

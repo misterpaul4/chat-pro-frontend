@@ -1,5 +1,5 @@
 import { List, Space, Typography } from "antd";
-import { IInbox, IThread, ThreadTypeEnum } from "../api/types";
+import { IInbox, IThread, IThreadScroll, ThreadTypeEnum } from "../api/types";
 import { capitalize } from "../../../utils/strings";
 import { useDispatch, useSelector } from "react-redux";
 import { setActiveThread } from "../slice/homeSlice";
@@ -19,10 +19,10 @@ import { getLastMessageTime } from "../../../app/lib/helpers/time";
 
 interface IProps {
   list: IInbox | undefined;
-  activeThreadId?: string | undefined;
+  activeThread?: IThread | undefined;
 }
 
-const SideBarBody = ({ list, activeThreadId }: IProps) => {
+const SideBarBody = ({ list, activeThread }: IProps) => {
   const dispatch = useDispatch();
   const typingState = useContext(typingContext);
 
@@ -54,21 +54,28 @@ const SideBarBody = ({ list, activeThreadId }: IProps) => {
     };
   };
 
+  const activeThreadId = activeThread?.id;
+
   const onThreadClick = (thread: IThread) => {
-    const activeThreadScrollPos =
-      document.querySelector("#message-list")?.scrollTop;
+    if (activeThreadId !== thread.id) {
+      if (activeThreadId) {
+        const activeThreadScrollPos =
+          document.querySelector("#message-list")?.scrollTop;
+        const threadLastScrollKeys = Array.from(THREAD_LAST_SCROLL.keys());
 
-    if (activeThreadId) {
-      const threadLastScrollKeys = Array.from(THREAD_LAST_SCROLL.keys());
+        if (SETTINGS.maxLastScrolls === threadLastScrollKeys.length) {
+          THREAD_LAST_SCROLL.delete(threadLastScrollKeys[0]);
+        }
 
-      if (SETTINGS.maxLastScrolls === threadLastScrollKeys.length) {
-        THREAD_LAST_SCROLL.delete(threadLastScrollKeys[0]);
+        const toSave: IThreadScroll = {
+          pos: activeThreadScrollPos ?? 0,
+          mSize: activeThread.messages.length,
+        };
+
+        THREAD_LAST_SCROLL.set(activeThreadId, toSave);
       }
-
-      THREAD_LAST_SCROLL.set(activeThreadId, activeThreadScrollPos);
+      dispatch(setActiveThread(thread));
     }
-
-    dispatch(setActiveThread(thread));
   };
 
   return (
@@ -110,6 +117,7 @@ const SideBarBody = ({ list, activeThreadId }: IProps) => {
                   )}
                   <em style={{ visibility: "hidden" }}>"</em>
                 </div>
+                {item.id}
               </Space>
             </Space>
           </List.Item>

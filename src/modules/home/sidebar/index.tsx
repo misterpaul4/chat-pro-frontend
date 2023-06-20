@@ -52,7 +52,7 @@ const SideBar = ({
           <SideBarHead activeTab={activeTab} />
           <div className="mt-2">
             <SideBarBody
-              activeThreadId={activeThread?.id}
+              activeThread={activeThread}
               list={activeTab === "inbox" ? inbox : request}
             />
           </div>

@@ -13,10 +13,13 @@ interface IProps {
 }
 
 const MessageContent = ({ onlineContacts }: IProps) => {
-  const { activeThread, userId } = useSelector((state: RootState) => ({
-    activeThread: state.app.activeThread,
-    userId: state.user.user.id,
-  }));
+  const { activeThread, userId, isNewThread } = useSelector(
+    (state: RootState) => ({
+      activeThread: state.app.activeThread,
+      isNewThread: state.app.isNewThreadDisplay,
+      userId: state.user.user.id,
+    })
+  );
 
   const [onlineUsers, dispatchIsOnlineStatus] = useReducer(
     onlineStatusReducer,
@@ -46,7 +49,11 @@ const MessageContent = ({ onlineContacts }: IProps) => {
       activeThread.createdBy !== userId ? (
         <RequestContent {...activeThread} />
       ) : (
-        <InboxContent thread={activeThread} userId={userId} />
+        <InboxContent
+          thread={activeThread}
+          isNewThread={isNewThread}
+          userId={userId}
+        />
       )}
     </div>
   );

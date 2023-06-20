@@ -4,14 +4,19 @@ import { $tabType } from "../sidebar/types";
 import { getLs, setLS } from "../../../app/lib/helpers/localStorage";
 import { IMessage, IThread } from "../api/types";
 
-export interface IHomeSlice {
+export interface IHomeSliceBase {
   activeThread: IThread | undefined;
   activeTab: $tabType;
+}
+
+export interface IHomeSlice extends IHomeSliceBase {
+  isNewThreadDisplay: boolean;
 }
 
 const initialState: IHomeSlice = {
   activeThread: undefined,
   activeTab: getLs("activeTab") ?? "inbox",
+  isNewThreadDisplay: false,
 };
 
 export const homeSlice = createSlice({
@@ -19,13 +24,17 @@ export const homeSlice = createSlice({
   initialState,
   reducers: {
     setActiveThread: (state, action: PayloadAction<IThread | undefined>) => {
-      return { ...state, activeThread: action.payload };
+      return {
+        ...state,
+        activeThread: action.payload,
+        isNewThreadDisplay: true,
+      };
     },
     setActiveTab: (state, action: PayloadAction<$tabType>) => {
       setLS("activeTab", action.payload);
       return { ...state, activeTab: action.payload };
     },
-    setRequestApproval: (state, action: PayloadAction<IHomeSlice>) => {
+    setRequestApproval: (state, action: PayloadAction<IHomeSliceBase>) => {
       setLS("activeTab", action.payload.activeTab);
       return {
         ...state,
@@ -51,7 +60,11 @@ export const homeSlice = createSlice({
           ...state.activeThread,
           messages: [action.payload, ...state.activeThread.messages],
         };
-        return { ...state, activeThread: activeThreadCopy };
+        return {
+          ...state,
+          activeThread: activeThreadCopy,
+          isNewThreadDisplay: false,
+        };
       }
       return state;
     },
