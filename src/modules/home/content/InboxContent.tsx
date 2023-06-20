@@ -25,6 +25,13 @@ const InboxContent = ({ thread, userId, isNewThread }: IProps) => {
     ref.current!.scrollTop = pos;
   };
 
+  const removeNewMessageIndicator = () => {
+    if (checkIfElementVisible(lastMessageRef.current!)) {
+      setNewMessagePopUp(false);
+      ref.current!.removeEventListener("scroll", removeNewMessageIndicator);
+    }
+  };
+
   const chatScroll = () => {
     if (ref.current) {
       if (isNewThread) {
@@ -48,13 +55,7 @@ const InboxContent = ({ thread, userId, isNewThread }: IProps) => {
           setNewMessagePopUp(true);
           // add event listener for scroll
           // dispparear if last message in viewport
-          ref.current.addEventListener("scroll", () => {
-            console.log("xx SCROLLING");
-
-            if (checkIfElementVisible(lastMessageRef.current!, true)) {
-              setNewMessagePopUp(false);
-            }
-          });
+          ref.current.addEventListener("scroll", removeNewMessageIndicator);
         }
       }
     }
@@ -88,14 +89,7 @@ const InboxContent = ({ thread, userId, isNewThread }: IProps) => {
           const { message, createdAt, senderId } =
             thread.messages[messageLength - index];
           const fromUser = senderId === userId;
-
-          let shouldSetLastMessageRef = false;
-
-          if (messageLength - 1 > -1) {
-            shouldSetLastMessageRef = index === messageLength - 1;
-          } else {
-            shouldSetLastMessageRef = index === messageLength;
-          }
+          const shouldSetLastMessageRef = index === messageLength;
 
           return (
             <List.Item
