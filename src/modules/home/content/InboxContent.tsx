@@ -15,6 +15,7 @@ interface IProps {
 
 const InboxContent = ({ thread, userId, isNewThread }: IProps) => {
   const [newMessagePopUp, setNewMessagePopUp] = useState(false);
+  const [scrollToBottomPopUp, setScrollToBottomPopUp] = useState(false);
   const { type } = thread;
   const ref = useRef<HTMLDivElement>(null);
   const lastMessageRef = useRef<HTMLDivElement>(null);
@@ -25,11 +26,13 @@ const InboxContent = ({ thread, userId, isNewThread }: IProps) => {
     ref.current!.scrollTop = pos;
   };
 
-  const removeNewMessageIndicator = () => {
-    if (checkIfElementVisible(lastMessageRef.current!)) {
-      setNewMessagePopUp(false);
-      ref.current!.removeEventListener("scroll", removeNewMessageIndicator);
-    }
+  const smoothScroll = (pos: number) => {
+    ref.current!.scrollTo({
+      top: pos,
+      behavior: "smooth",
+    });
+
+    inputFocus();
   };
 
   const chatScroll = () => {
@@ -53,7 +56,7 @@ const InboxContent = ({ thread, userId, isNewThread }: IProps) => {
           scrollTo(ref.current.scrollHeight);
         } else {
           setNewMessagePopUp(true);
-          ref.current.addEventListener("scroll", removeNewMessageIndicator);
+          setScrollToBottomPopUp(false);
         }
       }
     }
@@ -64,25 +67,34 @@ const InboxContent = ({ thread, userId, isNewThread }: IProps) => {
   }, []);
 
   useEffect(() => {
+    const handleScrollToButtom = () => {
+      if (checkIfElementVisible(lastMessageRef.current!)) {
+        setNewMessagePopUp(false);
+        setScrollToBottomPopUp(false);
+      } else {
+        !newMessagePopUp && setScrollToBottomPopUp(true);
+      }
+    };
+
+    ref.current?.addEventListener("scroll", handleScrollToButtom);
+
+    return () => {
+      ref.current?.removeEventListener("scroll", handleScrollToButtom);
+    };
+  }, [newMessagePopUp]);
+
+  useEffect(() => {
     chatScroll();
   }, [thread]);
 
   const onIndicatorClick = () => {
     if (ref.current) {
-      scrollTo(ref.current.scrollHeight);
-      inputFocus();
+      smoothScroll(ref.current.scrollHeight);
     }
-
-    setNewMessagePopUp(false);
   };
 
   const onScrollBottomClick = () => {
-    if (ref.current) {
-      window.scrollTo({
-        top: ref.current.scrollHeight,
-        behavior: "smooth",
-      });
-    }
+    smoothScroll(ref.current!.scrollHeight);
   };
 
   return type === ThreadTypeEnum.Request ? (
@@ -125,12 +137,14 @@ const InboxContent = ({ thread, userId, isNewThread }: IProps) => {
           New message
         </Tag>
       )}
-      <Button
-        onClick={onScrollBottomClick}
-        className="scroll-to-bottom-btn"
-        shape="circle"
-        icon={<ArrowDownOutlined />}
-      />
+      {scrollToBottomPopUp && (
+        <Button
+          onClick={onScrollBottomClick}
+          className="scroll-to-bottom-btn"
+          shape="circle"
+          icon={<ArrowDownOutlined />}
+        />
+      )}
     </div>
   );
 };
