@@ -1,15 +1,17 @@
 import { Form, Input, InputRef } from "antd";
 import { useEffect, useRef, useState } from "react";
 import { useSendMessageMutation } from "../api/mutationEndpoints";
-import { IThread } from "../api/types";
+import { IThread, IThreadScroll } from "../api/types";
 import { resizeContentHeight } from "../constants/helpers";
 import { emitIsTyping } from "../api/sockets";
+import { THREAD_LAST_SCROLL } from "../../../settings";
 
 interface IProps {
   activeThread: IThread | undefined;
+  isNewThread: boolean;
 }
 
-const MessageInput = ({ activeThread }: IProps) => {
+const MessageInput = ({ activeThread, isNewThread }: IProps) => {
   const [form] = Form.useForm();
   const ref = useRef<InputRef>(null);
   const [sendMessage] = useSendMessageMutation();
@@ -18,8 +20,26 @@ const MessageInput = ({ activeThread }: IProps) => {
 
   // place cursor on input
   useEffect(() => {
-    activeThread && ref.current?.focus();
-  }, [activeThread]);
+    let delay: number;
+    if (activeThread) {
+      if (isNewThread) {
+        const unSentMessage: IThreadScroll | undefined = THREAD_LAST_SCROLL.get(
+          activeThread.id
+        );
+
+        if (unSentMessage?.message) {
+          form.setFieldValue("message", unSentMessage.message);
+        } else {
+          form.resetFields(["message"]);
+        }
+      }
+
+      delay = setTimeout(() => {
+        activeThread && ref.current?.focus();
+      }, 200);
+    }
+    return () => clearTimeout(delay);
+  }, [activeThread, isNewThread]);
 
   // notify when not typing
   useEffect(() => {

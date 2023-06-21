@@ -16,6 +16,7 @@ import { useContext } from "react";
 import { typingContext } from "../context/typingContext";
 import Typing from "../../../app/common/IsTyping";
 import { getLastMessageTime } from "../../../app/lib/helpers/time";
+import { getMessageContent } from "../../../utils/dom";
 
 interface IProps {
   list: IInbox | undefined;
@@ -70,6 +71,7 @@ const SideBarBody = ({ list, activeThread }: IProps) => {
         const toSave: IThreadScroll = {
           pos: activeThreadScrollPos ?? 0,
           mSize: activeThread.messages.length,
+          message: getMessageContent(),
         };
 
         THREAD_LAST_SCROLL.set(activeThreadId, toSave);

@@ -98,4 +98,6 @@ export type $onlineStatus = string[];
 export interface IThreadScroll {
   pos: number;
   mSize: number;
+  message: string | undefined | null;
 }
+

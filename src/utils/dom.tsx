@@ -2,7 +2,6 @@ export const checkIfElementVisible = (
   el: HTMLElement,
   partiallyVisible = false
 ) => {
-  // thanks to ==> https://www.30secondsofcode.org/js/s/element-is-visible-in-viewport/
   const { top, left, bottom, right } = el.getBoundingClientRect();
   const { innerHeight, innerWidth } = window;
   return partiallyVisible
@@ -16,3 +15,9 @@ export const inputFocus = () => {
   const inputEle = document.getElementById("input-box");
   inputEle?.focus();
 };
+
+export const getMessageContent = () => {
+  const inputEle = document.getElementById("input-box");
+  return inputEle?.textContent;
+};
+

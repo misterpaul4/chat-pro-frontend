@@ -16,8 +16,8 @@
   + redesign of actions
 - starring messages
 - reply
-- remember typing message
-- scroll to bottom button *
+# - remember typing message *
+# - scroll to bottom button *
 - last seen
 - fix sidebar scroll
 - basic e2e encryption

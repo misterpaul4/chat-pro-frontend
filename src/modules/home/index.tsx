@@ -33,10 +33,11 @@ import { typingContext } from "./context/typingContext";
 const { Sider, Content, Header, Footer } = Layout;
 
 const Home = () => {
-  const { user, darkMode, activeThread } = useSelector((state: RootState) => ({
+  const { user, darkMode, activeThread, isNewThread } = useSelector((state: RootState) => ({
     user: state.user.user,
     darkMode: state.user.darkMode,
     activeThread: state.app.activeThread,
+    isNewThread: state.app.isNewThreadDisplay,
   }));
 
   const dispatch = useDispatch();
@@ -171,7 +172,7 @@ const Home = () => {
           </typingContext.Provider>
         </Content>
         <Footer className="footerStyle p-1">
-          <MessageInput activeThread={activeThread} />
+          <MessageInput activeThread={activeThread} isNewThread={isNewThread} />
         </Footer>
       </Layout>
     </Layout>
