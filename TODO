@@ -15,6 +15,7 @@
 - contact fix
   + redesign of actions
 - starring messages
+- fix bug with chatscroll when pending request in inbox view is clicked and another inbox content is clicked
 - reply
 # - remember typing message *
 # - scroll to bottom button *
