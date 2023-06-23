@@ -13,7 +13,7 @@ import SideBar from "./sidebar";
 import { ContentLoader, SiderLoader } from "./components/Loaders";
 import MessageContent from "./content";
 import ContactListDrawer from "./components/ContactListDrawer";
-import { useReducer } from "react";
+import { useEffect, useReducer } from "react";
 import {
   messageActionType,
   messageInitialState,
@@ -22,6 +22,7 @@ import {
 import useSocketSubscription from "../../app/hooks/useSocketSubscription";
 import { IThread, ITypingResponse } from "./api/types";
 import {
+  setActiveThread,
   setNewMessage,
   setRequestApprovalUpdate,
   setRequestRejectionUpdate,
@@ -33,12 +34,14 @@ import { typingContext } from "./context/typingContext";
 const { Sider, Content, Header, Footer } = Layout;
 
 const Home = () => {
-  const { user, darkMode, activeThread, isNewThread } = useSelector((state: RootState) => ({
-    user: state.user.user,
-    darkMode: state.user.darkMode,
-    activeThread: state.app.activeThread,
-    isNewThread: state.app.isNewThreadDisplay,
-  }));
+  const { user, darkMode, activeThread, isNewThread } = useSelector(
+    (state: RootState) => ({
+      user: state.user.user,
+      darkMode: state.user.darkMode,
+      activeThread: state.app.activeThread,
+      isNewThread: state.app.isNewThreadDisplay,
+    })
+  );
 
   const dispatch = useDispatch();
 
@@ -137,6 +140,12 @@ const Home = () => {
       },
     },
   ]);
+
+  useEffect(() => {
+    return () => {
+      dispatch(setActiveThread(undefined));
+    };
+  }, []);
 
   return (
     <Layout hasSider className="message-container">
