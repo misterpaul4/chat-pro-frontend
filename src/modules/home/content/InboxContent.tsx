@@ -1,4 +1,4 @@
-import { Button, List, Tag } from "antd";
+import { Button, List, Tag, Typography } from "antd";
 import { IThread, IThreadScroll, ThreadTypeEnum } from "../api/types";
 import MessageBox from "./MessageBox";
 import { useEffect, useRef, useState } from "react";
@@ -97,9 +97,7 @@ const InboxContent = ({ thread, userId, isNewThread }: IProps) => {
     smoothScroll(ref.current!.scrollHeight);
   };
 
-  return type === ThreadTypeEnum.Request ? (
-    <span>Request is pending approval</span>
-  ) : (
+  return (
     <div ref={ref} id="message-list">
       <List
         dataSource={thread.messages}
@@ -144,6 +142,12 @@ const InboxContent = ({ thread, userId, isNewThread }: IProps) => {
           shape="circle"
           icon={<ArrowDownOutlined />}
         />
+      )}
+
+      {type === ThreadTypeEnum.Request && (
+        <Typography.Title className="mt-5" level={3}>
+          Request not approved
+        </Typography.Title>
       )}
     </div>
   );

@@ -49,7 +49,7 @@ export interface IThread extends IBaseType {
   updatedBy: string;
   title: string;
   description: string;
-  type: ThreadTypeEnum;
+  type: string;
   messages: IMessage[];
   users: IUser[];
 }

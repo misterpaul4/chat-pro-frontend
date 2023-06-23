@@ -1,7 +1,7 @@
 import { Form, Input, InputRef } from "antd";
 import { useEffect, useRef, useState } from "react";
 import { useSendMessageMutation } from "../api/mutationEndpoints";
-import { IThread, IThreadScroll } from "../api/types";
+import { IThread, IThreadScroll, ThreadTypeEnum } from "../api/types";
 import { resizeContentHeight } from "../constants/helpers";
 import { emitIsTyping } from "../api/sockets";
 import { THREAD_LAST_SCROLL } from "../../../settings";
@@ -84,6 +84,7 @@ const MessageInput = ({ activeThread, isNewThread }: IProps) => {
       <Form.Item className="m-0" name="message">
         <Input.TextArea
           onResize={resizeContentHeight}
+          disabled={activeThread.type === ThreadTypeEnum.Request}
           onChange={(e) => notifyTyping(e.target.value)}
           ref={ref}
           id="input-box"
