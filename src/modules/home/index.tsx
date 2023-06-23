@@ -30,6 +30,7 @@ import {
 import MessageInput from "./components/MessageInput";
 import { typingInitialState, typingReducer } from "./context/typingReducer";
 import { typingContext } from "./context/typingContext";
+import { playNotificationSound } from "../../app/lib/helpers/media";
 
 const { Sider, Content, Header, Footer } = Layout;
 
@@ -89,6 +90,7 @@ const Home = () => {
     {
       event: "newMessage",
       handler: (data) => {
+        data.senderId !== user.id && playNotificationSound();
         dispatch(setNewMessage(data));
         dispatchInbox({ type: messageActionType.NewMessage, payload: data });
       },

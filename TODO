@@ -6,7 +6,7 @@
 - new message alert
   # + if in active thread and lastmessage not in view, show pop up
   # + when pop up should disappear *
-  + sound
+  # + sound *
 # - remember scroll position for previous thread *
 # - prevent auto scroll if in current thread and there's an incoming message
 - fix bugs with new message request not showing for sender
@@ -15,7 +15,7 @@
 - contact fix
   + redesign of actions
 - starring messages
-- fix bug with chatscroll when pending request in inbox view is clicked and another inbox content is clicked
+# - fix bug with chatscroll when pending request in inbox view is clicked and another inbox content is clicked
 - reply
 # - remember typing message *
 # - scroll to bottom button *
