@@ -10,7 +10,7 @@
 # - remember scroll position for previous thread *
 # - prevent auto scroll if in current thread and there's an incoming message
 - fix bugs with new message request not showing for sender
-- read count
+- read count *
 - search
 - contact fix
   + redesign of actions
@@ -23,6 +23,7 @@
 - fix sidebar scroll
 - basic e2e encryption
 - call (pairjs)
+- darkmode
 - attachments
   + image and pdf
   + audio files
