@@ -95,7 +95,7 @@ export type $typing = { [key in string]: ITypingResponse["clientId"] };
 
 export type $onlineStatus = string[];
 
-export interface IThreadScroll {
+export interface IMemory {
   pos: number;
   mSize: number;
   message: string | undefined | null;

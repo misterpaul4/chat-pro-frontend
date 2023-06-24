@@ -1,10 +1,10 @@
 import { Button, List, Tag, Typography } from "antd";
-import { IThread, IThreadScroll, ThreadTypeEnum } from "../api/types";
+import { IThread, IMemory, ThreadTypeEnum } from "../api/types";
 import MessageBox from "./MessageBox";
 import { useEffect, useRef, useState } from "react";
 import { resizeContentHeight } from "../constants/helpers";
 import { checkIfElementVisible, inputFocus } from "../../../utils/dom";
-import { THREAD_LAST_SCROLL, layoutPrimaryColor } from "../../../settings";
+import { MEMORY, layoutPrimaryColor } from "../../../settings";
 import { ArrowDownOutlined, ClockCircleOutlined } from "@ant-design/icons";
 
 interface IProps {
@@ -38,9 +38,7 @@ const InboxContent = ({ thread, userId, isNewThread }: IProps) => {
   const chatScroll = () => {
     if (ref.current) {
       if (isNewThread) {
-        const savedScroll: IThreadScroll | undefined = THREAD_LAST_SCROLL.get(
-          thread.id
-        );
+        const savedScroll: IMemory | undefined = MEMORY.get(thread.id);
         scrollTo(
           savedScroll?.mSize === messageLength + 1
             ? savedScroll.pos

@@ -1,10 +1,10 @@
 import { Form, Input, InputRef } from "antd";
 import { useEffect, useRef, useState } from "react";
 import { useSendMessageMutation } from "../api/mutationEndpoints";
-import { IThread, IThreadScroll, ThreadTypeEnum } from "../api/types";
+import { IThread, IMemory, ThreadTypeEnum } from "../api/types";
 import { resizeContentHeight } from "../constants/helpers";
 import { emitIsTyping } from "../api/sockets";
-import { THREAD_LAST_SCROLL } from "../../../settings";
+import { MEMORY } from "../../../settings";
 
 interface IProps {
   activeThread: IThread | undefined;
@@ -23,9 +23,7 @@ const MessageInput = ({ activeThread, isNewThread }: IProps) => {
     let delay: number;
     if (activeThread) {
       if (isNewThread) {
-        const unSentMessage: IThreadScroll | undefined = THREAD_LAST_SCROLL.get(
-          activeThread.id
-        );
+        const unSentMessage: IMemory | undefined = MEMORY.get(activeThread.id);
 
         if (unSentMessage?.message) {
           form.setFieldValue("message", unSentMessage.message);

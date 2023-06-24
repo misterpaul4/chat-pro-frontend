@@ -1,11 +1,11 @@
 import { List, Space, Typography } from "antd";
-import { IInbox, IThread, IThreadScroll, ThreadTypeEnum } from "../api/types";
+import { IInbox, IThread, IMemory, ThreadTypeEnum } from "../api/types";
 import { capitalize } from "../../../utils/strings";
 import { useDispatch, useSelector } from "react-redux";
 import { setActiveThread } from "../slice/homeSlice";
 import {
   SETTINGS,
-  THREAD_LAST_SCROLL,
+  MEMORY,
   hoverColor,
   layoutPrimaryColor,
 } from "../../../settings";
@@ -62,19 +62,19 @@ const SideBarBody = ({ list, activeThread }: IProps) => {
       if (activeThreadId) {
         const activeThreadScrollPos =
           document.querySelector("#message-list")?.scrollTop;
-        const threadLastScrollKeys = Array.from(THREAD_LAST_SCROLL.keys());
+        const threadLastScrollKeys = Array.from(MEMORY.keys());
 
         if (SETTINGS.maxLastScrolls === threadLastScrollKeys.length) {
-          THREAD_LAST_SCROLL.delete(threadLastScrollKeys[0]);
+          MEMORY.delete(threadLastScrollKeys[0]);
         }
 
-        const toSave: IThreadScroll = {
+        const toSave: IMemory = {
           pos: activeThreadScrollPos ?? 0,
           mSize: activeThread.messages.length,
           message: getMessageContent(),
         };
 
-        THREAD_LAST_SCROLL.set(activeThreadId, toSave);
+        MEMORY.set(activeThreadId, toSave);
       }
       dispatch(setActiveThread(thread));
     }
