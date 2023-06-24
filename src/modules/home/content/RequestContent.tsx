@@ -41,11 +41,11 @@ const RequestContent = (props: IThread) => {
     });
   };
 
-  const { createdAt, message } = props.messages[0];
+  const threadMessage = props.messages[0];
 
   return (
     <>
-      <MessageBox createdAt={createdAt} message={message} fromUser={false} />
+      <MessageBox payload={threadMessage} fromUser={false} />
 
       <Card className="d-inline-block mt-5">
         <Result

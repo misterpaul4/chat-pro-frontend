@@ -3,18 +3,20 @@ import { CSSProperties } from "react";
 import { getMessageTime } from "../../../app/lib/helpers/time";
 import { DownOutlined } from "@ant-design/icons";
 import { actions } from "./messageBoxActions";
+import { IMessage } from "../api/types";
 
 interface IProps {
-  createdAt: string;
-  message: string;
   fromUser: boolean;
   withActions?: boolean;
+  payload: IMessage;
 }
 
-const MessageBox = ({ message, fromUser, createdAt, withActions }: IProps) => {
+const MessageBox = ({ fromUser, withActions, payload }: IProps) => {
   const style: CSSProperties = fromUser
     ? { background: "gray", color: "white" }
     : { background: "white" };
+
+  const { createdAt, message } = payload;
 
   return (
     <>
@@ -26,7 +28,7 @@ const MessageBox = ({ message, fromUser, createdAt, withActions }: IProps) => {
         {withActions && (
           <Dropdown
             menu={{
-              items: actions as any,
+              items: actions(payload) as any,
               className: "cursor-pointer mb-action-items",
               selectable: false,
             }}

@@ -1,10 +1,10 @@
 import { Button, List, Tag, Typography } from "antd";
-import { IThread, IMemory, ThreadTypeEnum } from "../api/types";
+import { IThread, IThreadMemory, ThreadTypeEnum } from "../api/types";
 import MessageBox from "./MessageBox";
 import { useEffect, useRef, useState } from "react";
 import { resizeContentHeight } from "../constants/helpers";
 import { checkIfElementVisible, inputFocus } from "../../../utils/dom";
-import { MEMORY, layoutPrimaryColor } from "../../../settings";
+import { THREAD_MEMORY, layoutPrimaryColor } from "../../../settings";
 import { ArrowDownOutlined, ClockCircleOutlined } from "@ant-design/icons";
 
 interface IProps {
@@ -38,7 +38,9 @@ const InboxContent = ({ thread, userId, isNewThread }: IProps) => {
   const chatScroll = () => {
     if (ref.current) {
       if (isNewThread) {
-        const savedScroll: IMemory | undefined = MEMORY.get(thread.id);
+        const savedScroll: IThreadMemory | undefined = THREAD_MEMORY.get(
+          thread.id
+        );
         scrollTo(
           savedScroll?.mSize === messageLength + 1
             ? savedScroll.pos
@@ -101,8 +103,8 @@ const InboxContent = ({ thread, userId, isNewThread }: IProps) => {
         dataSource={thread.messages}
         className="px-3"
         renderItem={(_, index) => {
-          const { message, createdAt, senderId } =
-            thread.messages[messageLength - index];
+          const threadMessage = thread.messages[messageLength - index];
+          const { senderId } = threadMessage;
           const fromUser = senderId === userId;
           const shouldSetLastMessageRef = index === messageLength;
 
@@ -115,9 +117,8 @@ const InboxContent = ({ thread, userId, isNewThread }: IProps) => {
             >
               <MessageBox
                 withActions
-                createdAt={createdAt}
-                message={message}
                 fromUser={fromUser}
+                payload={threadMessage}
               />
             </List.Item>
           );
