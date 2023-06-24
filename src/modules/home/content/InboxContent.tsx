@@ -116,6 +116,7 @@ const InboxContent = ({ thread, userId, isNewThread }: IProps) => {
               }`}
             >
               <MessageBox
+                withActions
                 createdAt={createdAt}
                 message={message}
                 fromUser={fromUser}

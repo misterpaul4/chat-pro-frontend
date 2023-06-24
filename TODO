@@ -10,13 +10,13 @@
 # - remember scroll position for previous thread *
 # - prevent auto scroll if in current thread and there's an incoming message
 - fix bugs with new message request not showing for sender
-- read count *
+- read count
 - search
 - contact fix
   + redesign of actions
 - starring messages
 # - fix bug with chatscroll when pending request in inbox view is clicked and another inbox content is clicked
-- reply
+- reply *
 # - remember typing message *
 # - scroll to bottom button *
 - last seen
