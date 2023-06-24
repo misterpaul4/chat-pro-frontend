@@ -4,15 +4,13 @@ import { IMessage, IThreadMemory } from "../api/types";
 import { THREAD_MEMORY } from "../../../settings";
 
 const onReply = (message: IMessage) => {
-  const current: IThreadMemory = THREAD_MEMORY.get(message.id) || {};
+  const current: IThreadMemory = THREAD_MEMORY.get(message.threadId) || {};
   const value: IThreadMemory = { ...current, replyingTo: message };
 
-  THREAD_MEMORY.set(message.id, value);
+  THREAD_MEMORY.set(message.threadId, value);
 };
 
-export const actions: (
-  message: IMessage
-) => {
+export const actions: (message: IMessage) => {
   label: string;
   icon: React.ReactElement;
   onClick?: Function;
