@@ -79,6 +79,7 @@
 
 #message-list {
   overflow-y: auto;
+  overflow-x: hidden;
   position: relative;
 
   .new-message-indicator {
@@ -88,10 +89,10 @@
   }
 
   .scroll-to-bottom-btn {
-    position: fixed;
-    bottom: 8em;
+    position: sticky;
+    bottom: 3em;
     right: 2em;
-    z-index: 2;
+    float: right;
   }
 
   .message-box {

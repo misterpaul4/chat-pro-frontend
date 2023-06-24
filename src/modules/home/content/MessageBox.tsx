@@ -27,6 +27,7 @@ const MessageBox = ({ fromUser, withActions, payload }: IProps) => {
       >
         {withActions && (
           <Dropdown
+            getPopupContainer={(trigger) => trigger.parentElement!}
             menu={{
               items: actions(payload) as any,
               className: "cursor-pointer mb-action-items",
