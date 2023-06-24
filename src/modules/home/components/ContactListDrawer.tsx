@@ -53,6 +53,11 @@ const ContactListDrawer = ({ contactList }: IProps) => {
   const contactLength = contactList.length;
 
   const applySearch = (term: string) => {
+    if (term === "") {
+      setFilteredList(contactList);
+
+      return;
+    }
     if (term) {
       const result = contactList.filter(
         (ct) =>
@@ -81,7 +86,7 @@ const ContactListDrawer = ({ contactList }: IProps) => {
       }
     >
       {/* input area */}
-      {contactLength > 5 && (
+      {contactLength > 3 && (
         <Input
           onChange={(e) => applySearch(e.target.value.trim())}
           placeholder="Search..."
@@ -107,7 +112,7 @@ const ContactListDrawer = ({ contactList }: IProps) => {
                   </span>
                 </Space>
               </Typography.Text>
-
+              {/*
               <Space>
                 <Button
                   type="ghost"
@@ -143,7 +148,7 @@ const ContactListDrawer = ({ contactList }: IProps) => {
                     )
                   }
                 />
-              </Space>
+              </Space> */}
             </List.Item>
           );
         }}
