@@ -12,9 +12,12 @@ const onReply = (message: IMessage) => {
 
 export const actions: (
   message: IMessage
-) => { label: string; icon: React.ReactElement; onClick?: Function }[] = (
-  message: IMessage
-) => [
+) => {
+  label: string;
+  icon: React.ReactElement;
+  onClick?: Function;
+  disabled?: boolean;
+}[] = (message: IMessage) => [
   {
     label: "Reply",
     icon: <EnterOutlined />,
@@ -23,10 +26,12 @@ export const actions: (
   {
     label: "Star",
     icon: <StarOutlined />,
+    disabled: true,
   },
   {
     label: "Forward",
     icon: <Icon style={{ fontSize: 15 }} component={ForwardIcon} />,
+    disabled: true,
   },
 ];
 
