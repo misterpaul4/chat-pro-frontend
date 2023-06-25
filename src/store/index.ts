@@ -2,11 +2,13 @@ import { configureStore } from "@reduxjs/toolkit";
 import apis from "../app/api";
 import userReducer from "../modules/auth/control/userSlice";
 import homeReducer from "../modules/home/slice/homeSlice";
+import threadMemoryReducer from "../modules/home/slice/threadMemorySlice";
 
 export const store = configureStore({
   reducer: {
     user: userReducer,
     app: homeReducer,
+    memory: threadMemoryReducer,
     [apis.reducerPath]: apis.reducer,
   },
   middleware: (getDefaultMiddleware) =>

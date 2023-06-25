@@ -1,11 +1,13 @@
 import { Button, List, Tag, Typography } from "antd";
-import { IThread, IThreadMemory, ThreadTypeEnum } from "../api/types";
+import { IMessage, IThread, IThreadMemory, ThreadTypeEnum } from "../api/types";
 import MessageBox from "./MessageBox";
 import { useEffect, useRef, useState } from "react";
 import { resizeContentHeight } from "../constants/helpers";
 import { checkIfElementVisible, inputFocus } from "../../../utils/dom";
 import { THREAD_MEMORY, layoutPrimaryColor } from "../../../settings";
 import { ArrowDownOutlined, ClockCircleOutlined } from "@ant-design/icons";
+import { useDispatch } from "react-redux";
+import { setThreadMemory } from "../slice/threadMemorySlice";
 
 interface IProps {
   thread: IThread;
@@ -14,6 +16,7 @@ interface IProps {
 }
 
 const InboxContent = ({ thread, userId, isNewThread }: IProps) => {
+  const dispatch = useDispatch();
   const [newMessagePopUp, setNewMessagePopUp] = useState(false);
   const [scrollToBottomPopUp, setScrollToBottomPopUp] = useState(false);
   const { type } = thread;
@@ -97,6 +100,12 @@ const InboxContent = ({ thread, userId, isNewThread }: IProps) => {
     smoothScroll(ref.current!.scrollHeight);
   };
 
+  const onMessageReply = (message: IMessage) => {
+    dispatch(
+      setThreadMemory({ key: thread.id, value: { replyingTo: message } })
+    );
+  };
+
   return (
     <div ref={ref} id="message-list">
       <List
@@ -116,7 +125,7 @@ const InboxContent = ({ thread, userId, isNewThread }: IProps) => {
               }`}
             >
               <MessageBox
-                withActions
+                withActions={{ onReply: onMessageReply }}
                 fromUser={fromUser}
                 payload={threadMessage}
               />

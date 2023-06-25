@@ -1,13 +1,17 @@
 import { Card, Dropdown } from "antd";
 import { CSSProperties } from "react";
 import { getMessageTime } from "../../../app/lib/helpers/time";
-import { DownOutlined } from "@ant-design/icons";
-import { actions } from "./messageBoxActions";
+import Icon, {
+  DownOutlined,
+  EnterOutlined,
+  StarOutlined,
+} from "@ant-design/icons";
 import { IMessage } from "../api/types";
+import { ForwardIcon } from "../../../utils/icons";
 
 interface IProps {
   fromUser: boolean;
-  withActions?: boolean;
+  withActions?: { onReply: (message: IMessage) => void };
   payload: IMessage;
 }
 
@@ -29,7 +33,25 @@ const MessageBox = ({ fromUser, withActions, payload }: IProps) => {
           <Dropdown
             getPopupContainer={(trigger) => trigger.parentElement!}
             menu={{
-              items: actions(payload) as any,
+              items: [
+                {
+                  label: "Reply",
+                  icon: <EnterOutlined />,
+                  onClick: () => withActions.onReply(payload),
+                },
+                {
+                  label: "Star",
+                  icon: <StarOutlined />,
+                  disabled: true,
+                },
+                {
+                  label: "Forward",
+                  icon: (
+                    <Icon style={{ fontSize: 15 }} component={ForwardIcon} />
+                  ),
+                  disabled: true,
+                },
+              ] as any,
               className: "cursor-pointer mb-action-items",
               selectable: false,
             }}

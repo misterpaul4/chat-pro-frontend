@@ -35,14 +35,14 @@ import { playNotificationSound } from "../../app/lib/helpers/media";
 const { Sider, Content, Header, Footer } = Layout;
 
 const Home = () => {
-  const { user, darkMode, activeThread, isNewThread } = useSelector(
-    (state: RootState) => ({
+  const { user, darkMode, activeThread, isNewThread, threadMemory } =
+    useSelector((state: RootState) => ({
       user: state.user.user,
       darkMode: state.user.darkMode,
       activeThread: state.app.activeThread,
       isNewThread: state.app.isNewThreadDisplay,
-    })
-  );
+      threadMemory: state.memory,
+    }));
 
   const dispatch = useDispatch();
 
@@ -183,7 +183,12 @@ const Home = () => {
           </typingContext.Provider>
         </Content>
         <Footer className="footerStyle p-1">
-          <MessageInput activeThread={activeThread} isNewThread={isNewThread} />
+          <MessageInput
+            dispatch={dispatch}
+            threadMemory={threadMemory}
+            activeThread={activeThread}
+            isNewThread={isNewThread}
+          />
         </Footer>
       </Layout>
     </Layout>
