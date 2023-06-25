@@ -13,11 +13,12 @@ interface IProps {
 }
 
 const MessageContent = ({ onlineContacts }: IProps) => {
-  const { activeThread, userId, isNewThread } = useSelector(
+  const { activeThread, userId, isNewThread, threadMemory } = useSelector(
     (state: RootState) => ({
       activeThread: state.app.activeThread,
       isNewThread: state.app.isNewThreadDisplay,
       userId: state.user.user.id,
+      threadMemory: state.memory,
     })
   );
 
@@ -53,6 +54,7 @@ const MessageContent = ({ onlineContacts }: IProps) => {
           thread={activeThread}
           isNewThread={isNewThread}
           userId={userId}
+          threadMemory={threadMemory}
         />
       )}
     </div>

@@ -95,6 +95,7 @@ const MessageInput = ({
         value: { replyingTo: undefined },
       })
     );
+    ref.current?.focus();
   };
 
   const replyingTo = threadMemory[activeThread.id]?.replyingTo;

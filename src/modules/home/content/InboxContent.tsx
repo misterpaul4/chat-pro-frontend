@@ -7,21 +7,28 @@ import { checkIfElementVisible, inputFocus } from "../../../utils/dom";
 import { THREAD_MEMORY, layoutPrimaryColor } from "../../../settings";
 import { ArrowDownOutlined, ClockCircleOutlined } from "@ant-design/icons";
 import { useDispatch } from "react-redux";
-import { setThreadMemory } from "../slice/threadMemorySlice";
+import { $threadMemory, setThreadMemory } from "../slice/threadMemorySlice";
 
 interface IProps {
   thread: IThread;
   userId: string;
   isNewThread: boolean;
+  threadMemory: $threadMemory;
 }
 
-const InboxContent = ({ thread, userId, isNewThread }: IProps) => {
+const InboxContent = ({
+  thread,
+  userId,
+  isNewThread,
+  threadMemory,
+}: IProps) => {
   const dispatch = useDispatch();
   const [newMessagePopUp, setNewMessagePopUp] = useState(false);
   const [scrollToBottomPopUp, setScrollToBottomPopUp] = useState(false);
   const { type } = thread;
   const ref = useRef<HTMLDivElement>(null);
   const lastMessageRef = useRef<HTMLDivElement>(null);
+  const replyingTo = threadMemory[thread.id]?.replyingTo;
 
   const messageLength = thread.messages.length - 1;
 
@@ -67,7 +74,7 @@ const InboxContent = ({ thread, userId, isNewThread }: IProps) => {
 
   useEffect(() => {
     resizeContentHeight();
-  }, []);
+  }, [replyingTo]);
 
   useEffect(() => {
     const handleScrollToButtom = () => {
@@ -104,6 +111,7 @@ const InboxContent = ({ thread, userId, isNewThread }: IProps) => {
     dispatch(
       setThreadMemory({ key: thread.id, value: { replyingTo: message } })
     );
+    inputFocus();
   };
 
   return (
