@@ -188,6 +188,7 @@ const Home = () => {
             threadMemory={threadMemory}
             activeThread={activeThread}
             isNewThread={isNewThread}
+            userId={user.id}
           />
         </Footer>
       </Layout>

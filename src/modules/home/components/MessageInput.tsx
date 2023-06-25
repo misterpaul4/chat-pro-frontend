@@ -7,12 +7,14 @@ import { emitIsTyping } from "../api/sockets";
 import { THREAD_MEMORY } from "../../../settings";
 import { CloseOutlined } from "@ant-design/icons";
 import { $threadMemory, setThreadMemory } from "../slice/threadMemorySlice";
+import { capitalize } from "../../../utils/strings";
 
 interface IProps {
   activeThread: IThread | undefined;
   isNewThread: boolean;
   dispatch: Function;
   threadMemory: $threadMemory;
+  userId: string;
 }
 
 const MessageInput = ({
@@ -20,6 +22,7 @@ const MessageInput = ({
   isNewThread,
   dispatch,
   threadMemory,
+  userId,
 }: IProps) => {
   const [form] = Form.useForm();
   const ref = useRef<InputRef>(null);
@@ -100,14 +103,29 @@ const MessageInput = ({
 
   const replyingTo = threadMemory[activeThread.id]?.replyingTo;
 
+  const getReplySender = () => {
+    if (replyingTo!.senderId === userId) {
+      return "You";
+    } else {
+      const user = activeThread.users.find(
+        (user) => user.id === replyingTo!.senderId
+      );
+
+      return `${capitalize(user!.firstName)} ${capitalize(user!.lastName)}`;
+    }
+  };
+
   return (
     <>
       {replyingTo && (
         <div className="px-3 py-2 border rounded mb-1 bg-light position-relative pe-4">
+          <strong className="rounded" style={{ fontSize: "1rem" }}>
+            {getReplySender()}
+          </strong>
           <Typography.Paragraph
             className="mb-0 rounded"
             style={{ fontSize: "0.8rem" }}
-            ellipsis={{ rows: 1 }}
+            ellipsis={{ rows: 2 }}
           >
             {replyingTo.message}
           </Typography.Paragraph>
