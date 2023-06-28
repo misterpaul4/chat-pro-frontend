@@ -2,7 +2,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Outlet, useNavigate } from "react-router-dom";
 import { RootState } from "../../../store";
 import { paths } from "../../../utils/paths";
-import { ConfigProvider, Spin, notification } from "antd";
+import { ConfigProvider, Spin } from "antd";
 import { useEffect } from "react";
 import { useLazyGetSelfQuery } from "../../../modules/auth/api";
 import { setGetSelf } from "../../../modules/auth/control/userSlice";

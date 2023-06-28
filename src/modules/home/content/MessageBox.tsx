@@ -1,4 +1,4 @@
-import { Card, Dropdown } from "antd";
+import { Badge, Button, Card, Dropdown, Typography } from "antd";
 import { CSSProperties } from "react";
 import { getMessageTime } from "../../../app/lib/helpers/time";
 import Icon, {
@@ -16,17 +16,14 @@ interface IProps {
 }
 
 const MessageBox = ({ fromUser, withActions, payload }: IProps) => {
-  const style: CSSProperties = fromUser
-    ? { background: "gray", color: "white" }
-    : { background: "white" };
+  const className = fromUser ? "bg-dark text-white" : "bg-white text-dark";
 
   const { createdAt, message } = payload;
 
   return (
     <>
       <Card
-        className="border-0 text-start p-3 message-width position-relative message-box"
-        style={style}
+        className={`border-0 text-start p-3 message-width position-relative message-box ${className}`}
         bodyStyle={{ padding: 0 }}
       >
         {withActions && (
@@ -58,11 +55,28 @@ const MessageBox = ({ fromUser, withActions, payload }: IProps) => {
             trigger={["click"]}
             className="reply-caret"
           >
-            <div className="rounded-circle p-1" style={style}>
-              <DownOutlined style={{ fontSize: 12 }} />
-            </div>
+            <Button
+              shape="circle"
+              type="dashed"
+              icon={<DownOutlined style={{ fontSize: 12 }} />}
+            />
           </Dropdown>
         )}
+        {payload.replyingTo && (
+          <Card
+            className="message-reply-box bg-secondary bg-gradient text-white"
+            style={{ fontSize: "0.8rem" }}
+          >
+            <strong className="capitalize">{payload.replyingTo.sender}</strong>
+            <Typography.Paragraph
+              className="m-0 text-white"
+              ellipsis={{ rows: 3 }}
+            >
+              {payload.replyingTo.message}
+            </Typography.Paragraph>
+          </Card>
+        )}
+
         <p className="m-0">{message}</p>
         <small className="text-start text-secondary bg-light px-2">
           {getMessageTime(createdAt).toLowerCase()}

@@ -100,12 +100,19 @@
       opacity: 1;
     }
     .reply-caret {
+      z-index: 2;
       position: absolute;
       right: 0.4em;
       top: 0.3em;
       cursor: pointer;
       opacity: 0;
       transition: opacity 0.3s;
+    }
+
+    .message-reply-box {
+      .ant-card-body {
+        padding: 5px;
+      }
     }
   }
 }

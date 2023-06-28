@@ -4,3 +4,4 @@ export const paths = {
   forgotPassword: "/auth/forgot-password",
   home: "/",
 };
+

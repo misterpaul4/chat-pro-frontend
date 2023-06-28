@@ -71,25 +71,7 @@ const MessageInput = ({
   if (!activeThread) {
     return null;
   }
-
-  const submitForm = async () => {
-    const { message } = form.getFieldsValue();
-
-    if (message) {
-      sendMessage({ message, threadId: activeThread.id });
-      form.resetFields(["message"]);
-      setTimeout(() => {
-        ref.current?.focus();
-      }, 100);
-    }
-  };
-
-  const notifyTyping = (value: string) => {
-    if (!isTyping && value && message) {
-      setIsTyping(true);
-      emitIsTyping({ isTyping: true, threadId: activeThread.id });
-    }
-  };
+  const replyingTo = threadMemory[activeThread.id]?.replyingTo;
 
   const onReplyClose = () => {
     dispatch(
@@ -101,7 +83,33 @@ const MessageInput = ({
     ref.current?.focus();
   };
 
-  const replyingTo = threadMemory[activeThread.id]?.replyingTo;
+  const submitForm = async () => {
+    const { message } = form.getFieldsValue();
+
+    if (message) {
+      sendMessage({
+        message,
+        threadId: activeThread.id,
+        reply: replyingTo?.id,
+      });
+
+      form.resetFields(["message"]);
+      if (replyingTo) {
+        onReplyClose();
+      } else {
+        setTimeout(() => {
+          ref.current?.focus();
+        }, 100);
+      }
+    }
+  };
+
+  const notifyTyping = (value: string) => {
+    if (!isTyping && value && message) {
+      setIsTyping(true);
+      emitIsTyping({ isTyping: true, threadId: activeThread.id });
+    }
+  };
 
   const getReplySender = () => {
     if (replyingTo!.senderId === userId) {
