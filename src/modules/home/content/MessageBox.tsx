@@ -57,6 +57,7 @@ const MessageBox = ({ fromUser, withActions, payload }: IProps) => {
           >
             <Button
               shape="circle"
+              className={className}
               type="dashed"
               icon={<DownOutlined style={{ fontSize: 12 }} />}
             />

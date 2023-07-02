@@ -39,7 +39,12 @@ export enum StatusEnum {
 export interface IMessage extends IBaseType, IThreadMessagePayload {
   sender: IUser;
   senderId: string;
-  replyingTo?: { message: string; sender: string };
+  replyingTo?: {
+    message: string;
+    sender: string;
+    id: string;
+    senderId: string;
+  };
   read: boolean;
   threadId: string;
 }
