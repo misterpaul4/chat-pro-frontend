@@ -136,6 +136,7 @@ const InboxContent = ({
                 withActions={{ onReply: onMessageReply }}
                 fromUser={fromUser}
                 payload={threadMessage}
+                userId={userId}
               />
             </List.Item>
           );

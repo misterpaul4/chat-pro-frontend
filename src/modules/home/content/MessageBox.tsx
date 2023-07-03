@@ -13,9 +13,10 @@ interface IProps {
   fromUser: boolean;
   withActions?: { onReply: (message: IMessage) => void };
   payload: IMessage;
+  userId?: string;
 }
 
-const MessageBox = ({ fromUser, withActions, payload }: IProps) => {
+const MessageBox = ({ fromUser, withActions, payload, userId }: IProps) => {
   const className = fromUser ? "bg-dark text-white" : "bg-white text-dark";
 
   const { createdAt, message } = payload;
@@ -68,7 +69,11 @@ const MessageBox = ({ fromUser, withActions, payload }: IProps) => {
             className="message-reply-box bg-secondary bg-gradient text-white"
             style={{ fontSize: "0.8rem" }}
           >
-            <strong className="capitalize">{payload.replyingTo.sender}</strong>
+            <strong className="capitalize">
+              {payload.replyingTo.senderId === userId
+                ? "You"
+                : payload.replyingTo.sender}
+            </strong>
             <Typography.Paragraph
               className="m-0 text-white"
               ellipsis={{ rows: 3 }}
