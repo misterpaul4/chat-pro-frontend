@@ -1,7 +1,7 @@
-import { Badge, Button, Card, Dropdown, Typography } from "antd";
-import { CSSProperties } from "react";
+import { Button, Card, Dropdown, Typography } from "antd";
 import { getMessageTime } from "../../../app/lib/helpers/time";
 import Icon, {
+  CopyOutlined,
   DownOutlined,
   EnterOutlined,
   StarOutlined,
@@ -32,6 +32,11 @@ const MessageBox = ({ fromUser, withActions, payload, userId }: IProps) => {
             getPopupContainer={(trigger) => trigger.parentElement!}
             menu={{
               items: [
+                {
+                  label: "Copy",
+                  icon: <CopyOutlined />,
+                  onClick: () => navigator.clipboard.writeText(message),
+                },
                 {
                   label: "Reply",
                   icon: <EnterOutlined />,
