@@ -88,7 +88,12 @@ const MessageBox = ({ fromUser, withActions, payload, userId }: IProps) => {
           </Card>
         )}
 
-        <p className="m-0">{message}</p>
+        <Typography.Paragraph
+          ellipsis={{ rows: 5, expandable: true, symbol: "more" }}
+          className={`m-0 ${className}`}
+        >
+          {message}
+        </Typography.Paragraph>
         <small className="text-start text-secondary bg-light px-2">
           {getMessageTime(createdAt).toLowerCase()}
         </small>
