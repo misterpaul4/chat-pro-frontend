@@ -73,25 +73,25 @@ const InboxContent = ({
   };
 
   useEffect(() => {
-    resizeContentHeight();
+    !replyingTo && resizeContentHeight();
   }, [replyingTo]);
 
-  useEffect(() => {
-    const handleScrollToButtom = () => {
-      if (checkIfElementVisible(lastMessageRef.current!)) {
-        setNewMessagePopUp(false);
-        setScrollToBottomPopUp(false);
-      } else {
-        !newMessagePopUp && setScrollToBottomPopUp(true);
-      }
-    };
+  // useEffect(() => {
+  //   const handleScrollToButtom = () => {
+  //     if (checkIfElementVisible(lastMessageRef.current!)) {
+  //       setNewMessagePopUp(false);
+  //       setScrollToBottomPopUp(false);
+  //     } else {
+  //       !newMessagePopUp && setScrollToBottomPopUp(true);
+  //     }
+  //   };
 
-    ref.current?.addEventListener("scroll", handleScrollToButtom);
+  //   ref.current?.addEventListener("scroll", handleScrollToButtom);
 
-    return () => {
-      ref.current?.removeEventListener("scroll", handleScrollToButtom);
-    };
-  }, [newMessagePopUp]);
+  //   return () => {
+  //     ref.current?.removeEventListener("scroll", handleScrollToButtom);
+  //   };
+  // }, [newMessagePopUp]);
 
   useEffect(() => {
     chatScroll();
@@ -112,6 +112,7 @@ const InboxContent = ({
       setThreadMemory({ key: thread.id, value: { replyingTo: message } })
     );
     inputFocus();
+    resizeContentHeight();
   };
 
   return (
