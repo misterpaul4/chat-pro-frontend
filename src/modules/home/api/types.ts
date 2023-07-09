@@ -57,6 +57,7 @@ export interface IThread extends IBaseType {
   type: string;
   messages: IMessage[];
   users: IUser[];
+  unreadCountByUsers: Record<string, number>;
 }
 
 export type IInbox = IThread[];

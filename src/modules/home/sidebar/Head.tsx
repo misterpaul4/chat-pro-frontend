@@ -17,7 +17,7 @@ const SideBarHead = ({ activeTab }: IProps) => {
   return (
     <div className="p-3">
       <Space size="large">
-        <Badge>
+        <Badge count={5} dot>
           <Typography.Title
             style={{
               color:
@@ -31,7 +31,7 @@ const SideBarHead = ({ activeTab }: IProps) => {
             Inbox
           </Typography.Title>
         </Badge>
-        <Badge>
+        <Badge count={5} dot>
           <Typography.Title
             style={{
               color:

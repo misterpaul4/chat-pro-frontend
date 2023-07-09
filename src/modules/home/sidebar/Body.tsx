@@ -1,4 +1,4 @@
-import { List, Space, Typography } from "antd";
+import { Badge, List, Space, Typography } from "antd";
 import { IInbox, IThread, IThreadMemory, ThreadTypeEnum } from "../api/types";
 import { capitalize } from "../../../utils/strings";
 import { useDispatch, useSelector } from "react-redux";
@@ -17,6 +17,7 @@ import { typingContext } from "../context/typingContext";
 import Typing from "../../../app/common/IsTyping";
 import { getLastMessageTime } from "../../../app/lib/helpers/time";
 import { getMessageContent } from "../../../utils/dom";
+import { useReadThreadMutation } from "../api/mutationEndpoints";
 
 interface IProps {
   list: IInbox | undefined;
@@ -26,6 +27,8 @@ interface IProps {
 const SideBarBody = ({ list, activeThread }: IProps) => {
   const dispatch = useDispatch();
   const typingState = useContext(typingContext);
+
+  const [readThread] = useReadThreadMutation();
 
   const userId = useSelector((state: RootState) => state.user.user.id);
 
@@ -77,6 +80,10 @@ const SideBarBody = ({ list, activeThread }: IProps) => {
         THREAD_MEMORY.set(activeThreadId, toSave);
       }
       dispatch(setActiveThread(thread));
+
+      if (thread.unreadCountByUsers[userId]) {
+        readThread(thread.id);
+      }
     }
   };
 
@@ -95,6 +102,7 @@ const SideBarBody = ({ list, activeThread }: IProps) => {
             style={{
               backgroundColor: item.id === activeThreadId ? hoverColor : "",
             }}
+            extra={<Badge count={item.unreadCountByUsers[userId] ?? 0} />}
           >
             <Space align="start">
               <ContactAvatar name={avatarProps} />

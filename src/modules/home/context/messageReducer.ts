@@ -1,4 +1,4 @@
-import { IInbox } from "../api/types";
+import { IInbox, IMessage, IThread } from "../api/types";
 
 export enum messageActionType {
   Initialize = "Initialize",
@@ -22,8 +22,12 @@ export function messageReducer(state: IInbox, action: IActionType) {
     case "NewThread":
       return [action.payload, ...state];
     case "NewMessage":
+      const payload = action.payload as {
+        message: IMessage;
+        unreadCountByUsers: IThread["unreadCountByUsers"];
+      };
       const threadIndex = state.findIndex(
-        (th) => th.id === action.payload.threadId
+        (th) => th.id === payload.message.threadId
       );
 
       const start = state.slice(0, threadIndex);
@@ -32,7 +36,8 @@ export function messageReducer(state: IInbox, action: IActionType) {
       return [
         {
           ...state[threadIndex],
-          messages: [action.payload, ...state[threadIndex].messages],
+          messages: [payload.message, ...state[threadIndex].messages],
+          unreadCountByUsers: payload.unreadCountByUsers,
         },
         ...start,
         ...end,

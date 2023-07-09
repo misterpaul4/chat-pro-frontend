@@ -90,8 +90,8 @@ const Home = () => {
     {
       event: "newMessage",
       handler: (data) => {
-        data.senderId !== user.id && playNotificationSound();
-        dispatch(setNewMessage(data));
+        data.message.senderId !== user.id && playNotificationSound();
+        dispatch(setNewMessage(data.message));
         dispatchInbox({ type: messageActionType.NewMessage, payload: data });
       },
     },
