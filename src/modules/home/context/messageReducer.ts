@@ -1,3 +1,4 @@
+import { getLs } from "../../../app/lib/helpers/localStorage";
 import { IInbox, IMessage, IThread } from "../api/types";
 
 export enum messageActionType {
@@ -37,7 +38,10 @@ export function messageReducer(state: IInbox, action: IActionType) {
         {
           ...state[threadIndex],
           messages: [payload.message, ...state[threadIndex].messages],
-          unreadCountByUsers: payload.unreadCountByUsers,
+          unreadCountByUsers:
+            getLs("activeThreadId") !== payload.message.threadId
+              ? payload.unreadCountByUsers
+              : 0,
         },
         ...start,
         ...end,

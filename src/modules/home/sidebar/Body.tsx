@@ -18,6 +18,7 @@ import Typing from "../../../app/common/IsTyping";
 import { getLastMessageTime } from "../../../app/lib/helpers/time";
 import { getMessageContent } from "../../../utils/dom";
 import { useReadThreadMutation } from "../api/mutationEndpoints";
+import { setLS } from "../../../app/lib/helpers/localStorage";
 
 interface IProps {
   list: IInbox | undefined;
@@ -79,7 +80,10 @@ const SideBarBody = ({ list, activeThread }: IProps) => {
 
         THREAD_MEMORY.set(activeThreadId, toSave);
       }
+
       dispatch(setActiveThread(thread));
+
+      setLS("activeThreadId", thread.id);
 
       if (thread.unreadCountByUsers[userId]) {
         readThread(thread.id);
