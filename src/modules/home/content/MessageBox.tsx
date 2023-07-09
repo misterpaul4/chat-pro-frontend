@@ -17,7 +17,7 @@ interface IProps {
 }
 
 const MessageBox = ({ fromUser, withActions, payload, userId }: IProps) => {
-  const className = fromUser ? "bg-dark text-white" : "bg-white text-dark";
+  const className = fromUser ? "primary-bg text-white" : "bg-white text-dark";
 
   const { createdAt, message } = payload;
 
@@ -71,7 +71,7 @@ const MessageBox = ({ fromUser, withActions, payload, userId }: IProps) => {
         )}
         {payload.replyingTo && (
           <Card
-            className="message-reply-box bg-secondary bg-gradient text-white"
+            className="message-reply-box bg-light border bg-gradient text-dark"
             style={{ fontSize: "0.8rem" }}
           >
             <strong className="capitalize">
@@ -80,7 +80,7 @@ const MessageBox = ({ fromUser, withActions, payload, userId }: IProps) => {
                 : payload.replyingTo.sender}
             </strong>
             <Typography.Paragraph
-              className="m-0 text-white"
+              className="m-0 text-dark"
               ellipsis={{ rows: 3 }}
             >
               {payload.replyingTo.message}
@@ -89,12 +89,12 @@ const MessageBox = ({ fromUser, withActions, payload, userId }: IProps) => {
         )}
 
         <Typography.Paragraph
-          ellipsis={{ rows: 5, expandable: true, symbol: "more" }}
+          ellipsis={{ rows: 10, expandable: true, symbol: "more" }}
           className={`m-0 ${className}`}
         >
           {message}
         </Typography.Paragraph>
-        <small className="text-start text-secondary bg-light px-2">
+        <small className="text-start text-muted bg-light px-2 rounded">
           {getMessageTime(createdAt).toLowerCase()}
         </small>
       </Card>
