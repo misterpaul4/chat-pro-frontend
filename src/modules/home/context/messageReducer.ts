@@ -7,6 +7,7 @@ export enum messageActionType {
   NewMessage = "NewMessage",
   ApprovedThread = "ApprovedThread",
   RemoveThread = "RemoveThread",
+  ReadThread = "Readthread",
 }
 
 interface IActionType {
@@ -41,12 +42,24 @@ export function messageReducer(state: IInbox, action: IActionType) {
           unreadCountByUsers:
             getLs("activeThreadId") !== payload.message.threadId
               ? payload.unreadCountByUsers
-              : 0,
+              : {},
         },
         ...start,
         ...end,
       ];
+    case "Readthread":
+      const { threadId, userId } = action.payload;
+      const __stateCopy = [...state];
+      const __threadIndex = __stateCopy.findIndex((x) => x.id === threadId);
+      __stateCopy[__threadIndex] = {
+        ...__stateCopy[__threadIndex],
+        unreadCountByUsers: {
+          ...(__stateCopy[__threadIndex].unreadCountByUsers ?? {}),
+          [userId]: 0,
+        },
+      };
 
+      return __stateCopy;
     case "RemoveThread":
       return state.filter((thread) => thread.id !== action.payload.id);
 

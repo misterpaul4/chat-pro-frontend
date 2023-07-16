@@ -31,6 +31,7 @@ import MessageInput from "./components/MessageInput";
 import { typingInitialState, typingReducer } from "./context/typingReducer";
 import { typingContext } from "./context/typingContext";
 import { playNotificationSound } from "../../app/lib/helpers/media";
+import { inputFocus } from "../../utils/dom";
 
 const { Sider, Content, Header, Footer } = Layout;
 
@@ -139,6 +140,16 @@ const Home = () => {
       event: "typing",
       handler: (data: ITypingResponse) => {
         dispatchIsTyping({ type: "Update", payload: data });
+      },
+    },
+    // controls when message is read
+    {
+      event: "readMessage",
+      handler: (data: { threadId: string; userId: string }) => {
+        dispatchInbox({ type: messageActionType.ReadThread, payload: data });
+        setTimeout(() => {
+          inputFocus();
+        }, 100);
       },
     },
   ]);

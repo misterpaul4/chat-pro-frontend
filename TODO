@@ -10,6 +10,7 @@
 # - remember scroll position for previous thread *
 # - prevent auto scroll if in current thread and there's an incoming message
 - fix bugs with new message request not showing for sender
+- fix scroll bug when switching between threads
 - read count *
 - search
 - contact fix

@@ -9,15 +9,17 @@ import { setGetSelf } from "../../../modules/auth/control/userSlice";
 import { LoadingOutlined } from "@ant-design/icons";
 import "./layout.less";
 import { layoutPrimaryColor } from "../../../settings";
+import { clearLs } from "../../lib/helpers/localStorage";
 
 const Layout = () => {
   const loggedIn = useSelector((state: RootState) => state.user.auth.loggedIn);
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const [getself, { isLoading }] = useLazyGetSelfQuery();
+  const [getself] = useLazyGetSelfQuery();
 
   useEffect(() => {
+    clearLs("activeThreadId");
     if (!loggedIn) {
       getself().then(({ data, isSuccess }) => {
         if (isSuccess) {
