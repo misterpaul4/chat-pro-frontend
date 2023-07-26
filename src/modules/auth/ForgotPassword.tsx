@@ -8,23 +8,21 @@ const ForgotPassword = () => {
     <div>
       <Typography.Title>Forgot Password?</Typography.Title>
 
-      <Card className="mb-4">
-        <Form layout="vertical">
-          <Form.Item label="E-mail">
-            <Input
-              size="large"
-              required
-              placeholder="Please enter your email address"
-            />
-          </Form.Item>
+      <Form layout="vertical">
+        <Form.Item label="E-mail">
+          <Input
+            size="large"
+            required
+            placeholder="Please enter your email address"
+          />
+        </Form.Item>
 
-          <Button disabled size="large" htmlType="submit" type="primary" block>
-            Reset Password
-          </Button>
-        </Form>
-      </Card>
+        <Button disabled size="large" htmlType="submit" type="primary" block>
+          Reset Password
+        </Button>
+      </Form>
 
-      <Link to={paths.login}>
+      <Link to={paths.login} className="mt-3 d-block">
         <ArrowLeftOutlined /> Go to login
       </Link>
     </div>
