@@ -7,7 +7,6 @@ import Icon, {
   StarFilled,
   UserOutlined,
   UsergroupAddOutlined,
-  UsergroupDeleteOutlined,
 } from "@ant-design/icons";
 import { useDispatch } from "react-redux";
 import { logout, toggleDarkMode } from "../../auth/control/userSlice";
@@ -25,10 +24,9 @@ const AppHeader = ({ user, darkMode }: IProps) => {
 
   const { onNewChatModalOpen, onContactListOpen } = useContext(headerContext);
 
-  const items: MenuProps["items"] = [
+  const items: any[] = [
     {
       label: <Typography.Text copyable>{user.email}</Typography.Text>,
-      type: "group",
     },
     {
       label: (
@@ -36,8 +34,7 @@ const AppHeader = ({ user, darkMode }: IProps) => {
           <UserOutlined /> Profile
         </Button>
       ),
-
-      type: "group",
+      onClick: () => {},
     },
     {
       label: (
@@ -45,11 +42,8 @@ const AppHeader = ({ user, darkMode }: IProps) => {
           <StarFilled style={{ color: "#ebdb34" }} /> Starred Messages
         </Button>
       ),
-
-      type: "group",
     },
     {
-      type: "group",
       label: (
         <Button
           type="text"
