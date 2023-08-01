@@ -16,8 +16,8 @@ import { useDispatch } from "react-redux";
 
 const AuthLayout = () => {
   const path = useLocation().pathname;
-  const excludeWelcome =
-    path.includes(paths.forgotPassword) || path.includes(paths.resetPassword);
+  const withWelcome = path.includes(paths.login) || path.includes(paths.signup);
+
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -42,7 +42,7 @@ const AuthLayout = () => {
         <Row>
           <Col span={12}>
             <Card className="auth-container">
-              {!excludeWelcome && <Typography.Title>Welcome</Typography.Title>}
+              {withWelcome && <Typography.Title>Welcome</Typography.Title>}
               <Outlet />
             </Card>
           </Col>

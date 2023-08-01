@@ -6,6 +6,7 @@ import Login from "./modules/auth/Login";
 import SignUp from "./modules/auth/Signup";
 import ForgotPassword from "./modules/auth/ForgotPassword";
 import ResetPassword from "./modules/auth/ResetPassword";
+import VerificationCode from "./modules/auth/VerificationCode";
 
 export const routes: RouteObject[] = [
   {
@@ -30,6 +31,10 @@ export const routes: RouteObject[] = [
       {
         path: "auth/reset-password",
         element: <ResetPassword />,
+      },
+      {
+        path: "auth/verification",
+        element: <VerificationCode />,
       },
     ],
   },
