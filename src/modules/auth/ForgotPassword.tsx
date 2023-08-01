@@ -16,9 +16,10 @@ const ForgotPassword = () => {
       onSuccess: {
         callBack: () => {
           const userId = resp.data.id;
-          navigate(paths.verificationCode, { state: userId });
+          navigate(paths.verificationCode, {
+            state: { userId, email: values.email },
+          });
         },
-        display: true,
       },
     });
   };
