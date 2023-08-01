@@ -12,9 +12,20 @@ const endpoints = apis.injectEndpoints({
     getSelf: builder.query<IGetSelf, void>({
       query: () => "auth/get-self",
     }),
+    submitForgotPass: builder.mutation<{ id: string }, string>({
+      query: (email) => ({
+        url: "auth/forgot-password",
+        method: "POST",
+        body: { email },
+      }),
+    }),
   }),
 });
 
-export const { useLoginMutation, useSignupMutation, useLazyGetSelfQuery } =
-  endpoints;
+export const {
+  useLoginMutation,
+  useSignupMutation,
+  useLazyGetSelfQuery,
+  useSubmitForgotPassMutation,
+} = endpoints;
 

@@ -1,10 +1,21 @@
 import { Form, InputNumber, Modal, Space, Typography } from "antd";
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { paths } from "../../utils/paths";
 
 const VerificationCode = () => {
+  const userId = useLocation().state;
+  const navigate = useNavigate();
+
   const [form] = Form.useForm();
   const submitBtnRef = useRef<HTMLElement>(null);
   const inputRefs: any = [];
+
+  useEffect(() => {
+    if (!userId) {
+      navigate(paths.login);
+    }
+  }, [userId]);
 
   // generate 6 references
   for (let i = 0; i < 6; i++) {
