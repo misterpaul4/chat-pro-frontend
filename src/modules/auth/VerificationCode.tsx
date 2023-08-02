@@ -1,10 +1,22 @@
-import { Button, Form, InputNumber, Modal, Space, Typography } from "antd";
+import {
+  Button,
+  Form,
+  InputNumber,
+  Modal,
+  Space,
+  Spin,
+  Typography,
+} from "antd";
 import React, { useEffect, useRef } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { paths } from "../../utils/paths";
-import { useSubmitForgotPassMutation } from "./api";
+import {
+  useSubmitForgotPassMutation,
+  useSubmitVerificationCodeMutation,
+} from "./api";
 import { apiResponseHandler } from "../../app/lib/helpers/responseHandler";
 import { maskEmail } from "../../utils/strings";
+import { LoadingOutlined } from "@ant-design/icons";
 
 const VerificationCode = () => {
   const state = useLocation().state;
@@ -16,6 +28,9 @@ const VerificationCode = () => {
   const inputRefs: any = [];
 
   const [resendCode, { isLoading }] = useSubmitForgotPassMutation();
+
+  const [verifyCode, { isLoading: verifying }] =
+    useSubmitVerificationCodeMutation();
 
   useEffect(() => {
     if (!state) {
@@ -37,8 +52,16 @@ const VerificationCode = () => {
     });
   };
 
-  const onFinish = (value: string) => {
-    //
+  const onFinish = async (code: string) => {
+    const resp: any = await verifyCode({ code, id: userId });
+
+    apiResponseHandler(resp, {
+      onSuccess: {
+        callBack: () => {
+          navigate(paths.resetPassword, { state: { id: userId, code, email } });
+        },
+      },
+    });
   };
 
   if (!state) {
@@ -46,7 +69,7 @@ const VerificationCode = () => {
   }
 
   return (
-    <div>
+    <Spin indicator={<LoadingOutlined />} spinning={verifying}>
       <Typography.Title>Verification Code</Typography.Title>
       <em>enter the 6 digit verification code sent to {maskEmail(email)}</em>
       <Form
@@ -123,7 +146,7 @@ const VerificationCode = () => {
       </Typography.Paragraph>
 
       <Link to={paths.login}>Login</Link>
-    </div>
+    </Spin>
   );
 };
 

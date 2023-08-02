@@ -1,5 +1,11 @@
 import apis from "../../../app/api";
-import { IGetSelf, ILogin, ISignUp } from "./types";
+import {
+  IGetSelf,
+  ILogin,
+  IResetPasswordPayload,
+  ISignUp,
+  IVerificationCodePayload,
+} from "./types";
 
 const endpoints = apis.injectEndpoints({
   endpoints: (builder) => ({
@@ -19,6 +25,20 @@ const endpoints = apis.injectEndpoints({
         body: { email },
       }),
     }),
+    submitVerificationCode: builder.mutation<void, IVerificationCodePayload>({
+      query: (body) => ({
+        url: "auth/verify-password-reset-code",
+        method: "POST",
+        body,
+      }),
+    }),
+    resetPassword: builder.mutation<void, IResetPasswordPayload>({
+      query: (body) => ({
+        url: "auth/reset-password",
+        method: "POST",
+        body,
+      }),
+    }),
   }),
 });
 
@@ -27,5 +47,7 @@ export const {
   useSignupMutation,
   useLazyGetSelfQuery,
   useSubmitForgotPassMutation,
+  useSubmitVerificationCodeMutation,
+  useResetPasswordMutation,
 } = endpoints;
 

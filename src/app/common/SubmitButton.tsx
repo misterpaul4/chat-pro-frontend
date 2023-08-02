@@ -1,7 +1,12 @@
-import { Button, Form, FormInstance } from "antd";
+import { Button, ButtonProps, Form, FormInstance } from "antd";
 import { useEffect, useState } from "react";
 
-const SubmitButton = ({ form }: { form: FormInstance }) => {
+interface IProps {
+  form: FormInstance;
+  loading?: boolean;
+}
+
+const SubmitButton = ({ form, ...rest }: IProps) => {
   const [submittable, setSubmittable] = useState(false);
 
   // Watch all values
@@ -25,6 +30,7 @@ const SubmitButton = ({ form }: { form: FormInstance }) => {
       type="primary"
       block
       disabled={!submittable}
+      {...(rest || {})}
     >
       Submit
     </Button>

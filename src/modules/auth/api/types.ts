@@ -13,3 +13,11 @@ export interface ISignUp extends ILogin {
 
 export interface IGetSelf extends IUser, IBaseType {}
 
+export interface IVerificationCodePayload {
+  code: string;
+  id: string;
+}
+
+export interface IResetPasswordPayload extends IVerificationCodePayload {
+  password: string;
+}
