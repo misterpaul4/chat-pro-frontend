@@ -1,12 +1,4 @@
-import {
-  Button,
-  Form,
-  InputNumber,
-  Modal,
-  Space,
-  Spin,
-  Typography,
-} from "antd";
+import { Button, Form, InputNumber, Space, Spin, Typography } from "antd";
 import React, { useEffect, useRef } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { paths } from "../../utils/paths";
@@ -15,7 +7,6 @@ import {
   useSubmitVerificationCodeMutation,
 } from "./api";
 import { apiResponseHandler } from "../../app/lib/helpers/responseHandler";
-import { maskEmail } from "../../utils/strings";
 import { LoadingOutlined } from "@ant-design/icons";
 
 const VerificationCode = () => {
@@ -71,7 +62,7 @@ const VerificationCode = () => {
   return (
     <Spin indicator={<LoadingOutlined />} spinning={verifying}>
       <Typography.Title>Verification Code</Typography.Title>
-      <em>enter the 6 digit verification code sent to {maskEmail(email)}</em>
+      <em>enter the 6 digit verification code sent to {email}</em>
       <Form
         form={form}
         className="mt-3"
