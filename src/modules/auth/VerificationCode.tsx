@@ -18,10 +18,10 @@ const VerificationCode = () => {
   const [resendCode, { isLoading }] = useSubmitForgotPassMutation();
 
   useEffect(() => {
-    if (!userId) {
+    if (!state) {
       navigate(paths.login);
     }
-  }, [userId]);
+  }, [state]);
 
   // generate 6 references
   for (let i = 0; i < 6; i++) {
@@ -38,8 +38,12 @@ const VerificationCode = () => {
   };
 
   const onFinish = (value: string) => {
-    console.log("xx", value);
+    //
   };
+
+  if (!state) {
+    return null;
+  }
 
   return (
     <div>
@@ -85,9 +89,15 @@ const VerificationCode = () => {
                     // check if value is an actual number
                     if (!isNaN(+pastedValue)) {
                       let j = 0;
-                      for (let i = index; i < 7; i++) {
+                      const loopLength =
+                        pastedValue.length < 6 ? pastedValue.length : 7;
+                      for (let i = index; i < loopLength + 1; i++) {
                         form.setFieldValue(`${i}`, +pastedValue[j]);
                         j++;
+                      }
+
+                      if (pastedValue.length > 5) {
+                        onFinish(pastedValue.substring(0, 6));
                       }
                     }
                   }}
