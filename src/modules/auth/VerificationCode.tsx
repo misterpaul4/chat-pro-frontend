@@ -8,10 +8,13 @@ import {
 } from "./api";
 import { apiResponseHandler } from "../../app/lib/helpers/responseHandler";
 import { LoadingOutlined } from "@ant-design/icons";
+import useCountdownTimer from "../../app/hooks/useCountdownTimer";
 
 const VerificationCode = () => {
   const state = useLocation().state;
   const { userId, email } = state || {};
+
+  const { timer, running, start } = useCountdownTimer(120);
 
   const navigate = useNavigate();
 
@@ -39,7 +42,11 @@ const VerificationCode = () => {
     const resp: any = await resendCode(email);
 
     apiResponseHandler(resp, {
-      onSuccess: { message: "Code sent successfully", display: true },
+      onSuccess: {
+        message: "Code sent successfully",
+        display: true,
+        callBack: start,
+      },
     });
   };
 
@@ -124,17 +131,24 @@ const VerificationCode = () => {
         </Space>
       </Form>
 
-      <Typography.Paragraph className="mt-5">
-        Didn't receive code?{" "}
-        <Button
-          loading={isLoading}
-          onClick={onResend}
-          className="bg-light"
-          type="text"
-        >
-          Resend
-        </Button>
-      </Typography.Paragraph>
+      {running ? (
+        <Typography.Paragraph className="mt-5">
+          You can request a new code after the countdowm
+          <strong className="ms-1">{timer}</strong>
+        </Typography.Paragraph>
+      ) : (
+        <Typography.Paragraph className="mt-5">
+          Didn't receive code?{" "}
+          <Button
+            loading={isLoading}
+            onClick={onResend}
+            className="bg-light"
+            type="text"
+          >
+            Resend
+          </Button>
+        </Typography.Paragraph>
+      )}
 
       <Link to={paths.login}>Login</Link>
     </Spin>
