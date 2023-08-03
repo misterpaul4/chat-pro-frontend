@@ -7,57 +7,50 @@ import Icon, {
   StarFilled,
   UserOutlined,
   UsergroupAddOutlined,
-  UsergroupDeleteOutlined,
 } from "@ant-design/icons";
 import { useDispatch } from "react-redux";
 import { logout, toggleDarkMode } from "../../auth/control/userSlice";
 import { useContext } from "react";
 import headerContext from "../context/headerContext";
 import { DarkModeIcon, LightModeIcon } from "../../../utils/icons";
+import { MenuItemGroupType, MenuItemType } from "antd/es/menu/hooks/useItems";
 
 interface IProps {
   user: IBaseUser;
   darkMode: boolean;
 }
 
+interface ItemProps extends Partial<MenuItemGroupType<MenuItemType>> {}
+
 const AppHeader = ({ user, darkMode }: IProps) => {
   const dispatch = useDispatch();
 
   const { onNewChatModalOpen, onContactListOpen } = useContext(headerContext);
 
-  const items: MenuProps["items"] = [
+  const items: ItemProps[] = [
     {
       label: <Typography.Text copyable>{user.email}</Typography.Text>,
-      type: "group",
     },
     {
       label: (
-        <Button type="text">
-          <UserOutlined /> Profile
-        </Button>
+        <>
+          <UserOutlined className="me-2" /> Profile
+        </>
       ),
-
-      type: "group",
     },
     {
       label: (
-        <Button type="text">
-          <StarFilled style={{ color: "#ebdb34" }} /> Starred Messages
-        </Button>
+        <>
+          <StarFilled className="me-2" style={{ color: "#ebdb34" }} /> Starred
+          Messages
+        </>
       ),
-
-      type: "group",
     },
     {
-      type: "group",
       label: (
-        <Button
-          type="text"
-          className="text-danger"
-          onClick={() => dispatch(logout())}
-        >
-          <LogoutOutlined /> Logout
-        </Button>
+        <span onClick={() => dispatch(logout())} className="text-danger">
+          <LogoutOutlined className="me-2" /> Logout
+        </span>
       ),
     },
   ];
@@ -83,11 +76,12 @@ const AppHeader = ({ user, darkMode }: IProps) => {
           <Icon component={darkModeConfig.icon} />
         </Button>
         <Dropdown
-          menu={{
-            items,
-            className: "cursor-pointer",
-            selectable: false,
-          }}
+          menu={
+            {
+              items,
+              selectable: false,
+            } as any
+          }
           trigger={["click"]}
           placement="bottomLeft"
         >
