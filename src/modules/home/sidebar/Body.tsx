@@ -43,17 +43,25 @@ const SideBarBody = ({ list, activeThread }: IProps) => {
         contactInfo: thread.title,
       };
 
-    const { firstName, lastName } =
-      thread.type === ThreadTypeEnum.Self
-        ? thread.users[0]
-        : getPrivateThreadRecipient(thread.users, userId);
+    if (thread.type === ThreadTypeEnum.Self) {
+      const props = thread.users[0];
+      return {
+        avatarProps: props.firstName,
+        contactInfo: <strong>You</strong>,
+      };
+    }
+
+    const { firstName, lastName } = getPrivateThreadRecipient(
+      thread.users,
+      userId
+    );
 
     return {
       avatarProps: firstName,
       contactInfo: (
         <>
-          <strong className="me-2">{capitalize(firstName)}</strong>
-          <strong>{capitalize(lastName)}</strong>
+          <strong className="me-2 capitalize">{capitalize(firstName)}</strong>
+          <strong className="capitalize">{capitalize(lastName)}</strong>
         </>
       ),
     };
