@@ -5,6 +5,8 @@ export interface IBaseUser {
   lastName: string;
   email: string;
   id: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface IUser extends IBaseType, IBaseUser {}

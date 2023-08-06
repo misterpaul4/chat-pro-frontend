@@ -10,22 +10,31 @@ import Icon, {
 } from "@ant-design/icons";
 import { useDispatch } from "react-redux";
 import { logout, toggleDarkMode } from "../../auth/control/userSlice";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import headerContext from "../context/headerContext";
 import { DarkModeIcon, LightModeIcon } from "../../../utils/icons";
 import { MenuItemGroupType, MenuItemType } from "antd/es/menu/hooks/useItems";
+import ProfileModal from "../components/ProfileModal";
 
 interface IProps {
   user: IBaseUser;
   darkMode: boolean;
 }
 
-interface ItemProps extends Partial<MenuItemGroupType<MenuItemType>> {}
+interface ItemProps extends Partial<MenuItemGroupType<MenuItemType>> {
+  onClick?: Function;
+}
 
 const AppHeader = ({ user, darkMode }: IProps) => {
   const dispatch = useDispatch();
 
   const { onNewChatModalOpen, onContactListOpen } = useContext(headerContext);
+
+  const [profileVisible, setProfileVisible] = useState(false);
+
+  const onProfileModalClose = () => {
+    setProfileVisible(false);
+  };
 
   const items: ItemProps[] = [
     {
@@ -37,6 +46,7 @@ const AppHeader = ({ user, darkMode }: IProps) => {
           <UserOutlined className="me-2" /> Profile
         </>
       ),
+      onClick: () => setProfileVisible(true),
     },
     {
       label: (
@@ -61,6 +71,11 @@ const AppHeader = ({ user, darkMode }: IProps) => {
 
   return (
     <>
+      <ProfileModal
+        user={user}
+        visible={profileVisible}
+        onClose={onProfileModalClose}
+      />
       <Space size="large">
         <Button shape="circle" title="New Chat" onClick={onNewChatModalOpen}>
           <FormOutlined />
