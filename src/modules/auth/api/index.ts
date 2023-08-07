@@ -1,4 +1,5 @@
 import apis from "../../../app/api";
+import { apiTags } from "../../../app/lib/constants/tags";
 import {
   IGetSelf,
   ILogin,
@@ -17,6 +18,7 @@ const endpoints = apis.injectEndpoints({
     }),
     getSelf: builder.query<IGetSelf, void>({
       query: () => "auth/get-self",
+      providesTags: [apiTags.SELF],
     }),
     submitForgotPass: builder.mutation<{ id: string }, string>({
       query: (email) => ({

@@ -1,6 +1,6 @@
 import apis from "../../../app/api";
 import { apiTags } from "../../../app/lib/constants/tags";
-import { IUser } from "../../auth/control/types";
+import { IBaseUser, IUser } from "../../auth/control/types";
 import {
   IChatRequestPayload,
   ICreateMessage,
@@ -54,6 +54,17 @@ const endpoints = apis.injectEndpoints({
         method: "POST",
       }),
     }),
+    updateUser: builder.mutation<
+      void,
+      { id: string; body: Partial<IBaseUser> }
+    >({
+      query: ({ id, body }) => ({
+        url: `users/${id}`,
+        method: "PATCH",
+        body,
+      }),
+      invalidatesTags: (x) => (x ? [apiTags.SELF] : []),
+    }),
   }),
 });
 
@@ -65,5 +76,6 @@ export const {
   useMassUpdateContactsMutation,
   useSendMessageMutation,
   useReadThreadMutation,
+  useUpdateUserMutation,
 } = endpoints;
 
