@@ -65,6 +65,13 @@ const endpoints = apis.injectEndpoints({
       }),
       invalidatesTags: (x) => (x ? [apiTags.SELF] : []),
     }),
+    emailChangeReq: builder.mutation<void, IVerifyEmail>({
+      query: (body) => ({
+        url: "auth/email-change-request",
+        method: "POST",
+        body,
+      }),
+    }),
   }),
 });
 
@@ -77,5 +84,6 @@ export const {
   useSendMessageMutation,
   useReadThreadMutation,
   useUpdateUserMutation,
+  useEmailChangeReqMutation,
 } = endpoints;
 

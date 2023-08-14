@@ -1,11 +1,22 @@
-import { UserOutlined } from "@ant-design/icons";
+import {
+  ArrowLeftOutlined,
+  CloseOutlined,
+  EditOutlined,
+  LoadingOutlined,
+  SaveOutlined,
+  ToTopOutlined,
+  UserOutlined,
+} from "@ant-design/icons";
 import {
   Avatar,
   Button,
   Card,
+  Descriptions,
+  Input,
   Modal,
   Popconfirm,
   Space,
+  Spin,
   Typography,
   message,
 } from "antd";
@@ -15,6 +26,7 @@ import { useState } from "react";
 import { useUpdateUserMutation } from "../api/mutationEndpoints";
 import { useDispatch } from "react-redux";
 import { setGetSelf } from "../../auth/control/userSlice";
+import EmailChange from "./EmailChange";
 
 interface IProps {
   visible: boolean;
@@ -26,6 +38,7 @@ const ProfileModal = ({ visible, onClose, user }: IProps) => {
   const [firstName, setFirstName] = useState(user.firstName);
   const [lastName, setLastName] = useState(user.lastName);
   const [editMode, setEditMode] = useState(false);
+  const [emailChangeMode, setEmailChangeMode] = useState(false);
 
   const dispatch = useDispatch();
   const [update, { isLoading }] = useUpdateUserMutation();
@@ -43,93 +56,118 @@ const ProfileModal = ({ visible, onClose, user }: IProps) => {
     }
   };
 
-  const onEditStart = () => setEditMode(true);
+  const labelStyle: React.CSSProperties = { fontWeight: "bold" };
+
+  const Wrapper = (value: string, setter: (value: string) => void) => {
+    if (editMode) {
+      return <Input value={value} onChange={(e) => setter(e.target.value)} />;
+    }
+
+    return value;
+  };
+
+  const onCancel = () => {
+    setEditMode(false);
+    setFirstName(user.firstName);
+    setLastName(user.lastName);
+  };
+
+  const onEmailChangeMode = () => {
+    setEmailChangeMode(true);
+    onCancel();
+  };
 
   return (
     <Modal
-      cancelButtonProps={{ className: "d-none" }}
-      okButtonProps={{ className: "d-none" }}
       open={visible}
       onCancel={onClose}
       className="profile-modal"
-      title="Profile"
-      footer={
-        <div className="d-flex justify-content-between">
-          <small>
-            <em>last changed {getLastMessageTime(user.updatedAt)}</em>
-          </small>
-
-          {editMode ? (
-            <Space>
-              <Popconfirm
-                title="Cancel without saving?"
-                onConfirm={() => {
-                  setFirstName(user.firstName);
-                  setLastName(user.lastName);
-                  setEditMode(false);
-                }}
-                okText="Yes"
-                cancelText="No"
-              >
-                <Button>Cancel</Button>
-              </Popconfirm>
-              <Button type="primary" onClick={onSave} loading={isLoading}>
-                Save
-              </Button>
-            </Space>
-          ) : (
-            <Popconfirm title="Are you sure?">
-              <Button type="primary" danger>
-                Change email
-              </Button>
-            </Popconfirm>
-          )}
-        </div>
+      title={
+        emailChangeMode ? (
+          <Button
+            type="text"
+            icon={<ArrowLeftOutlined />}
+            onClick={() => setEmailChangeMode(false)}
+          >
+            Back to profile
+          </Button>
+        ) : (
+          <Typography.Title level={4}>Profile</Typography.Title>
+        )
       }
+      footer={null}
     >
-      <Avatar
-        className="d-flex justify-content-center"
-        style={{ margin: "0 auto" }}
-        size={100}
-        icon={<UserOutlined />}
-      />
+      <Spin indicator={<LoadingOutlined />} spinning={isLoading}>
+        {emailChangeMode ? (
+          <EmailChange />
+        ) : (
+          <>
+            <Avatar
+              className="d-flex justify-content-center"
+              style={{ margin: "0 auto" }}
+              size={100}
+              icon={<UserOutlined />}
+            />
 
-      <Card className="my-5" bordered={false}>
-        <div className="d-flex flex-column">
-          <div className="capitalize">
-            <strong>First Name:</strong>
-            <Typography.Text
-              editable={{
-                tooltip: false,
-                onChange: setFirstName,
-                onStart: onEditStart,
-              }}
-              className="m-2"
-            >
-              {firstName}
-            </Typography.Text>
-          </div>
+            {editMode ? (
+              <Space>
+                <Button
+                  size="small"
+                  type="dashed"
+                  className="mt-5 mb-2"
+                  icon={<CloseOutlined />}
+                  onClick={onCancel}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  size="small"
+                  type="primary"
+                  className="mt-5 mb-2"
+                  icon={<SaveOutlined />}
+                  onClick={onSave}
+                  loading={isLoading}
+                >
+                  Save
+                </Button>
+              </Space>
+            ) : (
+              <Button
+                size="small"
+                type="primary"
+                className="mt-5 mb-2"
+                icon={<EditOutlined />}
+                onClick={() => setEditMode(true)}
+              >
+                Edit
+              </Button>
+            )}
 
-          <div className="capitalize my-2">
-            <strong>Last Name:</strong>
-            <Typography.Text
-              editable={{
-                tooltip: false,
-                onChange: setLastName,
-                onStart: onEditStart,
-              }}
-              className="m-2"
-            >
-              {lastName}
-            </Typography.Text>
-          </div>
-
-          <div>
-            <strong>Email:</strong>
-            <Typography.Text className="m-2">{user.email}</Typography.Text>
-          </div>
-        </div>
-      </Card>
+            <Descriptions bordered column={1}>
+              <Descriptions.Item labelStyle={labelStyle} label="First Name">
+                {Wrapper(firstName, setFirstName)}
+              </Descriptions.Item>
+              <Descriptions.Item labelStyle={labelStyle} label="Last Name">
+                {Wrapper(lastName, setLastName)}
+              </Descriptions.Item>
+              <Descriptions.Item labelStyle={labelStyle} label="Email">
+                {" "}
+                <Popconfirm
+                  title="Change email address?"
+                  okText="Yes"
+                  onConfirm={onEmailChangeMode}
+                >
+                  <EditOutlined
+                    title="Change Email"
+                    className="me-2 cursor-pointer"
+                  />
+                </Popconfirm>{" "}
+                {user.email}{" "}
+              </Descriptions.Item>
+            </Descriptions>
+          </>
+        )}
+      </Spin>
     </Modal>
   );
 };
