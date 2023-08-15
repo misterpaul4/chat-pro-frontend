@@ -109,3 +109,7 @@ export interface IThreadMemory {
   replyingTo?: IMessage;
 }
 
+export interface IEmailChange {
+  email: string;
+  code: string;
+}

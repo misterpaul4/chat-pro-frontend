@@ -4,6 +4,7 @@ import { IBaseUser, IUser } from "../../auth/control/types";
 import {
   IChatRequestPayload,
   ICreateMessage,
+  IEmailChange,
   IInbox,
   IMassUpdateContacts,
   IVerifyEmail,
@@ -72,6 +73,13 @@ const endpoints = apis.injectEndpoints({
         body,
       }),
     }),
+    emailChangeReqSubmit: builder.mutation<void, IEmailChange>({
+      query: (body) => ({
+        url: "auth/email-change-submit",
+        method: "POST",
+        body,
+      }),
+    }),
   }),
 });
 
@@ -85,5 +93,6 @@ export const {
   useReadThreadMutation,
   useUpdateUserMutation,
   useEmailChangeReqMutation,
+  useEmailChangeReqSubmitMutation,
 } = endpoints;
 

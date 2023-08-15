@@ -1,16 +1,54 @@
-import { SendOutlined } from "@ant-design/icons";
-import { Button, Input, Result, Space } from "antd";
+import { LoadingOutlined, SendOutlined } from "@ant-design/icons";
+import { Button, Input, Result, Space, Spin, message } from "antd";
 import { useState } from "react";
-import { useEmailChangeReqMutation } from "../api/mutationEndpoints";
+import {
+  useEmailChangeReqMutation,
+  useEmailChangeReqSubmitMutation,
+} from "../api/mutationEndpoints";
 import { apiResponseHandler } from "../../../app/lib/helpers/responseHandler";
+import EmailVerificationCode from "../../../app/common/EmailVerificationCode";
+import { useDispatch } from "react-redux";
+import { setGetSelf } from "../../auth/control/userSlice";
 
-interface IProps {}
+interface IProps {
+  backToProfile: () => void;
+}
 
-const EmailChange = ({}: IProps) => {
+const EmailChange = ({ backToProfile }: IProps) => {
   const [email, setEmail] = useState<string>();
   const [verifMode, setVerifMode] = useState(false);
 
   const [changeReq, { isLoading: loading1 }] = useEmailChangeReqMutation();
+  const [submitCode, { isLoading }] = useEmailChangeReqSubmitMutation();
+  const dispatch = useDispatch();
+
+  const onFinish = async (code: string) => {
+    const resp: any = await submitCode({ code, email: email! });
+
+    apiResponseHandler(resp, {
+      onSuccess: {
+        display: true,
+        callBack: () => {
+          dispatch(setGetSelf(resp.data));
+          backToProfile();
+        },
+        message: "success",
+      },
+    });
+  };
+
+  const onResend = async (start: Function) => {
+    if (!email) return;
+    const resp: any = await changeReq({ email });
+
+    apiResponseHandler(resp, {
+      onSuccess: {
+        callBack: start,
+        message: "Code sent successfully",
+        display: true,
+      },
+    });
+  };
 
   const validateEmail = () => {
     if (email) {
@@ -35,10 +73,18 @@ const EmailChange = ({}: IProps) => {
       <Result
         status="warning"
         title="You are about to change your email address"
-        subTitle={verifMode ? "Enter the verification code sent to you" : ""}
+        subTitle={
+          verifMode ? `Enter the verification code sent to ${email}` : ""
+        }
         extra={
           verifMode ? (
-            <></>
+            <Spin spinning={isLoading} indicator={<LoadingOutlined />}>
+              <EmailVerificationCode
+                resendLoading={loading1}
+                onFinish={onFinish}
+                onResend={onResend}
+              />
+            </Spin>
           ) : (
             <Space>
               <Input

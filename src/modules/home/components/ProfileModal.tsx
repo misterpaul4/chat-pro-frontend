@@ -4,13 +4,11 @@ import {
   EditOutlined,
   LoadingOutlined,
   SaveOutlined,
-  ToTopOutlined,
   UserOutlined,
 } from "@ant-design/icons";
 import {
   Avatar,
   Button,
-  Card,
   Descriptions,
   Input,
   Modal,
@@ -77,10 +75,15 @@ const ProfileModal = ({ visible, onClose, user }: IProps) => {
     onCancel();
   };
 
+  const backToProfile = () => {
+    setEmailChangeMode(false);
+  };
+
   return (
     <Modal
       open={visible}
       onCancel={onClose}
+      width={700}
       className="profile-modal"
       title={
         emailChangeMode ? (
@@ -99,7 +102,7 @@ const ProfileModal = ({ visible, onClose, user }: IProps) => {
     >
       <Spin indicator={<LoadingOutlined />} spinning={isLoading}>
         {emailChangeMode ? (
-          <EmailChange />
+          <EmailChange backToProfile={backToProfile} />
         ) : (
           <>
             <Avatar
