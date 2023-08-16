@@ -1,4 +1,4 @@
-import { Avatar, Button, Dropdown, MenuProps, Space, Typography } from "antd";
+import { Avatar, Button, Dropdown, Space, Typography } from "antd";
 import { IBaseUser } from "../../auth/control/types";
 import Icon, {
   DownOutlined,
@@ -23,6 +23,7 @@ interface IProps {
 
 interface ItemProps extends Partial<MenuItemGroupType<MenuItemType>> {
   onClick?: Function;
+  disabled?: boolean;
 }
 
 const AppHeader = ({ user, darkMode }: IProps) => {
@@ -55,6 +56,7 @@ const AppHeader = ({ user, darkMode }: IProps) => {
           Messages
         </>
       ),
+      disabled: true,
     },
     {
       label: (
@@ -95,13 +97,15 @@ const AppHeader = ({ user, darkMode }: IProps) => {
             {
               items,
               selectable: false,
+              className: "user-profile-menu",
             } as any
           }
           trigger={["click"]}
           placement="bottomLeft"
+          getPopupContainer={(trigger) => trigger.parentElement!}
         >
-          <Space className="cursor-pointer">
-            <Avatar size={30} icon={<UserOutlined />} />
+          <Space className="cursor-pointer user-profile-dropdown">
+            <Avatar className="border" size={30} icon={<UserOutlined />} />
             <strong>{user.firstName.toUpperCase()}</strong>
             <DownOutlined />
           </Space>

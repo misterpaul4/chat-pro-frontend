@@ -3,7 +3,7 @@ import { Outlet, useNavigate } from "react-router-dom";
 import { RootState } from "../../../store";
 import { paths } from "../../../utils/paths";
 import { ConfigProvider, Spin } from "antd";
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 import { useLazyGetSelfQuery } from "../../../modules/auth/api";
 import { setGetSelf } from "../../../modules/auth/control/userSlice";
 import { LoadingOutlined } from "@ant-design/icons";
@@ -12,7 +12,10 @@ import { layoutPrimaryColor } from "../../../settings";
 import { clearLs } from "../../lib/helpers/localStorage";
 
 const Layout = () => {
-  const loggedIn = useSelector((state: RootState) => state.user.auth.loggedIn);
+  const { loggedIn, darkMode } = useSelector((state: RootState) => ({
+    loggedIn: state.user.auth.loggedIn,
+    darkMode: state.user.darkMode,
+  }));
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -33,7 +36,7 @@ const Layout = () => {
 
   return (
     <ConfigProvider theme={{ token: { colorPrimary: layoutPrimaryColor } }}>
-      <main>
+      <main id={darkMode ? "dark-mode" : "light-mode"}>
         {loggedIn ? (
           <Outlet />
         ) : (

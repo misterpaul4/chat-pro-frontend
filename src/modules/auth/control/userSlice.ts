@@ -16,6 +16,8 @@ const initialState: IUserSlice = {
     firstName: "",
     id: "",
     lastName: "",
+    createdAt: "",
+    updatedAt: "",
   },
   auth: {
     loggedIn: false,
