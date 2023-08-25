@@ -106,7 +106,9 @@ const AppHeader = ({ user, darkMode }: IProps) => {
         >
           <Space className="cursor-pointer user-profile-dropdown">
             <Avatar className="border" size={30} icon={<UserOutlined />} />
-            <strong>{user.firstName.toUpperCase()}</strong>
+            <strong id="user-profile-name">
+              {user.firstName.toUpperCase()}
+            </strong>
             <DownOutlined />
           </Space>
         </Dropdown>
