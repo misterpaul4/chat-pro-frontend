@@ -87,7 +87,13 @@ const AppHeader = ({ user, darkMode }: IProps) => {
         </Button>
         <Button
           shape="circle"
-          onClick={() => dispatch(toggleDarkMode())}
+          onClick={() => {
+            document.documentElement.style.setProperty(
+              "color-scheme",
+              darkMode ? "light" : "dark"
+            );
+            dispatch(toggleDarkMode(!darkMode));
+          }}
           title={darkModeConfig.title}
         >
           <Icon component={darkModeConfig.icon} />

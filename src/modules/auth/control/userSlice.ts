@@ -65,9 +65,9 @@ export const userSlice = createSlice({
         darkMode: state.darkMode,
       };
     },
-    toggleDarkMode: (state) => {
-      setLS("darkMode", !state.darkMode);
-      return { ...state, darkMode: !state.darkMode };
+    toggleDarkMode: (state, action: PayloadAction<boolean>) => {
+      setLS("darkMode", action.payload);
+      return { ...state, darkMode: action.payload };
     },
   },
 });
