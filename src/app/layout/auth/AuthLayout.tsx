@@ -1,27 +1,42 @@
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import "./authLayout.less";
-import { Card, Carousel, Col, ConfigProvider, Row, Typography } from "antd";
+import {
+  Card,
+  Carousel,
+  Col,
+  ConfigProvider,
+  Row,
+  Typography,
+  theme,
+} from "antd";
 import s1 from "../../../../public/slide-1.jpg";
 import s2 from "../../../../public/slide-2.jpg";
 import s3 from "../../../../public/slide-3.jpg";
 import s4 from "../../../../public/slide-4.jpg";
 import s5 from "../../../../public/slide-5.jpg";
-import { authLayoutPrimaryColor } from "../../../settings";
 import { paths } from "../../../utils/paths";
 import { useEffect } from "react";
 import { getLs } from "../../lib/helpers/localStorage";
 import { useLazyGetSelfQuery } from "../../../modules/auth/api";
 import { setGetSelf } from "../../../modules/auth/control/userSlice";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../../../store";
+import useThemeEffect from "../../hooks/useThemeEffect";
 
 const AuthLayout = () => {
   const path = useLocation().pathname;
   const withWelcome = path.includes(paths.login) || path.includes(paths.signup);
 
+  const { darkMode } = useSelector((state: RootState) => ({
+    darkMode: state.user.darkMode,
+  }));
+
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const [getself] = useLazyGetSelfQuery();
+
+  useThemeEffect(dispatch);
 
   useEffect(() => {
     const token = getLs("token");
@@ -37,7 +52,11 @@ const AuthLayout = () => {
   }, []);
 
   return (
-    <ConfigProvider theme={{ token: { colorPrimary: authLayoutPrimaryColor } }}>
+    <ConfigProvider
+      theme={{
+        algorithm: darkMode ? theme.darkAlgorithm : theme.defaultAlgorithm,
+      }}
+    >
       <main>
         <Row>
           <Col span={12}>
