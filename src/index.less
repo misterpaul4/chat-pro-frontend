@@ -1,16 +1,15 @@
 @import "../node_modules/bootstrap/dist/css/bootstrap-utilities.css";
 @import "./app/style/variables.less";
 
+:root {
+  color-scheme: light dark;
+}
 
 body {
   padding: 0;
   max-width: 1500px;
   margin: 0 auto;
 }
-
-// .primary-bg {
-//   background-color: transparent;
-// }
 
 .cursor-pointer {
   cursor: pointer;
@@ -29,4 +28,8 @@ p, .ant-typography {
 
 .big-text {
   font-size: 1.2rem;
+}
+
+.is-active {
+  backdrop-filter: @background-hover;
 }

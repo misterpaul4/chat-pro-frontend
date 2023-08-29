@@ -3,12 +3,7 @@ import { IInbox, IThread, IThreadMemory, ThreadTypeEnum } from "../api/types";
 import { capitalize } from "../../../utils/strings";
 import { useDispatch, useSelector } from "react-redux";
 import { setActiveThread } from "../slice/homeSlice";
-import {
-  SETTINGS,
-  THREAD_MEMORY,
-  hoverColor,
-  layoutPrimaryColor,
-} from "../../../settings";
+import { SETTINGS, THREAD_MEMORY, layoutPrimaryColor } from "../../../settings";
 import { RootState } from "../../../store";
 import { getPrivateThreadRecipient } from "../helpers";
 import ContactAvatar from "../../../app/common/ContactAvatar";
@@ -109,11 +104,10 @@ const SideBarBody = ({ list, activeThread }: IProps) => {
         const typingClient = typingState[item.id];
         return (
           <List.Item
-            className="cursor-pointer sidebar-message-item pt-3 ps-3 pe-3"
+            className={`cursor-pointer sidebar-message-item pt-3 ps-3 pe-3 ${
+              item.id === activeThreadId ? "is-active" : ""
+            }`}
             onClick={() => onThreadClick(item)}
-            style={{
-              backgroundColor: item.id === activeThreadId ? hoverColor : "",
-            }}
             extra={<Badge count={item.unreadCountByUsers[userId] ?? 0} />}
           >
             <Space align="start">
