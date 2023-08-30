@@ -50,27 +50,28 @@ const InboxContent = ({
 
   const chatScroll = () => {
     if (ref.current) {
-      if (isNewThread) {
-        const savedScroll: IThreadMemory | undefined = THREAD_MEMORY.get(
-          thread.id
-        );
-        scrollTo(
-          savedScroll?.mSize === messageLength + 1
-            ? savedScroll.pos
-            : ref.current.scrollHeight
-        );
-      } else {
-        const lastMessageSender = thread.messages[0].senderId;
-        if (
-          (lastMessageRef.current &&
-            checkIfElementVisible(lastMessageRef.current, true)) ||
-          lastMessageSender === userId
-        ) {
-          scrollTo(ref.current.scrollHeight);
-        } else {
-          setNewMessagePopUp(true);
-        }
-      }
+      scrollTo(ref.current.scrollHeight);
+      // if (isNewThread) {
+      //   const savedScroll: IThreadMemory | undefined = THREAD_MEMORY.get(
+      //     thread.id
+      //   );
+      //   scrollTo(
+      //     savedScroll?.mSize === messageLength + 1
+      //       ? savedScroll.pos
+      //       : ref.current.scrollHeight
+      //   );
+      // } else {
+      //   const lastMessageSender = thread.messages[0].senderId;
+      //   if (
+      //     (lastMessageRef.current &&
+      //       checkIfElementVisible(lastMessageRef.current, true)) ||
+      //     lastMessageSender === userId
+      //   ) {
+      //     scrollTo(ref.current.scrollHeight);
+      //   } else {
+      //     setNewMessagePopUp(true);
+      //   }
+      // }
     }
   };
 
