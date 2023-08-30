@@ -35,7 +35,10 @@ const Login = () => {
   return (
     <div>
       <p>
-        Don't have an account? <Link to={paths.signup}>Create an account.</Link>
+        Don't have an account?{" "}
+        <Link className="reset-color" to={paths.signup}>
+          Create an account.
+        </Link>
       </p>
 
       <Form layout="vertical" onFinish={onFinish} initialValues={signupState}>
@@ -46,7 +49,11 @@ const Login = () => {
           <Input.Password type="password" required size="large" />
         </Form.Item>
 
-        <Link className="float-end" to={paths.forgotPassword} replace>
+        <Link
+          className="float-end reset-color"
+          to={paths.forgotPassword}
+          replace
+        >
           Forgot Password
         </Link>
 
