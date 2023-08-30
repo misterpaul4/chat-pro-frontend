@@ -38,11 +38,7 @@ const EmailVerificationCode = ({
         <Space>
           {[1, 2, 3, 4, 5, 6].map((index) => (
             <React.Fragment key={index}>
-              {index == 4 && (
-                <div className="text-secondary" style={{ fontSize: "2rem" }}>
-                  -
-                </div>
-              )}
+              {index == 4 && <div style={{ fontSize: "2rem" }}>-</div>}
               <Form.Item
                 name={String(index)}
                 className="verification-code-input m-0"
