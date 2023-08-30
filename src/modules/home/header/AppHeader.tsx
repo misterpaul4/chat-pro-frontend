@@ -105,10 +105,10 @@ const AppHeader = ({ user, darkMode }: IProps) => {
               items,
               selectable: false,
               className: "user-profile-menu",
+              style: { minWidth: 250 },
             } as any
           }
           trigger={["click"]}
-          placement="bottomLeft"
           getPopupContainer={(trigger) => trigger.parentElement!}
         >
           <Space className="cursor-pointer user-profile-dropdown">

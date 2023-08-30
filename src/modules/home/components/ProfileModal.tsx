@@ -38,6 +38,8 @@ const ProfileModal = ({ visible, onClose, user }: IProps) => {
   const [editMode, setEditMode] = useState(false);
   const [emailChangeMode, setEmailChangeMode] = useState(false);
 
+  const [messageApi, contextHolder] = message.useMessage();
+
   const dispatch = useDispatch();
   const [update, { isLoading }] = useUpdateUserMutation();
 
@@ -48,7 +50,7 @@ const ProfileModal = ({ visible, onClose, user }: IProps) => {
     });
 
     if (resp) {
-      message.success("Saved");
+      messageApi.success("Saved");
       setEditMode(false);
       dispatch(setGetSelf(resp.data));
     }
@@ -104,6 +106,7 @@ const ProfileModal = ({ visible, onClose, user }: IProps) => {
       footer={null}
     >
       <Spin indicator={<LoadingOutlined />} spinning={isLoading}>
+        {contextHolder}
         {emailChangeMode ? (
           <EmailChange backToProfile={backToProfile} />
         ) : (
