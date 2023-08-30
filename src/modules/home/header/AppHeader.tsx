@@ -60,10 +60,11 @@ const AppHeader = ({ user, darkMode }: IProps) => {
     },
     {
       label: (
-        <span onClick={() => dispatch(logout())} className="text-danger">
+        <span className="text-danger">
           <LogoutOutlined className="me-2" /> Logout
         </span>
       ),
+      onClick: () => dispatch(logout()),
     },
   ];
 

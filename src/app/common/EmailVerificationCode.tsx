@@ -97,7 +97,6 @@ const EmailVerificationCode = ({
           <Button
             loading={resendLoading}
             onClick={() => onResend(start)}
-            className="bg-light"
             type="text"
           >
             Resend

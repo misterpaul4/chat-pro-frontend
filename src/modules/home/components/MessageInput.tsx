@@ -126,7 +126,7 @@ const MessageInput = ({
   return (
     <>
       {replyingTo && (
-        <div className="px-3 py-2 border rounded mb-1 bg-light position-relative pe-4">
+        <div className="px-3 py-2 border rounded mb-1 position-relative pe-4">
           <strong className="rounded" style={{ fontSize: "1rem" }}>
             {getReplySender()}
           </strong>

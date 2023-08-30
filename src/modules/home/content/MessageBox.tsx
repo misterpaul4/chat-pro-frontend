@@ -17,7 +17,7 @@ interface IProps {
 }
 
 const MessageBox = ({ fromUser, withActions, payload, userId }: IProps) => {
-  const className = fromUser ? "primary-bg text-white" : "bg-white text-dark";
+  const className = fromUser ? "primary-bg" : "";
 
   const { createdAt, message } = payload;
 
@@ -71,7 +71,7 @@ const MessageBox = ({ fromUser, withActions, payload, userId }: IProps) => {
         )}
         {payload.replyingTo && (
           <Card
-            className="message-reply-box bg-light border bg-gradient text-dark"
+            className="message-reply-box border"
             style={{ fontSize: "0.8rem" }}
           >
             <strong className="capitalize">
@@ -79,10 +79,7 @@ const MessageBox = ({ fromUser, withActions, payload, userId }: IProps) => {
                 ? "You"
                 : payload.replyingTo.sender}
             </strong>
-            <Typography.Paragraph
-              className="m-0 text-dark"
-              ellipsis={{ rows: 3 }}
-            >
+            <Typography.Paragraph className="m-0" ellipsis={{ rows: 3 }}>
               {payload.replyingTo.message}
             </Typography.Paragraph>
           </Card>
@@ -94,7 +91,7 @@ const MessageBox = ({ fromUser, withActions, payload, userId }: IProps) => {
         >
           {message}
         </Typography.Paragraph>
-        <small className="text-start text-muted bg-light px-2 rounded">
+        <small className="text-start px-2 rounded">
           {getMessageTime(createdAt).toLowerCase()}
         </small>
       </Card>
