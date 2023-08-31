@@ -8,6 +8,7 @@ import { THREAD_MEMORY, layoutPrimaryColor } from "../../../settings";
 import { ArrowDownOutlined, ClockCircleOutlined } from "@ant-design/icons";
 import { useDispatch } from "react-redux";
 import { $threadMemory, setThreadMemory } from "../slice/threadMemorySlice";
+import { useReadThreadMutation } from "../api/mutationEndpoints";
 
 interface IProps {
   thread: IThread;
@@ -23,6 +24,7 @@ const InboxContent = ({
   threadMemory,
 }: IProps) => {
   const dispatch = useDispatch();
+  const [readMessage] = useReadThreadMutation();
   const [newMessagePopUp, setNewMessagePopUp] = useState(false);
   const { type } = thread;
   const ref = useRef<HTMLDivElement>(null);
@@ -50,28 +52,25 @@ const InboxContent = ({
 
   const chatScroll = () => {
     if (ref.current) {
-      scrollTo(ref.current.scrollHeight);
-      // if (isNewThread) {
-      //   const savedScroll: IThreadMemory | undefined = THREAD_MEMORY.get(
-      //     thread.id
-      //   );
-      //   scrollTo(
-      //     savedScroll?.mSize === messageLength + 1
-      //       ? savedScroll.pos
-      //       : ref.current.scrollHeight
-      //   );
-      // } else {
-      //   const lastMessageSender = thread.messages[0].senderId;
-      //   if (
-      //     (lastMessageRef.current &&
-      //       checkIfElementVisible(lastMessageRef.current, true)) ||
-      //     lastMessageSender === userId
-      //   ) {
-      //     scrollTo(ref.current.scrollHeight);
-      //   } else {
-      //     setNewMessagePopUp(true);
-      //   }
-      // }
+      const lastMessageSender = thread.messages[0].senderId;
+      if (
+        isNewThread ||
+        (lastMessageRef.current &&
+          checkIfElementVisible(lastMessageRef.current, true)) ||
+        lastMessageSender === userId
+      ) {
+        // const savedScroll: IThreadMemory | undefined = THREAD_MEMORY.get(
+        //   thread.id
+        // );
+        // scrollTo(
+        //   savedScroll?.mSize === messageLength + 1
+        //     ? savedScroll.pos
+        //     : ref.current.scrollHeight
+        // );
+        scrollTo(ref.current.scrollHeight);
+      } else {
+        setNewMessagePopUp(true);
+      }
     }
   };
 
@@ -101,6 +100,10 @@ const InboxContent = ({
     if (ref.current) {
       smoothScroll(ref.current.scrollHeight);
       setNewMessagePopUp(false);
+
+      setTimeout(() => {
+        readMessage(thread.id);
+      }, 1000);
     }
   };
 
