@@ -6,13 +6,15 @@ import { passwordRule } from "../../app/lib/helpers/form";
 import SubmitButton from "../../app/common/SubmitButton";
 import { useEffect } from "react";
 import { useResetPasswordMutation } from "./api";
-import { apiResponseHandler } from "../../app/lib/helpers/responseHandler";
 import { useDispatch } from "react-redux";
 import { setAppState } from "./control/userSlice";
+import useApiResponseHandler from "../../app/hooks/useApiResponseHandler";
 
 const ResetPassword = () => {
   const state = useLocation().state;
   const { code, id, email } = state || {};
+
+  const apiResponseHandler = useApiResponseHandler();
 
   const navigate = useNavigate();
   const dispatch = useDispatch();

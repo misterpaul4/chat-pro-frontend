@@ -5,12 +5,14 @@ import {
   useApproveRequestMutation,
   useDeclineRequestMutation,
 } from "../api/mutationEndpoints";
-import { apiResponseHandler } from "../../../app/lib/helpers/responseHandler";
 import { useDispatch } from "react-redux";
 import { setActiveThread, setRequestApproval } from "../slice/homeSlice";
 import { IThread } from "../api/types";
+import useApiResponseHandler from "../../../app/hooks/useApiResponseHandler";
 
 const RequestContent = (props: IThread) => {
+  const apiResponseHandler = useApiResponseHandler();
+
   const dispatch = useDispatch();
   const [approveRequest, { isLoading: approving }] =
     useApproveRequestMutation();
@@ -58,7 +60,7 @@ const RequestContent = (props: IThread) => {
               okText="Accept"
               key="accept"
             >
-              <Button icon={<CheckOutlined />} loading={approving} type="ghost">
+              <Button icon={<CheckOutlined />} loading={approving} ghost>
                 Accept
               </Button>
             </Popconfirm>,

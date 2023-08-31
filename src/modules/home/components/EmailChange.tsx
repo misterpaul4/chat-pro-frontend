@@ -5,10 +5,10 @@ import {
   useEmailChangeReqMutation,
   useEmailChangeReqSubmitMutation,
 } from "../api/mutationEndpoints";
-import { apiResponseHandler } from "../../../app/lib/helpers/responseHandler";
 import EmailVerificationCode from "../../../app/common/EmailVerificationCode";
 import { useDispatch } from "react-redux";
 import { setGetSelf } from "../../auth/control/userSlice";
+import useApiResponseHandler from "../../../app/hooks/useApiResponseHandler";
 
 interface IProps {
   backToProfile: () => void;
@@ -21,6 +21,8 @@ const EmailChange = ({ backToProfile }: IProps) => {
   const [changeReq, { isLoading: loading1 }] = useEmailChangeReqMutation();
   const [submitCode, { isLoading }] = useEmailChangeReqSubmitMutation();
   const dispatch = useDispatch();
+
+  const apiResponseHandler = useApiResponseHandler();
 
   const onFinish = async (code: string) => {
     const resp: any = await submitCode({ code, email: email! });

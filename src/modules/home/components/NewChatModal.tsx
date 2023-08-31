@@ -7,9 +7,7 @@ import {
   Modal,
   Spin,
   Typography,
-  notification,
 } from "antd";
-import { IContact } from "../api/types";
 import { useContext, useState } from "react";
 import headerContext from "../context/headerContext";
 import { ArrowRightOutlined, LoadingOutlined } from "@ant-design/icons";
@@ -17,15 +15,9 @@ import {
   useCreateThreadMutation,
   useVerifyEmailMutation,
 } from "../api/mutationEndpoints";
-import { apiResponseHandler } from "../../../app/lib/helpers/responseHandler";
-import { IBaseUser, IUser } from "../../auth/control/types";
+import useApiResponseHandler from "../../../app/hooks/useApiResponseHandler";
+import { IUser } from "../../auth/control/types";
 import { toTitleCase } from "../../../utils/strings";
-import { messageActionType } from "../context/messageReducer";
-
-interface IProps {
-  contactList: IContact[] | undefined;
-  user: IBaseUser;
-}
 
 interface IVerified {
   emailProps: InputProps;
@@ -69,6 +61,8 @@ const EMAIL_IS_NOT_VERIFIED: IVerified = {
 const NewChatModal = () => {
   const { newChatVisibility, onNewChatModalClose } = useContext(headerContext);
   const [recipient, setRecipient] = useState<IUser>();
+
+  const apiResponseHandler = useApiResponseHandler();
 
   const [verifyEmail, { isLoading }] = useVerifyEmailMutation();
   const [sendChatRequest, { isLoading: sending }] = useCreateThreadMutation();

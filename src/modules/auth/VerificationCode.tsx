@@ -6,13 +6,15 @@ import {
   useSubmitForgotPassMutation,
   useSubmitVerificationCodeMutation,
 } from "./api";
-import { apiResponseHandler } from "../../app/lib/helpers/responseHandler";
 import { LoadingOutlined } from "@ant-design/icons";
 import EmailVerificationCode from "../../app/common/EmailVerificationCode";
+import useApiResponseHandler from "../../app/hooks/useApiResponseHandler";
 
 const VerificationCode = () => {
   const state = useLocation().state;
   const { userId, email } = state || {};
+
+  const apiResponseHandler = useApiResponseHandler();
 
   const navigate = useNavigate();
 

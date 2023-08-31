@@ -4,13 +4,15 @@ import { Button, Form, Input, Spin, message } from "antd";
 import { passwordRule } from "../../app/lib/helpers/form";
 import { useSignupMutation } from "./api";
 import { ISignUp } from "./api/types";
-import { apiResponseHandler } from "../../app/lib/helpers/responseHandler";
 import { useState } from "react";
 import { LoadingOutlined } from "@ant-design/icons";
+import useApiResponseHandler from "../../app/hooks/useApiResponseHandler";
 
 const SignUp = () => {
   const navigate = useNavigate();
   const [createAccount, { isLoading }] = useSignupMutation();
+
+  const apiResponseHandler = useApiResponseHandler();
 
   const [customLoading, setCustomLoading] = useState(false);
 

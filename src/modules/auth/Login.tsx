@@ -3,14 +3,16 @@ import { paths } from "../../utils/paths";
 import { Button, Form, Input } from "antd";
 import { useLoginMutation } from "./api";
 import { ILogin } from "./api/types";
-import { apiResponseHandler } from "../../app/lib/helpers/responseHandler";
 import { useDispatch } from "react-redux";
 import { setAppState } from "./control/userSlice";
+import useApiResponseHandler from "../../app/hooks/useApiResponseHandler";
 
 const Login = () => {
   const [loginUser, { isLoading }] = useLoginMutation();
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  const apiResponseHandler = useApiResponseHandler();
 
   const signupState = useLocation().state || {};
 

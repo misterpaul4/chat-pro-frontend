@@ -8,8 +8,8 @@ import { BlockIcon, PersonIcon, UnBlockIcon } from "../../../utils/icons";
 import { capitalize } from "../../../utils/strings";
 import { layoutPrimaryColor, transparentTextColor } from "../../../settings";
 import { useMassUpdateContactsMutation } from "../api/mutationEndpoints";
-import { apiResponseHandler } from "../../../app/lib/helpers/responseHandler";
 import ContactAvatar from "../../../app/common/ContactAvatar";
+import useApiResponseHandler from "../../../app/hooks/useApiResponseHandler";
 
 interface IProps {
   contactList: IContact[] | undefined;
@@ -17,6 +17,8 @@ interface IProps {
 
 const ContactListDrawer = ({ contactList }: IProps) => {
   const [updateContacts, { isLoading }] = useMassUpdateContactsMutation();
+
+  const apiResponseHandler = useApiResponseHandler();
 
   const { onContactListClose, contactListVisibility } =
     useContext(headerContext);

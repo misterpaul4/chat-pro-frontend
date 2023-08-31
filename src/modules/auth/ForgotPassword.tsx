@@ -1,13 +1,15 @@
-import { Button, Card, Form, Input, Result, Typography } from "antd";
+import { Button, Form, Input, Typography } from "antd";
 import { Link, useNavigate } from "react-router-dom";
 import { paths } from "../../utils/paths";
 import { ArrowLeftOutlined } from "@ant-design/icons";
 import { useSubmitForgotPassMutation } from "./api";
-import { apiResponseHandler } from "../../app/lib/helpers/responseHandler";
+import useApiResponseHandler from "../../app/hooks/useApiResponseHandler";
 
 const ForgotPassword = () => {
   const [submit, { isLoading }] = useSubmitForgotPassMutation();
   const navigate = useNavigate();
+
+  const apiResponseHandler = useApiResponseHandler();
 
   const onFinish = async (values) => {
     const resp: any = await submit(values.email);

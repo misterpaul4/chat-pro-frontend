@@ -2,7 +2,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Outlet, useNavigate } from "react-router-dom";
 import { RootState } from "../../../store";
 import { paths } from "../../../utils/paths";
-import { ConfigProvider, Spin, theme } from "antd";
+import { ConfigProvider, Spin, message, notification, theme } from "antd";
 import { useEffect } from "react";
 import { useLazyGetSelfQuery } from "../../../modules/auth/api";
 import { setGetSelf } from "../../../modules/auth/control/userSlice";
@@ -11,6 +11,7 @@ import "./layout.less";
 import { layoutPrimaryColor } from "../../../settings";
 import { clearLs } from "../../lib/helpers/localStorage";
 import useThemeEffect from "../../hooks/useThemeEffect";
+import globalContext from "../../context/globalContext";
 
 const Layout = () => {
   const { loggedIn, darkMode } = useSelector((state: RootState) => ({
@@ -19,6 +20,9 @@ const Layout = () => {
   }));
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
+  const [messageApi, mContextHolder] = message.useMessage();
+  const [notificationApi, nContextHolder] = notification.useNotification();
 
   const [getself] = useLazyGetSelfQuery();
 
@@ -44,7 +48,9 @@ const Layout = () => {
         algorithm: darkMode ? theme.darkAlgorithm : theme.defaultAlgorithm,
       }}
     >
-      <main>
+      <globalContext.Provider value={{ messageApi, notificationApi }}>
+        {mContextHolder}
+        {nContextHolder}
         {loggedIn ? (
           <Outlet />
         ) : (
@@ -53,7 +59,7 @@ const Layout = () => {
             indicator={<LoadingOutlined style={{ fontSize: 100 }} spin />}
           />
         )}
-      </main>
+      </globalContext.Provider>
     </ConfigProvider>
   );
 };

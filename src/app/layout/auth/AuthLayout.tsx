@@ -7,6 +7,8 @@ import {
   ConfigProvider,
   Row,
   Typography,
+  message,
+  notification,
   theme,
 } from "antd";
 import s1 from "../../../../public/slide-1.jpg";
@@ -22,6 +24,7 @@ import { setGetSelf } from "../../../modules/auth/control/userSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../store";
 import useThemeEffect from "../../hooks/useThemeEffect";
+import globalContext from "../../context/globalContext";
 
 const AuthLayout = () => {
   const path = useLocation().pathname;
@@ -33,6 +36,9 @@ const AuthLayout = () => {
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
+  const [messageApi, mContextHolder] = message.useMessage();
+  const [notificationApi, nContextHolder] = notification.useNotification();
 
   const [getself] = useLazyGetSelfQuery();
 
@@ -57,7 +63,9 @@ const AuthLayout = () => {
         algorithm: darkMode ? theme.darkAlgorithm : theme.defaultAlgorithm,
       }}
     >
-      <main>
+      <globalContext.Provider value={{ messageApi, notificationApi }}>
+        {mContextHolder}
+        {nContextHolder}
         <Row>
           <Col span={12}>
             <Card className="auth-container">
@@ -80,7 +88,7 @@ const AuthLayout = () => {
             </Carousel>
           </Col>
         </Row>
-      </main>
+      </globalContext.Provider>
     </ConfigProvider>
   );
 };
