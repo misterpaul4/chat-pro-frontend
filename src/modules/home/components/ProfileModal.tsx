@@ -112,7 +112,7 @@ const ProfileModal = ({ visible, onClose, user }: IProps) => {
         ) : (
           <>
             <Avatar
-              className="d-flex justify-content-center"
+              className="d-flex justify-content-center profile-avatar"
               style={{ margin: "0 auto" }}
               size={100}
               icon={<UserOutlined />}
