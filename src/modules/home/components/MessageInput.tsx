@@ -3,11 +3,13 @@ import { useEffect, useRef, useState } from "react";
 import { useSendMessageMutation } from "../api/mutationEndpoints";
 import { IThread, IThreadMemory, ThreadTypeEnum } from "../api/types";
 import { resizeContentHeight } from "../constants/helpers";
-import { emitIsTyping } from "../api/sockets";
+import { emitIsTyping, emitNewMessage } from "../api/sockets";
 import { THREAD_MEMORY } from "../../../settings";
 import { CloseOutlined } from "@ant-design/icons";
 import { $threadMemory, setThreadMemory } from "../slice/threadMemorySlice";
 import { capitalize } from "../../../utils/strings";
+import { setNewMessage } from "../slice/homeSlice";
+import { messageActionType } from "../context/messageReducer";
 
 interface IProps {
   activeThread: IThread | undefined;
@@ -15,6 +17,7 @@ interface IProps {
   dispatch: Function;
   threadMemory: $threadMemory;
   userId: string;
+  dispatchInbox: Function;
 }
 
 const MessageInput = ({
@@ -23,6 +26,7 @@ const MessageInput = ({
   dispatch,
   threadMemory,
   userId,
+  dispatchInbox,
 }: IProps) => {
   const [form] = Form.useForm();
   const ref = useRef<InputRef>(null);
@@ -87,11 +91,31 @@ const MessageInput = ({
     const { message } = form.getFieldsValue();
 
     if (message) {
-      sendMessage({
-        message,
-        threadId: activeThread.id,
-        reply: replyingTo?.id,
-      });
+      // send message with post
+      // sendMessage({
+      //   message,
+      //   threadId: activeThread.id,
+      //   reply: replyingTo?.id,
+      // });
+
+      // send message with socket
+      emitNewMessage(
+        {
+          message,
+          threadId: activeThread.id,
+          reply: replyingTo?.id,
+        },
+        (data) => {
+          if (data) {
+            // change indicator
+            dispatch(setNewMessage(data.message));
+            dispatchInbox({
+              type: messageActionType.NewMessage,
+              payload: data,
+            });
+          }
+        }
+      );
 
       form.resetFields(["message"]);
       if (replyingTo) {

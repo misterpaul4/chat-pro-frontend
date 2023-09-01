@@ -196,6 +196,7 @@ const Home = () => {
         <Footer className="footerStyle p-1">
           <MessageInput
             dispatch={dispatch}
+            dispatchInbox={dispatchInbox}
             threadMemory={threadMemory}
             activeThread={activeThread}
             isNewThread={isNewThread}
