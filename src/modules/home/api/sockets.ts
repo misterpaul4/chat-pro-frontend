@@ -10,3 +10,6 @@ export const emitNewMessage = (
   resposeCallBack: (response) => void
 ) => socket.emit(SocketEvents.NEW_MESSAGE, payload, resposeCallBack);
 
+export const emitReadMessage = (threadId: string, responseCallback: Function) =>
+  socket.emit(SocketEvents.READ_MESSAGE, threadId, responseCallback);
+

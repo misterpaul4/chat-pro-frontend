@@ -190,7 +190,12 @@ const Home = () => {
             <ContentLoader loading={loading} />
           </div>
           <typingContext.Provider value={typing}>
-            {!loading && <MessageContent onlineContacts={onlineContacts} />}
+            {!loading && (
+              <MessageContent
+                dispatchInbox={dispatchInbox}
+                onlineContacts={onlineContacts}
+              />
+            )}
           </typingContext.Provider>
         </Content>
         <Footer className="footerStyle p-1">

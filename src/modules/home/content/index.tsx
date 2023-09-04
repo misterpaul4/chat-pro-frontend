@@ -10,9 +10,10 @@ import useSocketSubscription from "../../../app/hooks/useSocketSubscription";
 
 interface IProps {
   onlineContacts: $onlineStatus;
+  dispatchInbox: Function;
 }
 
-const MessageContent = ({ onlineContacts }: IProps) => {
+const MessageContent = ({ onlineContacts, dispatchInbox }: IProps) => {
   const { activeThread, userId, isNewThread, threadMemory } = useSelector(
     (state: RootState) => ({
       activeThread: state.app.activeThread,
@@ -51,6 +52,7 @@ const MessageContent = ({ onlineContacts }: IProps) => {
         <RequestContent {...activeThread} />
       ) : (
         <InboxContent
+          dispatchInbox={dispatchInbox}
           thread={activeThread}
           isNewThread={isNewThread}
           userId={userId}

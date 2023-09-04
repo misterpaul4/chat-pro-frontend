@@ -26,4 +26,3 @@ export function typingReducer(state: $typing, action: IActionType) {
       return state;
   }
 }
-

@@ -9,12 +9,15 @@ import { ArrowDownOutlined, ClockCircleOutlined } from "@ant-design/icons";
 import { useDispatch } from "react-redux";
 import { $threadMemory, setThreadMemory } from "../slice/threadMemorySlice";
 import { useReadThreadMutation } from "../api/mutationEndpoints";
+import { emitReadMessage } from "../api/sockets";
+import { messageActionType } from "../context/messageReducer";
 
 interface IProps {
   thread: IThread;
   userId: string;
   isNewThread: boolean;
   threadMemory: $threadMemory;
+  dispatchInbox: Function;
 }
 
 const InboxContent = ({
@@ -22,6 +25,7 @@ const InboxContent = ({
   userId,
   isNewThread,
   threadMemory,
+  dispatchInbox,
 }: IProps) => {
   const dispatch = useDispatch();
   const [readMessage] = useReadThreadMutation();
@@ -102,7 +106,18 @@ const InboxContent = ({
       setNewMessagePopUp(false);
 
       setTimeout(() => {
-        readMessage(thread.id);
+        // readMessage(thread.id);
+        emitReadMessage(
+          thread.id,
+          (data: { threadId: string; userId: string }) => {
+            if (data) {
+              dispatchInbox({
+                type: messageActionType.ReadThread,
+                payload: data,
+              });
+            }
+          }
+        );
       }, 1000);
     }
   };
