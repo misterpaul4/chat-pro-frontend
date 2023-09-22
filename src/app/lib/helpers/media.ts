@@ -1,4 +1,4 @@
-import notiSound from "../../../../public/notification.mp3";
+import notiSound from "../../../../public/notification.wav";
 
 export function playNotificationSound() {
   const audio = new Audio(notiSound);
