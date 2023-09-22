@@ -52,6 +52,17 @@ const InboxContent = ({
     return ref.current!.scrollHeight - ref.current!.scrollTop < 1000;
   };
 
+  const readMessage = () => {
+    emitReadMessage(thread.id, (data: { threadId: string; userId: string }) => {
+      if (data) {
+        dispatchInbox({
+          type: messageActionType.ReadThread,
+          payload: data,
+        });
+      }
+    });
+  };
+
   const chatScroll = () => {
     if (ref.current) {
       const lastMessageSender = thread.messages[0].senderId;
@@ -70,6 +81,11 @@ const InboxContent = ({
         //     : ref.current.scrollHeight
         // );
         scrollTo(ref.current.scrollHeight);
+
+        if (lastMessageSender !== userId && !isNewThread) {
+          // READ MESSAGE
+          readMessage();
+        }
       } else {
         setNewMessagePopUp(true);
       }
@@ -105,17 +121,7 @@ const InboxContent = ({
 
       setTimeout(() => {
         // readMessage(thread.id);
-        emitReadMessage(
-          thread.id,
-          (data: { threadId: string; userId: string }) => {
-            if (data) {
-              dispatchInbox({
-                type: messageActionType.ReadThread,
-                payload: data,
-              });
-            }
-          }
-        );
+        readMessage();
       }, 1000);
     }
   };
