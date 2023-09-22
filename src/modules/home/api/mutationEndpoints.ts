@@ -49,12 +49,6 @@ const endpoints = apis.injectEndpoints({
       }),
       invalidatesTags: (x) => (x ? [apiTags.CONTACTS] : []),
     }),
-    readThread: builder.mutation<void, string>({
-      query: (id) => ({
-        url: `thread/read-message/${id}`,
-        method: "POST",
-      }),
-    }),
     updateUser: builder.mutation<
       void,
       { id: string; body: Partial<IBaseUser> }
@@ -90,7 +84,6 @@ export const {
   useDeclineRequestMutation,
   useMassUpdateContactsMutation,
   useSendMessageMutation,
-  useReadThreadMutation,
   useUpdateUserMutation,
   useEmailChangeReqMutation,
   useEmailChangeReqSubmitMutation,

@@ -12,19 +12,19 @@ import { typingContext } from "../context/typingContext";
 import Typing from "../../../app/common/IsTyping";
 import { getLastMessageTime } from "../../../app/lib/helpers/time";
 import { getMessageContent } from "../../../utils/dom";
-import { useReadThreadMutation } from "../api/mutationEndpoints";
 import { setLS } from "../../../app/lib/helpers/localStorage";
+import { emitReadMessage } from "../api/sockets";
+import { messageActionType } from "../context/messageReducer";
 
 interface IProps {
   list: IInbox | undefined;
   activeThread?: IThread | undefined;
+  dispatchInbox: Function;
 }
 
-const SideBarBody = ({ list, activeThread }: IProps) => {
+const SideBarBody = ({ list, activeThread, dispatchInbox }: IProps) => {
   const dispatch = useDispatch();
   const typingState = useContext(typingContext);
-
-  const [readThread] = useReadThreadMutation();
 
   const userId = useSelector((state: RootState) => state.user.user.id);
 
@@ -89,7 +89,17 @@ const SideBarBody = ({ list, activeThread }: IProps) => {
       setLS("activeThreadId", thread.id);
 
       if (thread.unreadCountByUsers[userId]) {
-        readThread(thread.id);
+        emitReadMessage(
+          thread.id,
+          (data: { threadId: string; userId: string }) => {
+            if (data) {
+              dispatchInbox({
+                type: messageActionType.ReadThread,
+                payload: data,
+              });
+            }
+          }
+        );
       }
     }
   };

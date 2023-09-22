@@ -1,14 +1,13 @@
 import { Button, List, Tag, Typography } from "antd";
-import { IMessage, IThread, IThreadMemory, ThreadTypeEnum } from "../api/types";
+import { IMessage, IThread, ThreadTypeEnum } from "../api/types";
 import MessageBox from "./MessageBox";
 import { useEffect, useRef, useState } from "react";
 import { resizeContentHeight } from "../constants/helpers";
 import { checkIfElementVisible, inputFocus } from "../../../utils/dom";
-import { THREAD_MEMORY, layoutPrimaryColor } from "../../../settings";
-import { ArrowDownOutlined, ClockCircleOutlined } from "@ant-design/icons";
+import { layoutPrimaryColor } from "../../../settings";
+import { ClockCircleOutlined } from "@ant-design/icons";
 import { useDispatch } from "react-redux";
 import { $threadMemory, setThreadMemory } from "../slice/threadMemorySlice";
-import { useReadThreadMutation } from "../api/mutationEndpoints";
 import { emitReadMessage } from "../api/sockets";
 import { messageActionType } from "../context/messageReducer";
 
@@ -28,7 +27,6 @@ const InboxContent = ({
   dispatchInbox,
 }: IProps) => {
   const dispatch = useDispatch();
-  const [readMessage] = useReadThreadMutation();
   const [newMessagePopUp, setNewMessagePopUp] = useState(false);
   const { type } = thread;
   const ref = useRef<HTMLDivElement>(null);
