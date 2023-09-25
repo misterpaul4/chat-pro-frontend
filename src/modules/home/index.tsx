@@ -205,7 +205,7 @@ const Home = () => {
             threadMemory={threadMemory}
             activeThread={activeThread}
             isNewThread={isNewThread}
-            userId={user.id}
+            user={user}
           />
         </Footer>
       </Layout>

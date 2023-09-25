@@ -1,7 +1,7 @@
 import { Form, Input, InputRef, Typography } from "antd";
 import { useEffect, useRef, useState } from "react";
 import { useSendMessageMutation } from "../api/mutationEndpoints";
-import { IThread, IThreadMemory, ThreadTypeEnum } from "../api/types";
+import { IMessage, IThread, IThreadMemory, ThreadTypeEnum } from "../api/types";
 import { resizeContentHeight } from "../constants/helpers";
 import { emitIsTyping, emitNewMessage } from "../api/sockets";
 import { THREAD_MEMORY } from "../../../settings";
@@ -10,13 +10,15 @@ import { $threadMemory, setThreadMemory } from "../slice/threadMemorySlice";
 import { capitalize } from "../../../utils/strings";
 import { setNewMessage } from "../slice/homeSlice";
 import { messageActionType } from "../context/messageReducer";
+import { v4 } from "uuid";
+import { IUser } from "../../auth/control/types";
 
 interface IProps {
   activeThread: IThread | undefined;
   isNewThread: boolean;
   dispatch: Function;
   threadMemory: $threadMemory;
-  userId: string;
+  user: IUser;
   dispatchInbox: Function;
 }
 
@@ -25,7 +27,7 @@ const MessageInput = ({
   isNewThread,
   dispatch,
   threadMemory,
-  userId,
+  user,
   dispatchInbox,
 }: IProps) => {
   const [form] = Form.useForm();
@@ -33,6 +35,7 @@ const MessageInput = ({
   const [sendMessage] = useSendMessageMutation();
   const message = Form.useWatch("message", form);
   const [isTyping, setIsTyping] = useState(false);
+  const userId = user?.id;
 
   // place cursor on input
   useEffect(() => {
@@ -87,16 +90,47 @@ const MessageInput = ({
     ref.current?.focus();
   };
 
+  const getReplySender = () => {
+    if (replyingTo!.senderId === userId) {
+      return "You";
+    } else {
+      const user = activeThread.users.find(
+        (user) => user.id === replyingTo!.senderId
+      );
+
+      return `${capitalize(user!.firstName)} ${capitalize(user!.lastName)}`;
+    }
+  };
+
   const submitForm = async () => {
     const { message } = form.getFieldsValue();
 
     if (message) {
-      // send message with post
-      // sendMessage({
-      //   message,
-      //   threadId: activeThread.id,
-      //   reply: replyingTo?.id,
-      // });
+      const payload: IMessage = {
+        message,
+        id: v4(),
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+        sender: user,
+        senderId: userId,
+        threadId: activeThread.id,
+      };
+
+      if (replyingTo) {
+        payload.replyingTo = {
+          ...replyingTo,
+          sender: getReplySender(),
+        };
+      }
+
+      dispatch(setNewMessage(payload));
+      dispatchInbox({
+        type: messageActionType.NewMessage,
+        payload: {
+          message: payload,
+          unreadCountByUsers: activeThread.unreadCountByUsers ?? {},
+        },
+      });
 
       // send message with socket
       emitNewMessage(
@@ -104,15 +138,15 @@ const MessageInput = ({
           message,
           threadId: activeThread.id,
           reply: replyingTo?.id,
+          updateId: payload.id,
         },
-        (data) => {
+        (data: {
+          message: IMessage;
+          unreadCountByUsers: IThread["unreadCountByUsers"];
+          updateId: string;
+        }) => {
           if (data) {
-            // change indicator
-            dispatch(setNewMessage(data.message));
-            dispatchInbox({
-              type: messageActionType.NewMessage,
-              payload: data,
-            });
+            // TODO: indicate if message was delivered
           }
         }
       );
@@ -132,18 +166,6 @@ const MessageInput = ({
     if (!isTyping && value && message) {
       setIsTyping(true);
       emitIsTyping({ isTyping: true, threadId: activeThread.id });
-    }
-  };
-
-  const getReplySender = () => {
-    if (replyingTo!.senderId === userId) {
-      return "You";
-    } else {
-      const user = activeThread.users.find(
-        (user) => user.id === replyingTo!.senderId
-      );
-
-      return `${capitalize(user!.firstName)} ${capitalize(user!.lastName)}`;
     }
   };
 

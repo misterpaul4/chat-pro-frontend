@@ -45,7 +45,6 @@ export interface IMessage extends IBaseType, IThreadMessagePayload {
     id: string;
     senderId: string;
   };
-  read: boolean;
   threadId: string;
 }
 
@@ -79,6 +78,7 @@ export interface ICreateMessage {
   threadId: string;
   message: string;
   reply?: string;
+  updateId?: string;
 }
 
 export interface IsTypingPayload {
@@ -113,3 +113,4 @@ export interface IEmailChange {
   email: string;
   code: string;
 }
+
