@@ -9,6 +9,7 @@ import Icon, {
 import { IMessage } from "../api/types";
 import { ForwardIcon } from "../../../utils/icons";
 import ContactAvatar from "../../../app/common/ContactAvatar";
+import { layoutPrimaryColor } from "../../../settings";
 
 interface IProps {
   fromUser: boolean;
@@ -25,12 +26,15 @@ const MessageBox = ({
   userId,
   senderName,
 }: IProps) => {
-  const { className, userImg } = fromUser
-    ? { className: "primary-bg", userImg: null }
+  const { containerStyle, userImg } = fromUser
+    ? {
+        containerStyle: { backgroundColor: `${layoutPrimaryColor}20` },
+        userImg: null,
+      }
     : {
-        className: "",
+        containerStyle: undefined,
         userImg: (
-          <ContactAvatar name={senderName ?? ""} className="me-2 mt-1" />
+          <ContactAvatar name={senderName ?? ""} className="me-2 mt-2" />
         ),
       };
 
@@ -39,8 +43,9 @@ const MessageBox = ({
   return (
     <>
       <Card
-        className={`border-0 text-start p-3 message-width position-relative message-box ${className}`}
+        className={`border-0 text-start p-3 message-width position-relative message-box`}
         bodyStyle={{ padding: 0 }}
+        style={containerStyle}
       >
         {withActions && (
           <Dropdown
@@ -78,7 +83,6 @@ const MessageBox = ({
           >
             <Button
               shape="circle"
-              className={className}
               type="dashed"
               icon={<DownOutlined style={{ fontSize: 12 }} />}
             />
@@ -86,8 +90,12 @@ const MessageBox = ({
         )}
         {payload.replyingTo && (
           <Card
-            className="message-reply-box border"
-            style={{ fontSize: "0.8rem" }}
+            className="message-reply-box"
+            style={{
+              borderLeft: "1px solid " + layoutPrimaryColor,
+              fontSize: "0.8rem",
+              backgroundColor: "inherit" + "5",
+            }}
           >
             <strong className="capitalize">
               {payload.replyingTo.senderId === userId
@@ -102,7 +110,7 @@ const MessageBox = ({
 
         <Typography.Paragraph
           ellipsis={{ rows: 10, expandable: true, symbol: "more" }}
-          className={`m-0 ${className}`}
+          className="m-0"
         >
           {userImg}
           {message}
