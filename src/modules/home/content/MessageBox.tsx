@@ -8,24 +8,48 @@ import Icon, {
 } from "@ant-design/icons";
 import { IMessage } from "../api/types";
 import { ForwardIcon } from "../../../utils/icons";
+import ContactAvatar from "../../../app/common/ContactAvatar";
+import { layoutPrimaryColor } from "../../../settings";
 
 interface IProps {
   fromUser: boolean;
   withActions?: { onReply: (message: IMessage) => void };
   payload: IMessage;
   userId?: string;
+  senderName?: string;
 }
 
-const MessageBox = ({ fromUser, withActions, payload, userId }: IProps) => {
-  const className = fromUser ? "primary-bg" : "";
+const MessageBox = ({
+  fromUser,
+  withActions,
+  payload,
+  userId,
+  senderName,
+}: IProps) => {
+  const { containerStyle, userImg } = fromUser
+    ? {
+        containerStyle: { backgroundColor: `${layoutPrimaryColor}20` },
+        userImg: null,
+      }
+    : {
+        containerStyle: undefined,
+        userImg: (
+          <ContactAvatar
+            size="small"
+            name={senderName ?? ""}
+            className="me-2 mt-1"
+          />
+        ),
+      };
 
   const { createdAt, message } = payload;
 
   return (
     <>
       <Card
-        className={`border-0 text-start p-3 message-width position-relative message-box ${className}`}
+        className={`border-0 text-start p-3 message-width position-relative message-box`}
         bodyStyle={{ padding: 0 }}
+        style={containerStyle}
       >
         {withActions && (
           <Dropdown
@@ -63,7 +87,6 @@ const MessageBox = ({ fromUser, withActions, payload, userId }: IProps) => {
           >
             <Button
               shape="circle"
-              className={className}
               type="dashed"
               icon={<DownOutlined style={{ fontSize: 12 }} />}
             />
@@ -71,8 +94,12 @@ const MessageBox = ({ fromUser, withActions, payload, userId }: IProps) => {
         )}
         {payload.replyingTo && (
           <Card
-            className="message-reply-box border"
-            style={{ fontSize: "0.8rem" }}
+            className="message-reply-box"
+            style={{
+              borderLeft: "1px solid " + layoutPrimaryColor,
+              fontSize: "0.8rem",
+              backgroundColor: "inherit" + "5",
+            }}
           >
             <strong className="capitalize">
               {payload.replyingTo.senderId === userId
@@ -87,8 +114,9 @@ const MessageBox = ({ fromUser, withActions, payload, userId }: IProps) => {
 
         <Typography.Paragraph
           ellipsis={{ rows: 10, expandable: true, symbol: "more" }}
-          className={`m-0 ${className}`}
+          className="m-0"
         >
+          {userImg}
           {message}
         </Typography.Paragraph>
         <small className="text-start px-2 rounded">
