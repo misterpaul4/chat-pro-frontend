@@ -34,7 +34,11 @@ const MessageBox = ({
     : {
         containerStyle: undefined,
         userImg: (
-          <ContactAvatar name={senderName ?? ""} className="me-2 mt-2" />
+          <ContactAvatar
+            size="small"
+            name={senderName ?? ""}
+            className="me-2 mt-1"
+          />
         ),
       };
 
