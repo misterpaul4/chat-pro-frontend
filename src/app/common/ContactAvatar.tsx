@@ -3,13 +3,15 @@ import { contactColors, getContactColor } from "../../utils/colors";
 
 interface IProps {
   name: string;
+  className?: string;
 }
 
-const ContactAvatar = ({ name }: IProps) => {
+const ContactAvatar = ({ name, className = "" }: IProps) => {
   const CN = (name[0] || "x").toUpperCase();
 
   return (
     <Avatar
+      className={className}
       style={{
         backgroundColor: getContactColor(CN),
       }}

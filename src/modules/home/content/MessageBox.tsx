@@ -8,16 +8,31 @@ import Icon, {
 } from "@ant-design/icons";
 import { IMessage } from "../api/types";
 import { ForwardIcon } from "../../../utils/icons";
+import ContactAvatar from "../../../app/common/ContactAvatar";
 
 interface IProps {
   fromUser: boolean;
   withActions?: { onReply: (message: IMessage) => void };
   payload: IMessage;
   userId?: string;
+  senderName?: string;
 }
 
-const MessageBox = ({ fromUser, withActions, payload, userId }: IProps) => {
-  const className = fromUser ? "primary-bg" : "";
+const MessageBox = ({
+  fromUser,
+  withActions,
+  payload,
+  userId,
+  senderName,
+}: IProps) => {
+  const { className, userImg } = fromUser
+    ? { className: "primary-bg", userImg: null }
+    : {
+        className: "",
+        userImg: (
+          <ContactAvatar name={senderName ?? ""} className="me-2 mt-1" />
+        ),
+      };
 
   const { createdAt, message } = payload;
 
@@ -89,6 +104,7 @@ const MessageBox = ({ fromUser, withActions, payload, userId }: IProps) => {
           ellipsis={{ rows: 10, expandable: true, symbol: "more" }}
           className={`m-0 ${className}`}
         >
+          {userImg}
           {message}
         </Typography.Paragraph>
         <small className="text-start px-2 rounded">

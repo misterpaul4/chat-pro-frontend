@@ -1,7 +1,7 @@
 import { Button, List, Tag, Typography } from "antd";
 import { IMessage, IThread, ThreadTypeEnum } from "../api/types";
 import MessageBox from "./MessageBox";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { resizeContentHeight } from "../constants/helpers";
 import { checkIfElementVisible, inputFocus } from "../../../utils/dom";
 import { layoutPrimaryColor } from "../../../settings";
@@ -134,6 +134,16 @@ const InboxContent = ({
     resizeContentHeight();
   };
 
+  const usersInitials: Record<string, string> = useMemo(() => {
+    const result = {};
+
+    thread.users.forEach((user) => {
+      result[user.id] = user.firstName;
+    });
+
+    return result;
+  }, [thread]);
+
   return (
     <div ref={ref} id="message-list">
       <List
@@ -157,6 +167,7 @@ const InboxContent = ({
                 fromUser={fromUser}
                 payload={threadMessage}
                 userId={userId}
+                senderName={usersInitials[threadMessage.senderId]}
               />
             </List.Item>
           );
