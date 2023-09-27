@@ -114,11 +114,15 @@ const SideBarBody = ({ list, activeThread, dispatchInbox }: IProps) => {
         const typingClient = typingState[item.id];
         return (
           <List.Item
-            className={`cursor-pointer sidebar-message-item pt-3 ps-3 pe-3 ${
-              item.id === activeThreadId ? "is-active" : ""
-            }`}
+            className="cursor-pointer sidebar-message-item pt-3 ps-3 pe-3"
             onClick={() => onThreadClick(item)}
             extra={<Badge count={item.unreadCountByUsers[userId] ?? 0} />}
+            style={{
+              backgroundColor:
+                item.id === activeThreadId
+                  ? `${layoutPrimaryColor}10`
+                  : undefined,
+            }}
           >
             <Space align="start">
               <ContactAvatar name={avatarProps} />

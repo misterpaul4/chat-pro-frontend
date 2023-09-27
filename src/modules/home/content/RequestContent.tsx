@@ -46,7 +46,7 @@ const RequestContent = (props: IThread) => {
   const threadMessage = props.messages[0];
 
   return (
-    <div className="py-2">
+    <div className="p-2">
       <MessageBox
         withActions={undefined}
         payload={threadMessage}
