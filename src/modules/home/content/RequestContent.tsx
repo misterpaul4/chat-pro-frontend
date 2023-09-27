@@ -46,8 +46,16 @@ const RequestContent = (props: IThread) => {
   const threadMessage = props.messages[0];
 
   return (
-    <>
-      <MessageBox payload={threadMessage} fromUser={false} />
+    <div className="py-2">
+      <MessageBox
+        withActions={undefined}
+        payload={threadMessage}
+        fromUser={false}
+        senderName={
+          props.users.find((user) => user.id === threadMessage.senderId)
+            ?.firstName
+        }
+      />
 
       <Card className="d-inline-block mt-5">
         <Result
@@ -60,7 +68,12 @@ const RequestContent = (props: IThread) => {
               okText="Accept"
               key="accept"
             >
-              <Button icon={<CheckOutlined />} loading={approving} ghost>
+              <Button
+                icon={<CheckOutlined />}
+                loading={approving}
+                type="primary"
+                ghost
+              >
                 Accept
               </Button>
             </Popconfirm>,
@@ -86,7 +99,7 @@ const RequestContent = (props: IThread) => {
           ]}
         />
       </Card>
-    </>
+    </div>
   );
 };
 

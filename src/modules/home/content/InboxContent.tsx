@@ -144,6 +144,9 @@ const InboxContent = ({
     return result;
   }, [thread]);
 
+  const messageActions =
+    type === ThreadTypeEnum.Request ? undefined : { onReply: onMessageReply };
+
   return (
     <div ref={ref} id="message-list">
       <List
@@ -163,7 +166,7 @@ const InboxContent = ({
               }`}
             >
               <MessageBox
-                withActions={{ onReply: onMessageReply }}
+                withActions={messageActions}
                 fromUser={fromUser}
                 payload={threadMessage}
                 userId={userId}
