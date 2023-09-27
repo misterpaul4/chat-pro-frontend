@@ -120,7 +120,7 @@ const SideBarBody = ({ list, activeThread, dispatchInbox }: IProps) => {
             style={{
               backgroundColor:
                 item.id === activeThreadId
-                  ? `${layoutPrimaryColor}10`
+                  ? `${layoutPrimaryColor}30`
                   : undefined,
             }}
           >

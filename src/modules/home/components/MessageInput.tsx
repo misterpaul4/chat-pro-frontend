@@ -103,7 +103,8 @@ const MessageInput = ({
   };
 
   const submitForm = async () => {
-    const { message } = form.getFieldsValue();
+    let { message } = form.getFieldsValue();
+    message = message?.trim();
 
     if (message) {
       const payload: IMessage = {

@@ -15,9 +15,9 @@ export const getMessageTime: (dateString: string) => string = (dateString) => {
   } else if (date.isAfter(currentDate.subtract(7, "day"))) {
     return `${date.format("dddd")} at ${date.format(timeFormat)}`;
   } else if (date.isAfter(currentDate.startOf("year"))) {
-    return `${date.format("Do MMM")} at ${date.format(timeFormat)}`;
+    return `${date.format("DD MMM")} at ${date.format(timeFormat)}`;
   } else {
-    return `${date.format("Do MMM YY")} at ${date.format(timeFormat)}`;
+    return `${date.format("DD MMM YY")} at ${date.format(timeFormat)}`;
   }
 };
 
