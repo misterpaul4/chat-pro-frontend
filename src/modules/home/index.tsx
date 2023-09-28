@@ -1,4 +1,4 @@
-import { Layout } from "antd";
+import { Layout, Typography } from "antd";
 import "./index.less";
 import AppHeader from "./header/AppHeader";
 import { useDispatch, useSelector } from "react-redux";
@@ -13,15 +13,16 @@ import SideBar from "./sidebar";
 import { ContentLoader, SiderLoader } from "./components/Loaders";
 import MessageContent from "./content";
 import ContactListDrawer from "./components/ContactListDrawer";
-import { useEffect, useReducer } from "react";
+import { useContext, useEffect, useReducer } from "react";
 import {
   messageActionType,
   messageInitialState,
   messageReducer,
 } from "./context/messageReducer";
 import useSocketSubscription from "../../app/hooks/useSocketSubscription";
-import { IThread, ITypingResponse } from "./api/types";
+import { IThread, ITypingResponse, ThreadTypeEnum } from "./api/types";
 import {
+  goToClickedThread,
   setActiveThread,
   setNewMessage,
   setRequestApprovalUpdate,
@@ -32,6 +33,11 @@ import { typingInitialState, typingReducer } from "./context/typingReducer";
 import { typingContext } from "./context/typingContext";
 import { playNotificationSound } from "../../app/lib/helpers/media";
 import { inputFocus } from "../../utils/dom";
+import { getLs } from "../../app/lib/helpers/localStorage";
+import { $tabType } from "./sidebar/types";
+import globalContext from "../../app/context/globalContext";
+import ContactAvatar from "../../app/common/ContactAvatar";
+import { emitReadMessage } from "./api/sockets";
 
 const { Sider, Content, Header, Footer } = Layout;
 
@@ -46,6 +52,7 @@ const Home = () => {
     }));
 
   const dispatch = useDispatch();
+  const { notificationApi } = useContext(globalContext);
 
   const { data: contactList, refetch: refetchContacts } = useGetContactsQuery(
     undefined,
@@ -91,7 +98,53 @@ const Home = () => {
     {
       event: "newMessage",
       handler: (data) => {
-        data.message.senderId !== user.id && playNotificationSound();
+        if (data.message.senderId !== user.id) {
+          const activeTab: $tabType = getLs("activeTab");
+          const activeThread = getLs("activeThreadId");
+
+          if (data.message.threadId !== activeThread) {
+            if (
+              (data.type === ThreadTypeEnum.Request &&
+                activeTab !== "request") ||
+              (data.type !== ThreadTypeEnum.Request && activeTab !== "inbox")
+            ) {
+              notificationApi.info({
+                icon: <ContactAvatar name={data.sender} />,
+                className: "pt-0 pb-2 cursor-pointer",
+                onClick() {
+                  setTimeout(() => {
+                    dispatchInbox({
+                      type: "GetThread",
+                      payload: {
+                        threadId: data.message.threadId,
+                        userId: user.id,
+                        updateFunc: (currentThread) => {
+                          dispatch(goToClickedThread(currentThread));
+                          notificationApi.destroy();
+                          // read thread
+                          emitReadMessage(data.message.threadId, () => {});
+                        },
+                      },
+                    });
+                  }, 500);
+                },
+                message: (
+                  <div>
+                    <Typography.Title level={4}>{data.sender}</Typography.Title>
+                    <Typography.Paragraph
+                      className="m-0"
+                      ellipsis={{ rows: 3 }}
+                    >
+                      {data.message.message}
+                    </Typography.Paragraph>
+                  </div>
+                ),
+              });
+            }
+          }
+
+          playNotificationSound();
+        }
         dispatch(setNewMessage(data.message));
         dispatchInbox({ type: messageActionType.NewMessage, payload: data });
       },

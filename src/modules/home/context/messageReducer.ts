@@ -8,6 +8,7 @@ export enum messageActionType {
   ApprovedThread = "ApprovedThread",
   RemoveThread = "RemoveThread",
   ReadThread = "Readthread",
+  GetThread = "GetThread",
 }
 
 interface IActionType {
@@ -18,6 +19,22 @@ interface IActionType {
 export const messageInitialState: IInbox = [];
 
 export function messageReducer(state: IInbox, action: IActionType) {
+  const readThread = () => {
+    const { threadId, userId } = action.payload;
+    const _stateCopy = [...state];
+    const threadIndex = _stateCopy.findIndex((x) => x.id === threadId);
+    const unreadCountByUsers = {
+      ...(state[threadIndex]?.unreadCountByUsers ?? {}),
+      [userId]: 0,
+    };
+
+    _stateCopy[threadIndex] = {
+      ..._stateCopy[threadIndex],
+      unreadCountByUsers,
+    };
+    return _stateCopy;
+  };
+
   switch (action.type) {
     case "Initialize":
       return action.payload;
@@ -47,21 +64,8 @@ export function messageReducer(state: IInbox, action: IActionType) {
         ...start,
         ...end,
       ];
-    case "Readthread": {
-      const { threadId, userId } = action.payload;
-      const _stateCopy = [...state];
-      const threadIndex = _stateCopy.findIndex((x) => x.id === threadId);
-      const unreadCountByUsers = {
-        ...(state[threadIndex]?.unreadCountByUsers ?? {}),
-        [userId]: 0,
-      };
-
-      _stateCopy[threadIndex] = {
-        ..._stateCopy[threadIndex],
-        unreadCountByUsers,
-      };
-      return _stateCopy;
-    }
+    case "Readthread":
+      return readThread();
     case "RemoveThread":
       return state.filter((thread) => thread.id !== action.payload.id);
 
@@ -73,6 +77,14 @@ export function messageReducer(state: IInbox, action: IActionType) {
       };
 
       return _stateCopy;
+
+    case "GetThread": {
+      const { updateFunc, threadId } = action.payload;
+      const thread = state.find((thread) => thread.id === threadId);
+      updateFunc(thread);
+
+      return readThread();
+    }
 
     default:
       return state;

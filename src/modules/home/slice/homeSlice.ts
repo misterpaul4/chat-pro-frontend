@@ -2,7 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { $tabType } from "../sidebar/types";
 import { getLs, setLS } from "../../../app/lib/helpers/localStorage";
-import { IMessage, IThread } from "../api/types";
+import { IMessage, IThread, ThreadTypeEnum } from "../api/types";
 
 export interface IHomeSliceBase {
   activeThread: IThread | undefined;
@@ -68,6 +68,14 @@ export const homeSlice = createSlice({
       }
       return state;
     },
+    goToClickedThread: (state, action: PayloadAction<IThread>) => {
+      return {
+        ...state,
+        activeThread: action.payload,
+        activeTab:
+          action.payload.type === ThreadTypeEnum.Request ? "request" : "inbox",
+      };
+    },
   },
 });
 
@@ -79,6 +87,7 @@ export const {
   setRequestApprovalUpdate,
   setRequestRejectionUpdate,
   setNewMessage,
+  goToClickedThread,
 } = homeSlice.actions;
 
 export default homeSlice.reducer;
