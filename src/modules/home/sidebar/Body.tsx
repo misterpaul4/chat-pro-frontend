@@ -20,9 +20,15 @@ interface IProps {
   list: IInbox | undefined;
   activeThread?: IThread | undefined;
   dispatchInbox: Function;
+  dispatchRequest: Function;
 }
 
-const SideBarBody = ({ list, activeThread, dispatchInbox }: IProps) => {
+const SideBarBody = ({
+  list,
+  activeThread,
+  dispatchInbox,
+  dispatchRequest,
+}: IProps) => {
   const dispatch = useDispatch();
   const typingState = useContext(typingContext);
 
@@ -93,10 +99,17 @@ const SideBarBody = ({ list, activeThread, dispatchInbox }: IProps) => {
           thread.id,
           (data: { threadId: string; userId: string }) => {
             if (data) {
-              dispatchInbox({
-                type: messageActionType.ReadThread,
-                payload: data,
-              });
+              if (thread.type === ThreadTypeEnum.Request) {
+                dispatchRequest({
+                  type: messageActionType.ReadThread,
+                  payload: { threadId: thread.id, userId },
+                });
+              } else {
+                dispatchInbox({
+                  type: messageActionType.ReadThread,
+                  payload: { threadId: thread.id, userId },
+                });
+              }
             }
           }
         );

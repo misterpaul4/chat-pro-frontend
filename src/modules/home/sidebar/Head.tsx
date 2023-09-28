@@ -5,9 +5,15 @@ import { setActiveTab } from "../slice/homeSlice";
 
 interface IProps {
   activeTab: string;
+  hasUnreadInbox: boolean;
+  hasUnreadRequest: boolean;
 }
 
-const SideBarHead = ({ activeTab }: IProps) => {
+const SideBarHead = ({
+  activeTab,
+  hasUnreadInbox,
+  hasUnreadRequest,
+}: IProps) => {
   const dispatch = useDispatch();
   const tabProps: Partial<TypographyProps["Title"]["defaultProps"]> = {
     className: "cursor-pointer m-0",
@@ -17,7 +23,7 @@ const SideBarHead = ({ activeTab }: IProps) => {
   return (
     <div className="p-3">
       <Space size="large">
-        <Badge count={5} dot>
+        <Badge count={hasUnreadInbox ? 1 : 0} dot>
           <Typography.Title
             style={{
               color:
@@ -31,7 +37,7 @@ const SideBarHead = ({ activeTab }: IProps) => {
             Inbox
           </Typography.Title>
         </Badge>
-        <Badge count={5} dot>
+        <Badge count={hasUnreadRequest ? 1 : 0} dot>
           <Typography.Title
             style={{
               color:

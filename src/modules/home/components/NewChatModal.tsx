@@ -18,6 +18,8 @@ import {
 import useApiResponseHandler from "../../../app/hooks/useApiResponseHandler";
 import { IUser } from "../../auth/control/types";
 import { toTitleCase } from "../../../utils/strings";
+import { setActiveTab } from "../slice/homeSlice";
+import { useDispatch } from "react-redux";
 
 interface IVerified {
   emailProps: InputProps;
@@ -61,6 +63,7 @@ const EMAIL_IS_NOT_VERIFIED: IVerified = {
 const NewChatModal = () => {
   const { newChatVisibility, onNewChatModalClose } = useContext(headerContext);
   const [recipient, setRecipient] = useState<IUser>();
+  const dispatch = useDispatch();
 
   const apiResponseHandler = useApiResponseHandler();
 
@@ -87,7 +90,10 @@ const NewChatModal = () => {
 
       apiResponseHandler(resp, {
         onSuccess: {
-          callBack: onClose,
+          callBack: () => {
+            onClose();
+            dispatch(setActiveTab("inbox"));
+          },
           message: "Success",
         },
       });

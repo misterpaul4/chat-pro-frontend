@@ -1,12 +1,10 @@
-import { Avatar, Button, Drawer, Input, List, Space, Typography } from "antd";
+import { Drawer, Input, List, Space, Typography } from "antd";
 import { useContext, useEffect, useState } from "react";
 import headerContext from "../context/headerContext";
 import { drawerSharedProps } from "../constants/props";
 import { IContact, IMassUpdateContacts } from "../api/types";
-import Icon, { StarFilled, StarOutlined } from "@ant-design/icons";
-import { BlockIcon, PersonIcon, UnBlockIcon } from "../../../utils/icons";
 import { capitalize } from "../../../utils/strings";
-import { layoutPrimaryColor, transparentTextColor } from "../../../settings";
+import { transparentTextColor } from "../../../settings";
 import { useMassUpdateContactsMutation } from "../api/mutationEndpoints";
 import ContactAvatar from "../../../app/common/ContactAvatar";
 import useApiResponseHandler from "../../../app/hooks/useApiResponseHandler";
@@ -39,13 +37,14 @@ const ContactListDrawer = ({ contactList }: IProps) => {
   useEffect(() => {
     if (contactList) {
       setFilteredList((current: any) => {
-        if (!current) {
-          return contactList;
-        }
+        // if (!current) {
+        //   return contactList;
+        // }
 
-        return current.map((ct) =>
-          contactList.find((ctList) => ctList.id === ct.id)
-        );
+        // return current.map((ct) =>
+        //   contactList.find((ctList) => ctList.id === ct.id)
+        // );
+        return contactList;
       });
     }
   }, [contactList]);

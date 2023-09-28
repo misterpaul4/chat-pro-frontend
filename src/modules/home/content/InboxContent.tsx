@@ -190,7 +190,7 @@ const InboxContent = ({
 
       {type === ThreadTypeEnum.Request && (
         <Typography.Title className="mt-5" level={3}>
-          Request not approved
+          Your request is pending approval
         </Typography.Title>
       )}
     </div>

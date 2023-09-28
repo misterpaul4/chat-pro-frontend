@@ -47,19 +47,21 @@ export function messageReducer(state: IInbox, action: IActionType) {
         ...start,
         ...end,
       ];
-    case "Readthread":
+    case "Readthread": {
       const { threadId, userId } = action.payload;
-      const __stateCopy = [...state];
-      const __threadIndex = __stateCopy.findIndex((x) => x.id === threadId);
-      __stateCopy[__threadIndex] = {
-        ...__stateCopy[__threadIndex],
-        unreadCountByUsers: {
-          ...(__stateCopy[__threadIndex].unreadCountByUsers ?? {}),
-          [userId]: 0,
-        },
+      const _stateCopy = [...state];
+      const threadIndex = _stateCopy.findIndex((x) => x.id === threadId);
+      const unreadCountByUsers = {
+        ...(state[threadIndex]?.unreadCountByUsers ?? {}),
+        [userId]: 0,
       };
 
-      return __stateCopy;
+      _stateCopy[threadIndex] = {
+        ..._stateCopy[threadIndex],
+        unreadCountByUsers,
+      };
+      return _stateCopy;
+    }
     case "RemoveThread":
       return state.filter((thread) => thread.id !== action.payload.id);
 

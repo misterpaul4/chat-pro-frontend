@@ -4,13 +4,15 @@ import { Button, Form, Input, Spin, message } from "antd";
 import { passwordRule } from "../../app/lib/helpers/form";
 import { useSignupMutation } from "./api";
 import { ISignUp } from "./api/types";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { LoadingOutlined } from "@ant-design/icons";
 import useApiResponseHandler from "../../app/hooks/useApiResponseHandler";
+import globalContext from "../../app/context/globalContext";
 
 const SignUp = () => {
   const navigate = useNavigate();
   const [createAccount, { isLoading }] = useSignupMutation();
+  const { messageApi } = useContext(globalContext);
 
   const apiResponseHandler = useApiResponseHandler();
 
@@ -24,7 +26,7 @@ const SignUp = () => {
           setCustomLoading(true);
           setTimeout(() => {
             navigate(paths.login, { state: values });
-            message.info("Login to your new account");
+            messageApi.info("Login to your new account");
             setCustomLoading(false);
           }, 2000);
         },

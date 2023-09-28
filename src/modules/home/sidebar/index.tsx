@@ -44,15 +44,28 @@ const SideBar = ({
     initializeRequest();
   }, []);
 
+  const hasUnreadInbox = inbox?.some(
+    (inb) => inb.unreadCountByUsers?.[userId] > 0
+  );
+
+  const hasUnreadRequest = request?.some(
+    (inb) => inb.unreadCountByUsers?.[userId] > 0
+  );
+
   return (
     <SiderLoader
       loading={loading || requestsFetching || inboxFetching}
       component={
         <>
-          <SideBarHead activeTab={activeTab} />
+          <SideBarHead
+            activeTab={activeTab}
+            hasUnreadInbox={hasUnreadInbox}
+            hasUnreadRequest={hasUnreadRequest}
+          />
           <div className="mt-2">
             <SideBarBody
               dispatchInbox={dispatchInbox}
+              dispatchRequest={dispatchRequest}
               activeThread={activeThread}
               list={activeTab === "inbox" ? inbox : request}
             />
