@@ -2,6 +2,7 @@ import {
   ArrowLeftOutlined,
   CloseOutlined,
   EditOutlined,
+  KeyOutlined,
   LoadingOutlined,
   SaveOutlined,
   UserOutlined,
@@ -25,6 +26,7 @@ import { useUpdateUserMutation } from "../api/mutationEndpoints";
 import { useDispatch } from "react-redux";
 import { setGetSelf } from "../../auth/control/userSlice";
 import EmailChange from "./EmailChange";
+import ChangePassword from "./ChangePassword";
 
 interface IProps {
   visible: boolean;
@@ -32,11 +34,13 @@ interface IProps {
   user: IBaseUser;
 }
 
+type $screen = "profile" | "email" | "password";
+
 const ProfileModal = ({ visible, onClose, user }: IProps) => {
   const [firstName, setFirstName] = useState(user.firstName);
   const [lastName, setLastName] = useState(user.lastName);
   const [editMode, setEditMode] = useState(false);
-  const [emailChangeMode, setEmailChangeMode] = useState(false);
+  const [screen, setScreen] = useState<$screen>("profile");
 
   const [messageApi, contextHolder] = message.useMessage();
 
@@ -72,13 +76,13 @@ const ProfileModal = ({ visible, onClose, user }: IProps) => {
     setLastName(user.lastName);
   };
 
-  const onEmailChangeMode = () => {
-    setEmailChangeMode(true);
+  const onScreenChange = (scn: $screen) => {
+    setScreen(scn);
     onCancel();
   };
 
   const backToProfile = () => {
-    setEmailChangeMode(false);
+    setScreen("profile");
   };
 
   return (
@@ -88,11 +92,11 @@ const ProfileModal = ({ visible, onClose, user }: IProps) => {
       width={700}
       className="profile-modal"
       title={
-        emailChangeMode ? (
+        screen !== "profile" ? (
           <Button
             type="text"
             icon={<ArrowLeftOutlined />}
-            onClick={() => setEmailChangeMode(false)}
+            onClick={backToProfile}
           >
             Back to profile
           </Button>
@@ -104,8 +108,10 @@ const ProfileModal = ({ visible, onClose, user }: IProps) => {
     >
       <Spin indicator={<LoadingOutlined />} spinning={isLoading}>
         {contextHolder}
-        {emailChangeMode ? (
+        {screen === "email" ? (
           <EmailChange backToProfile={backToProfile} />
+        ) : screen === "password" ? (
+          <ChangePassword backToProfile={backToProfile} />
         ) : (
           <>
             <Avatar
@@ -115,39 +121,56 @@ const ProfileModal = ({ visible, onClose, user }: IProps) => {
               icon={<UserOutlined />}
             />
 
-            {editMode ? (
-              <Space>
-                <Button
-                  size="small"
-                  type="dashed"
-                  className="mt-5 mb-2"
-                  icon={<CloseOutlined />}
-                  onClick={onCancel}
-                >
-                  Cancel
-                </Button>
+            <Space>
+              {editMode ? (
+                <>
+                  <Button
+                    size="small"
+                    type="dashed"
+                    className="mt-5 mb-2"
+                    icon={<CloseOutlined />}
+                    onClick={onCancel}
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    size="small"
+                    type="primary"
+                    className="mt-5 mb-2"
+                    icon={<SaveOutlined />}
+                    onClick={onSave}
+                    loading={isLoading}
+                  >
+                    Save
+                  </Button>
+                </>
+              ) : (
                 <Button
                   size="small"
                   type="primary"
                   className="mt-5 mb-2"
-                  icon={<SaveOutlined />}
-                  onClick={onSave}
-                  loading={isLoading}
+                  icon={<EditOutlined />}
+                  onClick={() => setEditMode(true)}
                 >
-                  Save
+                  Edit
                 </Button>
-              </Space>
-            ) : (
-              <Button
-                size="small"
-                type="primary"
-                className="mt-5 mb-2"
-                icon={<EditOutlined />}
-                onClick={() => setEditMode(true)}
+              )}
+
+              <Popconfirm
+                title="Are you sure?"
+                okText="Yes"
+                onConfirm={() => onScreenChange("password")}
               >
-                Edit
-              </Button>
-            )}
+                <Button
+                  size="small"
+                  type="primary"
+                  className="mt-5 mb-2 bg-secondary ms-3"
+                  icon={<KeyOutlined />}
+                >
+                  Change Password
+                </Button>
+              </Popconfirm>
+            </Space>
 
             <Descriptions bordered column={1}>
               <Descriptions.Item labelStyle={labelStyle} label="First Name">
@@ -161,7 +184,7 @@ const ProfileModal = ({ visible, onClose, user }: IProps) => {
                 <Popconfirm
                   title="Change email address?"
                   okText="Yes"
-                  onConfirm={onEmailChangeMode}
+                  onConfirm={() => onScreenChange("email")}
                 >
                   <EditOutlined
                     title="Change Email"

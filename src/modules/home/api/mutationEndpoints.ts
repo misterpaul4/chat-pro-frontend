@@ -2,6 +2,7 @@ import apis from "../../../app/api";
 import { apiTags } from "../../../app/lib/constants/tags";
 import { IBaseUser, IUser } from "../../auth/control/types";
 import {
+  IChangePassword,
   IChatRequestPayload,
   ICreateMessage,
   IEmailChange,
@@ -74,6 +75,13 @@ const endpoints = apis.injectEndpoints({
         body,
       }),
     }),
+    changePassword: builder.mutation<void, IChangePassword>({
+      query: (body) => ({
+        url: "auth/change-password",
+        method: "POST",
+        body,
+      }),
+    }),
   }),
 });
 
@@ -87,5 +95,6 @@ export const {
   useUpdateUserMutation,
   useEmailChangeReqMutation,
   useEmailChangeReqSubmitMutation,
+  useChangePasswordMutation,
 } = endpoints;
 
