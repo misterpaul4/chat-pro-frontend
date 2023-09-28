@@ -87,9 +87,6 @@ const ProfileModal = ({ visible, onClose, user }: IProps) => {
       onCancel={onClose}
       width={700}
       className="profile-modal"
-      getContainer={() => {
-        return document.getElementById("user-profile-name") as HTMLElement;
-      }}
       title={
         emailChangeMode ? (
           <Button

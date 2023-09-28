@@ -46,9 +46,15 @@ export const userSlice = createSlice({
       };
     },
     // sets when get-self is valid
-    setGetSelf: (_, action: PayloadAction<IUser>) => {
+    setGetSelf: (_, action: PayloadAction<IUser & { token?: string }>) => {
+      let token: string;
+      if (action.payload.token) {
+        token = action.payload.token;
+        setLS("token", token);
+      } else {
+        token = getLs("token");
+      }
       // get token from LS
-      const token = getLs("token");
       socket.auth = { token };
       socket.connect();
       return {
