@@ -2,6 +2,7 @@
 # - chat time fix
 # + sidebar
 # + content
+- non-active tab new message notification *
 - message send status
 - new message alert
   # + if in active thread and lastmessage not in view, show pop up
@@ -26,7 +27,7 @@
 - basic e2e encryption
 - call (pairjs)
 # - darkmode
-- password reset *
+# - password reset *
 - attachments
   + image and pdf
   + audio files

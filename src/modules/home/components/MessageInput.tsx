@@ -5,7 +5,7 @@ import { IMessage, IThread, IThreadMemory, ThreadTypeEnum } from "../api/types";
 import { resizeContentHeight } from "../constants/helpers";
 import { emitIsTyping, emitNewMessage } from "../api/sockets";
 import { THREAD_MEMORY } from "../../../settings";
-import { CloseOutlined } from "@ant-design/icons";
+import { CloseOutlined, EnterOutlined } from "@ant-design/icons";
 import { $threadMemory, setThreadMemory } from "../slice/threadMemorySlice";
 import { capitalize } from "../../../utils/strings";
 import { setNewMessage } from "../slice/homeSlice";
@@ -176,6 +176,7 @@ const MessageInput = ({
         <div className="px-3 py-2 border rounded mb-1 pe-4 message-reply">
           <strong className="rounded" style={{ fontSize: "1rem" }}>
             {getReplySender()}
+            <EnterOutlined style={{ fontSize: "0.6rem" }} className="ms-2" />
           </strong>
           <Typography.Paragraph
             className="mb-0 rounded"
