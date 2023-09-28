@@ -171,9 +171,9 @@ const MessageInput = ({
   };
 
   return (
-    <>
+    <div className="message-input-container">
       {replyingTo && (
-        <div className="px-3 py-2 border rounded mb-1 position-relative pe-4">
+        <div className="px-3 py-2 border rounded mb-1 pe-4 message-reply">
           <strong className="rounded" style={{ fontSize: "1rem" }}>
             {getReplySender()}
           </strong>
@@ -210,7 +210,7 @@ const MessageInput = ({
           />
         </Form.Item>
       </Form>
-    </>
+    </div>
   );
 };
 

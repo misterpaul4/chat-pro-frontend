@@ -120,7 +120,6 @@ const InboxContent = ({
       setNewMessagePopUp(false);
 
       setTimeout(() => {
-        // readMessage(thread.id);
         readMessage();
       }, 1000);
     }
@@ -131,7 +130,6 @@ const InboxContent = ({
       setThreadMemory({ key: thread.id, value: { replyingTo: message } })
     );
     inputFocus();
-    resizeContentHeight();
   };
 
   const usersInitials: Record<string, string> = useMemo(() => {
