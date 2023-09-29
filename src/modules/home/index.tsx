@@ -110,7 +110,7 @@ const Home = () => {
             ) {
               notificationApi.info({
                 icon: <ContactAvatar name={data.sender} />,
-                className: "pt-0 pb-2 cursor-pointer",
+                className: "pt-0 pb-2",
                 onClick() {
                   setTimeout(() => {
                     dispatchInbox({
@@ -129,10 +129,10 @@ const Home = () => {
                   }, 500);
                 },
                 message: (
-                  <div>
+                  <div className="ms-2">
                     <Typography.Title level={4}>{data.sender}</Typography.Title>
                     <Typography.Paragraph
-                      className="m-0"
+                      className="m-0 "
                       ellipsis={{ rows: 3 }}
                     >
                       {data.message.message}

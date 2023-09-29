@@ -2,9 +2,9 @@
 # - chat time fix
 # + sidebar
 # + content
-- non-active tab new message notification *
-- message send status
-- new message alert
+# - non-active tab new message notification *
+- message send status *
+# - new message alert
   # + if in active thread and lastmessage not in view, show pop up
   # + when pop up should disappear *
   # + sound *

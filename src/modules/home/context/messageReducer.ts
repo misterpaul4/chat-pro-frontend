@@ -81,9 +81,12 @@ export function messageReducer(state: IInbox, action: IActionType) {
     case "GetThread": {
       const { updateFunc, threadId } = action.payload;
       const thread = state.find((thread) => thread.id === threadId);
-      updateFunc(thread);
+      if (thread) {
+        updateFunc(thread);
+        return readThread();
+      }
 
-      return readThread();
+      return state;
     }
 
     default:
