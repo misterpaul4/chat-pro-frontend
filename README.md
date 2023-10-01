@@ -55,3 +55,16 @@ The app should now be running locally and can be accessed at http://localhost:51
 
 Contributions are welcome! If you would like to contribute new features, improvements, or bug fixes, please fork the repository, create a new branch, and submit a pull request.
 
+## Show your support
+
+Give a ⭐️ if you like this project!
+
+## Acknowledgments
+
+- [ant design](https://ant.design/)
+- [redux toolkit](https://redux-toolkit.js.org)
+- [bootstrap](https://getbootstrap.com)
+
+## 📝 License
+
+This project is [MIT](https://github.com/misterpaul4/chat-pro-frontend/blob/master/LICENSE) licensed.
