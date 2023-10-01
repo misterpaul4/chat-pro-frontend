@@ -1,0 +1,150 @@
+@import url('../../app/style/variables.less');
+
+.message-container {
+  .headerStyle {
+    background-color: transparent;
+    position: sticky;
+    width: 100%;
+    top: 0;
+    z-index: 1;
+  }
+
+  .contentStyle {
+    text-align: center;
+    color: '#fff';
+    background-color: '#108ee9';
+  }
+
+  .siderStyle {
+    background-color: transparent;
+    box-shadow: rgba(0, 0, 0, 0.08) 0px 4px 12px;
+    flex-basis: 30em !important;
+    max-width: 30em !important;
+    height: 100vh;
+
+    .sidebar-message-container {
+      max-height: calc(100vh - 150px);
+      overflow: auto;
+
+      .sidebar-message-item {
+        &:hover {
+          backdrop-filter: @background-hover;
+        }
+      }
+    }
+  }
+
+  .footerStyle {
+    position: sticky;
+    width: 100%;
+    bottom: 0;
+    z-index: 1;
+
+    .message-input-container {
+      position: relative;
+      background-color: inherit;
+
+      .message-reply {
+        bottom: 100%;
+        background-color: inherit;
+        position: absolute;
+        left: 0;
+        right: 0;
+      }
+    }
+  }
+}
+
+.message-skeleton {
+  > * {
+    width: 50%;
+  }
+
+  :nth-child(even) {
+    align-self: flex-end;
+    -moz-transform: scaleX(-1);
+    -webkit-transform: scaleX(-1);
+    -o-transform: scaleX(-1);
+    transform: scaleX(-1);
+  }
+}
+
+.new-chat-modal {
+  .ant-input-group-addon {
+    padding: 0;
+
+    button.ant-btn-icon-only {
+      &:hover, &:active {
+        backdrop-filter: @background-hover;
+      }
+    }
+  }
+}
+
+.message-width {
+  max-width: 75%;
+}
+
+#message-list {
+  overflow-y: auto;
+  overflow-x: hidden;
+  position: relative;
+
+  .new-message-indicator {
+    position: sticky;
+    bottom: 5px;
+    cursor: pointer;
+  }
+
+  .scroll-to-bottom-btn {
+    position: sticky;
+    bottom: 3em;
+    right: 2em;
+    float: right;
+    z-index: 3;
+  }
+
+  .message-box {
+    &:hover .reply-caret {
+      opacity: 1;
+    }
+    .reply-caret {
+      z-index: 2;
+      position: absolute;
+      right: 0.4em;
+      top: 0.3em;
+      cursor: pointer;
+      opacity: 0;
+      transition: opacity 0.5s;
+    }
+
+    .message-reply-box {
+      .ant-card-body {
+        padding: 5px;
+      }
+    }
+  }
+}
+
+
+.mb-action-items {
+   li:hover {
+    backdrop-filter: @background-hover;
+  }
+}
+
+.profile-modal{
+  .ant-typography-edit-content {
+    display: inline-flex !important;
+  }
+
+  padding: 0;
+
+  .ant-modal-content {
+    border-radius: 0;
+  }
+
+  .profile-avatar span {
+    display: flex;
+  }
+}

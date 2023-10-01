@@ -1,0 +1,39 @@
+@import "../node_modules/bootstrap/dist/css/bootstrap-utilities.css";
+@import "./app/style/variables.less";
+
+:root {
+  color-scheme: light dark;
+}
+
+body {
+  padding: 0;
+  max-width: 1500px;
+  margin: 0 auto;
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.primary-bg {
+  background-color: @primary-color;
+}
+
+p, .ant-typography {
+  -ms-word-break: break-all;
+  word-break: break-all;
+  word-break: break-word;
+  white-space: pre-wrap;
+}
+
+.capitalize {
+  text-transform: capitalize;
+}
+
+.big-text {
+  font-size: 1.2rem;
+}
+
+.reset-color, a {
+  color: inherit !important;
+}

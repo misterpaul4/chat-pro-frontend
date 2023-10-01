@@ -1,0 +1,35 @@
+# - online feature
+# - chat time fix
+# + sidebar
+# + content
+# - non-active tab new message notification *
+- message send status *
+# - new message alert
+  # + if in active thread and lastmessage not in view, show pop up
+  # + when pop up should disappear *
+  # + sound *
+# - remember scroll position for previous thread *
+# - prevent auto scroll if in current thread and there's an incoming message
+# - fix bugs with new message request not showing for sender
+# - fix scroll bug when switching between threads
+# - read count
+# - fix bug with chatscroll when pending request in inbox view is clicked and another inbox content is clicked
+# - reply
+- search
+- contact fix
+ + redesign of actions
+- starring messages
+  + scroll to replied message on click
+# - remember typing message *
+# - scroll to bottom button *
+- last seen
+# - fix sidebar scroll
+- basic e2e encryption
+- call (pairjs)
+# - darkmode
+# - password reset *
+- attachments
+  + image and pdf
+  + audio files
+  + video files
+
