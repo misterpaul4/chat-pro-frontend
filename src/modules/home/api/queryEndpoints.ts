@@ -16,7 +16,7 @@ const endpoints = apis.injectEndpoints({
       query: (userId) =>
         `inbox?join=threads&join=threads.messages&join=threads.users&sort=threads.messages.createdAt,DESC&filter=threads.type||ne||Request&or=threads.createdBy||eq||${userId}`,
     }),
-    getOnlineContacts: builder.query<$onlineStatus, void>({
+    getOnlineContacts: builder.query<string[], void>({
       query: () => "users/online-contacts",
     }),
   }),

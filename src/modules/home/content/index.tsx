@@ -9,7 +9,7 @@ import { onlineStatusReducer } from "../context/onlineStatusReducer";
 import useSocketSubscription from "../../../app/hooks/useSocketSubscription";
 
 interface IProps {
-  onlineContacts: $onlineStatus;
+  onlineContacts: string[];
   dispatchInbox: Function;
 }
 
@@ -25,7 +25,7 @@ const MessageContent = ({ onlineContacts, dispatchInbox }: IProps) => {
 
   const [onlineUsers, dispatchIsOnlineStatus] = useReducer(
     onlineStatusReducer,
-    onlineContacts
+    onlineContacts.reduce((obj, item) => ((obj[item] = true), obj), {})
   );
 
   useSocketSubscription([

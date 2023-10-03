@@ -95,12 +95,13 @@ export interface ITypingResponse {
 export interface IOnlineStatus {
   user: string;
   isOnline: boolean;
+  lastSeen?: string;
 }
 
 // key is threadId
 export type $typing = { [key in string]: ITypingResponse["clientId"] };
 
-export type $onlineStatus = string[];
+export type $onlineStatus = Record<string, string | true>;
 
 export interface IThreadMemory {
   pos: number;

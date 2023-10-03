@@ -6,6 +6,7 @@ import { typingContext } from "../context/typingContext";
 import { useContext, useEffect } from "react";
 import Typing from "../../../app/common/IsTyping";
 import { IUser } from "../../auth/control/types";
+import { getMessageTime } from "../../../app/lib/helpers/time";
 
 interface IProps {
   activeThread: IThread;
@@ -15,7 +16,7 @@ interface IProps {
 
 interface IConfig {
   title: string;
-  isOnline?: boolean;
+  isOnline?: boolean | string;
 }
 
 const getConfig: (params: IProps) => IConfig = ({
@@ -34,7 +35,7 @@ const getConfig: (params: IProps) => IConfig = ({
         title: `${capitalize(recipient.firstName)} ${capitalize(
           recipient.lastName
         )}`,
-        isOnline: onlineUsers.includes(recipient.id),
+        isOnline: onlineUsers[recipient.id] || recipient.lastSeen,
       };
     case ThreadTypeEnum.Group:
       return { title: capitalize(activeThread.title) };
@@ -64,7 +65,11 @@ const ActionHeader = ({ activeThread, userId, onlineUsers }: IProps) => {
           </Typography.Title>
           {isOnline && (
             <span title="online">
-              <Badge status="processing" />
+              {typeof isOnline === "boolean" ? (
+                <Badge status="processing" />
+              ) : (
+                <em>last seen {getMessageTime(isOnline as string)}</em>
+              )}
             </span>
           )}
         </Space>
