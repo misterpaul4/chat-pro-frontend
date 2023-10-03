@@ -42,14 +42,15 @@ import { emitReadMessage } from "./api/sockets";
 const { Sider, Content, Header, Footer } = Layout;
 
 const Home = () => {
-  const { user, darkMode, activeThread, isNewThread, threadMemory } =
-    useSelector((state: RootState) => ({
-      user: state.user.user,
-      darkMode: state.user.darkMode,
-      activeThread: state.app.activeThread,
-      isNewThread: state.app.isNewThreadDisplay,
-      threadMemory: state.memory,
-    }));
+  const darkMode = useSelector((state: RootState) => state.user.darkMode);
+  const user = useSelector((state: RootState) => state.user.user);
+  const activeThread = useSelector(
+    (state: RootState) => state.app.activeThread
+  );
+  const isNewThread = useSelector(
+    (state: RootState) => state.app.isNewThreadDisplay
+  );
+  const threadMemory = useSelector((state: RootState) => state.memory);
 
   const dispatch = useDispatch();
   const { notificationApi } = useContext(globalContext);

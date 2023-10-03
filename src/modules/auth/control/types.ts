@@ -7,6 +7,9 @@ export interface IBaseUser {
   id: string;
   createdAt: string;
   updatedAt: string;
+  lastEmailChangeDate?: string;
+  lastPasswordChangeDate?: string;
+  lastSeen?: string;
 }
 
 export interface IUser extends IBaseType, IBaseUser {}

@@ -30,9 +30,7 @@ const AuthLayout = () => {
   const path = useLocation().pathname;
   const withWelcome = path.includes(paths.login) || path.includes(paths.signup);
 
-  const { darkMode } = useSelector((state: RootState) => ({
-    darkMode: state.user.darkMode,
-  }));
+  const darkMode = useSelector((state: RootState) => state.user.darkMode);
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
