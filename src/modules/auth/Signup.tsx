@@ -19,7 +19,7 @@ const SignUp = () => {
 
   const [customLoading, setCustomLoading] = useState(false);
 
-  const signupWithGoogle = useSocialAuth();
+  const { authWithGoogle } = useSocialAuth();
 
   const onFinish = async (values: ISignUp) => {
     const res = await createAccount(values);
@@ -36,6 +36,14 @@ const SignUp = () => {
         message: "Account created successfully",
       },
     });
+  };
+
+  const onGoogleSignup = async () => {
+    const resp = await authWithGoogle();
+
+    if (resp?.token) {
+      // signup
+    }
   };
 
   return (
@@ -105,7 +113,13 @@ const SignUp = () => {
           Create Account
         </Button>
       </Form>
-      <Button size="large" className="mt-3" block icon={<GoogleOutlined />}>
+      <Button
+        onClick={onGoogleSignup}
+        size="large"
+        className="mt-3"
+        block
+        icon={<GoogleOutlined />}
+      >
         Sign up with google
       </Button>
     </Spin>
