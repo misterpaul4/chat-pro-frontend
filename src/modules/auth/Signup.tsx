@@ -5,9 +5,10 @@ import { passwordRule } from "../../app/lib/helpers/form";
 import { useSignupMutation } from "./api";
 import { ISignUp } from "./api/types";
 import { useContext, useState } from "react";
-import { LoadingOutlined } from "@ant-design/icons";
+import { GoogleOutlined, LoadingOutlined } from "@ant-design/icons";
 import useApiResponseHandler from "../../app/hooks/useApiResponseHandler";
 import globalContext from "../../app/context/globalContext";
+import useSocialAuth from "../../app/hooks/useSocialAuth";
 
 const SignUp = () => {
   const navigate = useNavigate();
@@ -17,6 +18,8 @@ const SignUp = () => {
   const apiResponseHandler = useApiResponseHandler();
 
   const [customLoading, setCustomLoading] = useState(false);
+
+  const signupWithGoogle = useSocialAuth();
 
   const onFinish = async (values: ISignUp) => {
     const res = await createAccount(values);
@@ -102,6 +105,9 @@ const SignUp = () => {
           Create Account
         </Button>
       </Form>
+      <Button size="large" className="mt-3" block icon={<GoogleOutlined />}>
+        Sign up with google
+      </Button>
     </Spin>
   );
 };
