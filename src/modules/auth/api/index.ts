@@ -1,6 +1,7 @@
 import apis from "../../../app/api";
 import { apiTags } from "../../../app/lib/constants/tags";
 import {
+  IAuthResponse,
   IGetSelf,
   ILogin,
   IResetPasswordPayload,
@@ -12,6 +13,13 @@ const endpoints = apis.injectEndpoints({
   endpoints: (builder) => ({
     login: builder.mutation<void, ILogin>({
       query: (body) => ({ url: "auth/login", method: "POST", body }),
+    }),
+    login3rdParty: builder.mutation<IAuthResponse, string>({
+      query: (token) => ({
+        url: "auth/login/firebase",
+        method: "POST",
+        headers: {},
+      }),
     }),
     signup: builder.mutation<void, ISignUp>({
       query: (body) => ({ url: "auth/signup", method: "POST", body }),

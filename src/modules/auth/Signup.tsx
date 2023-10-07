@@ -42,7 +42,7 @@ const SignUp = () => {
     const resp = await authWithGoogle();
 
     if (resp?.token) {
-      // signup
+      console.log(resp);
     }
   };
 
