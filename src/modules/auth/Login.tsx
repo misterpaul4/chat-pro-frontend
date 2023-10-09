@@ -1,11 +1,13 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { paths } from "../../utils/paths";
 import { Button, Form, Input } from "antd";
-import { useLoginMutation } from "./api";
-import { ILogin } from "./api/types";
+import { useLogin3rdPartyMutation, useLoginMutation } from "./api";
+import { IAuthResponse, ILogin } from "./api/types";
 import { useDispatch } from "react-redux";
 import { setAppState } from "./control/userSlice";
 import useApiResponseHandler from "../../app/hooks/useApiResponseHandler";
+import { GoogleOutlined } from "@ant-design/icons";
+import useSocialAuth from "../../app/hooks/useSocialAuth";
 
 const Login = () => {
   const [loginUser, { isLoading }] = useLoginMutation();
@@ -14,24 +16,44 @@ const Login = () => {
 
   const apiResponseHandler = useApiResponseHandler();
 
+  const { authWithGoogle } = useSocialAuth();
+
+  const [loginWithThirdParty, { isLoading: thirdPartyLoading }] =
+    useLogin3rdPartyMutation();
+
   const signupState = useLocation().state || {};
+
+  const onSuccessfulLogin = (apiResponse: IAuthResponse) => {
+    dispatch(
+      setAppState({
+        auth: { token: apiResponse.token },
+        user: apiResponse.user,
+      })
+    );
+    navigate(paths.home);
+  };
 
   const onFinish = async (values: ILogin) => {
     const res: any = await loginUser(values);
 
     apiResponseHandler(res, {
       onSuccess: {
-        callBack: () => {
-          dispatch(
-            setAppState({
-              auth: { token: res.data.token },
-              user: res.data.user,
-            })
-          );
-          navigate(paths.home);
-        },
+        callBack: () => onSuccessfulLogin(res.data),
       },
     });
+  };
+
+  const onGoogleLogin = async () => {
+    const resp = await authWithGoogle();
+
+    if (resp?.token) {
+      const resp2: any = await loginWithThirdParty(resp.token);
+      apiResponseHandler(resp2, {
+        onSuccess: {
+          callBack: () => onSuccessfulLogin(resp2.data),
+        },
+      });
+    }
   };
 
   return (
@@ -70,6 +92,16 @@ const Login = () => {
           Login
         </Button>
       </Form>
+      <Button
+        onClick={onGoogleLogin}
+        size="large"
+        className="mt-5"
+        block
+        icon={<GoogleOutlined />}
+        loading={thirdPartyLoading}
+      >
+        Continue with google
+      </Button>
     </div>
   );
 };

@@ -48,7 +48,6 @@ const SignUp = () => {
     const resp = await authWithGoogle();
 
     if (resp?.token) {
-      console.log(resp);
       const resp2: any = await signupWithThirdParty(resp.token);
       apiResponseHandler(resp2, {
         onSuccess: {
