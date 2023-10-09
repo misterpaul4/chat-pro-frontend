@@ -39,7 +39,7 @@ const MessageInput = ({
 
   // place cursor on input
   useEffect(() => {
-    let delay: number;
+    let delay: any;
     if (activeThread) {
       if (isNewThread) {
         const unSentMessage: IThreadMemory | undefined = THREAD_MEMORY.get(
@@ -62,7 +62,7 @@ const MessageInput = ({
 
   // notify when not typing
   useEffect(() => {
-    let delay: number;
+    let delay: any;
     if (message || isTyping) {
       if (isTyping) {
         delay = setTimeout(() => {
