@@ -8,10 +8,12 @@ const apis = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl: BASE_URL,
     prepareHeaders: (headers) => {
-      // get token from LS
-      const token = getLs("token");
-      if (token) headers.set("authorization", `Bearer ${token}`);
-      return headers;
+      if (!headers.get("authorization")) {
+        // get token from LS
+        const token = getLs("token");
+        if (token) headers.set("authorization", `Bearer ${token}`);
+        return headers;
+      }
     },
   }),
   endpoints: () => ({}),
