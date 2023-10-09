@@ -18,11 +18,22 @@ const endpoints = apis.injectEndpoints({
       query: (token) => ({
         url: "auth/login/firebase",
         method: "POST",
-        headers: {},
+        headers: {
+          authorization: `Bearer ${token}`,
+        },
       }),
     }),
     signup: builder.mutation<void, ISignUp>({
       query: (body) => ({ url: "auth/signup", method: "POST", body }),
+    }),
+    signup3rdParty: builder.mutation<IAuthResponse, string>({
+      query: (token) => ({
+        url: "auth/signup/firebase",
+        method: "POST",
+        headers: {
+          authorization: `Bearer ${token}`,
+        },
+      }),
     }),
     getSelf: builder.query<IGetSelf, void>({
       query: () => "auth/get-self",
@@ -59,5 +70,7 @@ export const {
   useSubmitForgotPassMutation,
   useSubmitVerificationCodeMutation,
   useResetPasswordMutation,
+  useSignup3rdPartyMutation,
+  useLogin3rdPartyMutation,
 } = endpoints;
 
