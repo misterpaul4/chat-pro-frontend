@@ -1,13 +1,14 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { paths } from "../../utils/paths";
-import { Button, Form, Input } from "antd";
+import { Button, Form, Input, Spin } from "antd";
 import { useLogin3rdPartyMutation, useLoginMutation } from "./api";
 import { IAuthResponse, ILogin } from "./api/types";
 import { useDispatch } from "react-redux";
 import { setAppState } from "./control/userSlice";
 import useApiResponseHandler from "../../app/hooks/useApiResponseHandler";
-import { GoogleOutlined } from "@ant-design/icons";
+import { GoogleOutlined, LoadingOutlined } from "@ant-design/icons";
 import useSocialAuth from "../../app/hooks/useSocialAuth";
+import { useState } from "react";
 
 const Login = () => {
   const [loginUser, { isLoading }] = useLoginMutation();
@@ -17,6 +18,7 @@ const Login = () => {
   const apiResponseHandler = useApiResponseHandler();
 
   const { authWithGoogle } = useSocialAuth();
+  const [customLoading, setCustomLoading] = useState(false);
 
   const [loginWithThirdParty, { isLoading: thirdPartyLoading }] =
     useLogin3rdPartyMutation();
@@ -44,6 +46,7 @@ const Login = () => {
   };
 
   const onGoogleLogin = async () => {
+    setCustomLoading(true);
     const resp = await authWithGoogle();
 
     if (resp?.token) {
@@ -54,10 +57,11 @@ const Login = () => {
         },
       });
     }
+    setCustomLoading(false);
   };
 
   return (
-    <div>
+    <Spin indicator={<LoadingOutlined />} spinning={customLoading}>
       <p>
         Don't have an account?{" "}
         <Link className="reset-color" to={paths.signup}>
@@ -102,7 +106,7 @@ const Login = () => {
       >
         Continue with google
       </Button>
-    </div>
+    </Spin>
   );
 };
 

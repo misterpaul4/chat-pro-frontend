@@ -45,6 +45,7 @@ const SignUp = () => {
   };
 
   const onGoogleSignup = async () => {
+    setCustomLoading(true);
     const resp = await authWithGoogle();
 
     if (resp?.token) {
@@ -65,6 +66,7 @@ const SignUp = () => {
         },
       });
     }
+    setCustomLoading(false);
   };
 
   return (
