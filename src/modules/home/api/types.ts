@@ -117,6 +117,6 @@ export interface IEmailChange {
 
 export interface IChangePassword {
   newPassword: string;
-  oldPassword: string;
+  oldPassword?: string;
 }
 

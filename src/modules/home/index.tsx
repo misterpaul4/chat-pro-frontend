@@ -31,7 +31,6 @@ import {
 import MessageInput from "./components/MessageInput";
 import { typingInitialState, typingReducer } from "./context/typingReducer";
 import { typingContext } from "./context/typingContext";
-import { playNotificationSound } from "../../app/lib/helpers/media";
 import { inputFocus } from "../../utils/dom";
 import { getLs } from "../../app/lib/helpers/localStorage";
 import { $tabType } from "./sidebar/types";
@@ -143,8 +142,6 @@ const Home = () => {
               });
             }
           }
-
-          playNotificationSound();
         }
         dispatch(setNewMessage(data.message));
         dispatchInbox({ type: messageActionType.NewMessage, payload: data });

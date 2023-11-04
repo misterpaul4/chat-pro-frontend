@@ -10,6 +10,8 @@ export interface IBaseUser {
   lastEmailChangeDate?: string;
   lastPasswordChangeDate?: string;
   lastSeen?: string;
+  hasPassword?: boolean;
+  has3rdPartyAuth?: boolean;
 }
 
 export interface IUser extends IBaseType, IBaseUser {}
