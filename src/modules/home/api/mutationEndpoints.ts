@@ -82,6 +82,15 @@ const endpoints = apis.injectEndpoints({
         body,
       }),
     }),
+    connectGoogleAuth: builder.mutation<void, { id: string; token: string }>({
+      query: ({ token, id }) => ({
+        url: `auth/connect/firebase/${id}`,
+        method: "POST",
+        headers: {
+          authorization: `Bearer ${token}`,
+        },
+      }),
+    }),
   }),
 });
 
@@ -96,5 +105,6 @@ export const {
   useEmailChangeReqMutation,
   useEmailChangeReqSubmitMutation,
   useChangePasswordMutation,
+  useConnectGoogleAuthMutation,
 } = endpoints;
 

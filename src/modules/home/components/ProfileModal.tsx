@@ -27,6 +27,7 @@ import { useDispatch } from "react-redux";
 import { setGetSelf } from "../../auth/control/userSlice";
 import EmailChange from "./EmailChange";
 import ChangePassword from "./ChangePassword";
+import ConnectGoogle from "./ConnectGoogle";
 
 interface IProps {
   visible: boolean;
@@ -170,6 +171,10 @@ const ProfileModal = ({ visible, onClose, user }: IProps) => {
                   {user.hasPassword ? "Change" : "Add"} Password
                 </Button>
               </Popconfirm>
+
+              {!user.has3rdPartyAuth && (
+                <ConnectGoogle id={user.id} dispatch={dispatch} />
+              )}
             </Space>
 
             <Descriptions bordered column={1}>
