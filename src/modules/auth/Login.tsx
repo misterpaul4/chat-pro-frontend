@@ -103,8 +103,9 @@ const Login = () => {
         block
         icon={<GoogleOutlined />}
         loading={thirdPartyLoading}
+        type="link"
       >
-        Continue with google
+        Login with google
       </Button>
     </Spin>
   );

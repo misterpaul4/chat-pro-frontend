@@ -143,6 +143,7 @@ const SignUp = () => {
         block
         icon={<GoogleOutlined />}
         loading={thirdPartyLoading}
+        type="link"
       >
         Sign up with google
       </Button>
