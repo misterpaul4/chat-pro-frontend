@@ -37,7 +37,7 @@ const ConnectGoogle = ({
 
   return (
     <Popconfirm
-      title="If you accept, you will be able to login with your google credentials"
+      title="If you accept, you will be able to login with google"
       okText="Accept"
       cancelText="Cancel"
       onConfirm={onConnect}
