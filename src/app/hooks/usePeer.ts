@@ -4,6 +4,7 @@ import { setLS } from "../lib/helpers/localStorage";
 import { lsKeys } from "../lib/constants/localStorageKeys";
 import { TCallStatus } from "../lib/types/peertypes";
 import { ICallState } from "../../modules/home/context/callContext";
+import { useInitializePeerCallMutation, useMakePeerCallMutation } from "../../modules/home/api/mutationEndpoints";
 
 const usePeer: () => ICallState = () => {
   const [peerInstance, setPeerInstance] = useState<Peer>()
@@ -12,6 +13,9 @@ const usePeer: () => ICallState = () => {
   const currentCall = useRef<MediaConnection | null>(null);
   const localAudioRef = useRef<HTMLAudioElement>(null);
   const remoteAudioRef = useRef<HTMLAudioElement>(null);
+
+  const [initialize, { isError }] = useInitializePeerCallMutation();
+  const [getRemotePeerId] = useMakePeerCallMutation();
 
   const reset = () => {
     // @ts-ignore
@@ -28,6 +32,7 @@ const usePeer: () => ICallState = () => {
     peer.on("open", (id) => {
       console.log("My peer ID is: " + id);
       setLS(lsKeys.PEER_ID, id);
+      initialize(id)
     });
 
     peer.on("error", (err) => {
@@ -44,6 +49,13 @@ const usePeer: () => ICallState = () => {
       peer.destroy();
     };
   }, []);
+
+  useEffect(() => {
+    if (isError) {
+      // TODO: handle error
+      console.error('Failed to store peer id', isError);
+    }
+  }, [isError])
 
   const handleStream = (call: MediaConnection) => {
     call.on('stream', (remoteStream) => {
@@ -65,8 +77,18 @@ const usePeer: () => ICallState = () => {
     setCallStatus('In call');
   };
 
-  const makeCall = (remotePeerId: string) => {
+  const makeCall = async (userId: string) => {
     if (!peerInstance) return;
+
+    // get remote peer id
+    const resp: any = await getRemotePeerId(userId)
+
+    if (resp.error) {
+      console.error('Failed to get remote peer id', resp.error);
+      return
+    }
+
+    const remotePeerId = resp.data as string
 
     navigator.mediaDevices.getUserMedia({ audio: true, video: false })
       .then((stream) => {

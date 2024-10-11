@@ -91,6 +91,21 @@ const endpoints = apis.injectEndpoints({
         },
       }),
     }),
+    initializePeerCall: builder.mutation<string, string>({
+      query: (peerId) => ({
+        url: `call-logs/call/initialize/${peerId}`,
+        method: "POST",
+      }),
+    }),
+    makePeerCall: builder.mutation<string, string>({
+      query: (receiverId: string) => ({
+        url: `call-logs/call/make-call`,
+        method: "POST",
+        body: {
+          receiverId
+        }
+      }),
+    })
   }),
 });
 
@@ -106,5 +121,7 @@ export const {
   useEmailChangeReqSubmitMutation,
   useChangePasswordMutation,
   useConnectGoogleAuthMutation,
+  useInitializePeerCallMutation,
+  useMakePeerCallMutation
 } = endpoints;
 

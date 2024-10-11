@@ -3,15 +3,15 @@ import { useContext } from "react";
 import callContext from "../../modules/home/context/callContext";
 
 interface IProps {
-  remotePeerId: string;
+  userId: string;
 }
 
-const CallButton = ({remotePeerId}: IProps) => {
+const CallButton = ({userId}: IProps) => {
   const { makeCall } = useContext(callContext);
 
   return (
     <PhoneOutlined
-      onClick={() => makeCall(remotePeerId)}
+      onClick={() => makeCall(userId)}
       className="cursor-pointer"
       style={{ fontSize: 20 }}
     />

@@ -85,7 +85,7 @@ const ActionHeader = ({ activeThread, userId, onlineUsers }: IProps) => {
         )}
       </Space>
 
-      <CallButton remotePeerId="" />
+      <CallButton userId={userId} />
       </div>
     </Card>
   );
