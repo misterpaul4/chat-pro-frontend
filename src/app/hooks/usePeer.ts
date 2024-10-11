@@ -1,13 +1,13 @@
 import Peer, { MediaConnection } from "peerjs";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { setLS } from "../lib/helpers/localStorage";
 import { lsKeys } from "../lib/constants/localStorageKeys";
+import { TCallStatus } from "../lib/types/peertypes";
+import { ICallState } from "../../modules/home/context/callContext";
 
-type TCallStatus = 'In call' | 'Call ended' | 'Incoming call' | 'Call failed' | 'Call rejected';
-
-const usePeer = () => {
+const usePeer: () => ICallState = () => {
   const [peerInstance, setPeerInstance] = useState<Peer>()
-  const [callStatus, setCallStatus] = useState<TCallStatus>();
+  const [callStatus, setCallStatus] = useState<TCallStatus>('Idle');
   const [incomingCall, setIncomingCall] = useState<MediaConnection>();
   const currentCall = useRef<MediaConnection | null>(null);
   const localAudioRef = useRef<HTMLAudioElement>(null);
@@ -124,6 +124,11 @@ const usePeer = () => {
       setCallStatus('Call rejected');
     }
   };
+
+  return useMemo(() => ({
+    makeCall,
+    status: callStatus
+  }), [])
 }
 
 export default usePeer

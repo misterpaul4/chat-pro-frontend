@@ -7,6 +7,8 @@ import { useContext, useEffect } from "react";
 import Typing from "../../../app/common/IsTyping";
 import { IUser } from "../../auth/control/types";
 import { getMessageTime } from "../../../app/lib/helpers/time";
+import { PhoneOutlined } from "@ant-design/icons";
+import CallButton from "../../../app/common/CallButton";
 
 interface IProps {
   activeThread: IThread;
@@ -58,6 +60,7 @@ const ActionHeader = ({ activeThread, userId, onlineUsers }: IProps) => {
       style={{ borderRadius: 0 }}
       bodyStyle={{ padding: 15 }}
     >
+      <div className="d-flex align-items-center justify-content-between">
       <Space align="end">
         <Space>
           <Typography.Title level={4} className="m-0">
@@ -81,6 +84,9 @@ const ActionHeader = ({ activeThread, userId, onlineUsers }: IProps) => {
           />
         )}
       </Space>
+
+      <CallButton remotePeerId="" />
+      </div>
     </Card>
   );
 };
