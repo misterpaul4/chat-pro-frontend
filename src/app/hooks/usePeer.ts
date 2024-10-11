@@ -3,9 +3,11 @@ import { useEffect, useRef, useState } from "react";
 import { setLS } from "../lib/helpers/localStorage";
 import { lsKeys } from "../lib/constants/localStorageKeys";
 
+type TCallStatus = 'In call' | 'Call ended' | 'Incoming call' | 'Call failed' | 'Call rejected';
+
 const usePeer = () => {
   const [peerInstance, setPeerInstance] = useState<Peer>()
-  const [callStatus, setCallStatus] = useState('');
+  const [callStatus, setCallStatus] = useState<TCallStatus>();
   const [incomingCall, setIncomingCall] = useState<MediaConnection>();
   const currentCall = useRef<MediaConnection | null>(null);
   const localAudioRef = useRef<HTMLAudioElement>(null);
@@ -34,7 +36,7 @@ const usePeer = () => {
 
     peer.on('call', (call) => {
       setIncomingCall(call);
-      setCallStatus('Incoming call...');
+      setCallStatus('Incoming call');
     });
 
     return () => {
@@ -110,7 +112,7 @@ const usePeer = () => {
         })
         .catch((err) => {
           console.error('Failed to get local stream', err);
-          setCallStatus('Failed to access microphone');
+          setCallStatus('Call failed');
         });
     }
   };
