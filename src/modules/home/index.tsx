@@ -37,6 +37,7 @@ import { $tabType } from "./sidebar/types";
 import globalContext from "../../app/context/globalContext";
 import ContactAvatar from "../../app/common/ContactAvatar";
 import { emitReadMessage } from "./api/sockets";
+import usePeer from "../../app/hooks/usePeer";
 
 const { Sider, Content, Header, Footer } = Layout;
 
@@ -204,6 +205,8 @@ const Home = () => {
       },
     },
   ]);
+
+  usePeer();
 
   useEffect(() => {
     return () => {
