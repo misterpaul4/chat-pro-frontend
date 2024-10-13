@@ -53,7 +53,13 @@ const CallSession = ({ callerName, onFinish }: ICallSessionProps) => {
     <div>
       <strong>{callerName}</strong>
       <div>{convertSecondsToTime(timer)}</div>
-      <Button onClick={() => onFinish(timer)}>Close</Button>
+      <Button
+        onClick={() => {
+          onFinish(timer);
+        }}
+      >
+        Close
+      </Button>
     </div>
   );
 };
@@ -202,7 +208,6 @@ const usePeer = () => {
     call.on("close", () => {
       if (callStatus === "In call") {
         setCallStatus("Call ended");
-        closeCallSession({ sessionId: call.metadata.sessionId });
       }
     });
   };
