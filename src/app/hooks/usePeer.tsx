@@ -80,7 +80,7 @@ const usePeer = () => {
     {
       event: SocketEvents.END_CALL,
       handler: (declined) => {
-        closeCallNotification();
+        closeCallSession({ skipReq: true, sessionId: "" });
       },
     },
   ]);
@@ -95,11 +95,12 @@ const usePeer = () => {
     }
   };
 
-  const closeCallSession = ({
+  function closeCallSession({
     duration = 0,
     sessionId,
     status,
-  }: IEndCallSession) => {
+    skipReq,
+  }: IEndCallSession & { skipReq?: boolean }) {
     if (localAudioRef.current) {
       resetTracks();
       localAudioRef.current.srcObject = null;
@@ -109,9 +110,12 @@ const usePeer = () => {
       remoteAudioRef.current.srcObject = null;
     }
 
-    endCallReq({ duration, sessionId, status });
+    if (!skipReq) {
+      endCallReq({ duration, sessionId, status });
+    }
+
     closeCallNotification();
-  };
+  }
 
   useEffect(() => {
     const peer = new Peer(v4(), {
