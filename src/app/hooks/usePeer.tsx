@@ -14,6 +14,7 @@ import { PhoneOutlined } from "@ant-design/icons";
 import { v4 } from "uuid";
 import useSocketSubscription from "./useSocketSubscription";
 import { SocketEvents } from "../lib/types/webSocket";
+import { emitRingingEvent } from "../../modules/home/api/sockets";
 
 const callNotificationKey = "call-notification";
 
@@ -37,6 +38,25 @@ interface ICallSessionProps {
   callerName: string;
   onFinish: (duration: number) => void;
 }
+
+interface IOutgoingCallSessionProps {
+  receiverName: string;
+  onFinish: () => void;
+  ringing?: boolean
+}
+
+const OutgoingCallSession = ({
+  receiverName,
+  onFinish,
+  ringing
+}: IOutgoingCallSessionProps) => {
+  return (
+    <div className="d-flex align-items-center justify-content-between">
+      <div>{`Calling ${receiverName}...`} {ringing && <em>ringing</em>}</div>
+      <Button danger icon={<PhoneOutlined />} onClick={onFinish} />
+    </div>
+  );
+};
 
 const CallSession = ({ callerName, onFinish }: ICallSessionProps) => {
   const [timer, setTimer] = useState(0);
@@ -81,6 +101,30 @@ const usePeer = () => {
       event: SocketEvents.END_CALL,
       handler: (declined) => {
         closeCallSession({ skipReq: true, sessionId: "" });
+      },
+    },
+    {
+      event: SocketEvents.CALL_RINGING,
+      handler: () => {
+        api.info({
+          message: (
+            <OutgoingCallSession
+              receiverName={currentCall.current?.metadata.receiverName}
+              ringing
+              onFinish={() =>
+                endCall({
+                  duration: 0,
+                  sessionId: currentCall.current?.metadata.sessionId,
+                  status: CallLogStatus.Cancelled,
+                })
+              }
+            />
+          ),
+          duration: 0,
+          key: callNotificationKey,
+          icon: <PhoneOutlined style={{ fontSize: 20 }} />,
+          closeIcon: null,
+        });
       },
     },
   ]);
@@ -134,6 +178,8 @@ const usePeer = () => {
     });
 
     peer.on("call", (call) => {
+      emitRingingEvent(call.metadata.callerId);
+
       api.info({
         message: (
           <div>
@@ -219,26 +265,23 @@ const usePeer = () => {
   const makeCall = async (
     receiverId: string,
     receiverName: string,
-    userName: string
+    userName: string,
+    callerId: string
   ) => {
     const sessionId = v4();
 
     api.info({
       message: (
-        <div className="d-flex align-items-center justify-content-between">
-          <div>{`Calling ${receiverName}...`}</div>
-          <Button
-            danger
-            icon={<PhoneOutlined />}
-            onClick={() =>
-              endCall({
-                duration: 0,
-                sessionId,
-                status: CallLogStatus.Cancelled,
-              })
-            }
-          />
-        </div>
+        <OutgoingCallSession
+          receiverName={receiverName}
+          onFinish={() =>
+            endCall({
+              duration: 0,
+              sessionId,
+              status: CallLogStatus.Cancelled,
+            })
+          }
+        />
       ),
       duration: 0,
       key: callNotificationKey,
@@ -273,6 +316,8 @@ const usePeer = () => {
           metadata: {
             name: userName,
             sessionId,
+            callerId,
+            receiverName
           },
         });
         handleStream(call, receiverName);
