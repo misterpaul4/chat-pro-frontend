@@ -3,11 +3,11 @@ import { TCallStatus } from "../../../app/lib/types/peertypes";
 
 export interface ICallState {
   status: TCallStatus
-  makeCall: (remotePeerId: string) => void
+  makeCall: (receiverId: string, receiverName: string, userName: string) => void
 }
 
 const initialValue: ICallState = {
-  makeCall: (v: string) => { },
+  makeCall: (receiverId: string, receiverName: string, userName: string) => { },
   status: 'Idle'
 };
 

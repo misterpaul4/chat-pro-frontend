@@ -207,7 +207,7 @@ const Home = () => {
     },
   ]);
 
-  const callContextValues = usePeer();
+  const {contextHolder, ...callContextValues} = usePeer();
 
   useEffect(() => {
     return () => {
@@ -217,6 +217,7 @@ const Home = () => {
 
   return (
     <CallContext.Provider value={callContextValues}>
+      {contextHolder}
       <Layout hasSider className="message-container">
         <Sider className="siderStyle">
           <div className="p-3">

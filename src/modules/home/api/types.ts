@@ -120,3 +120,16 @@ export interface IChangePassword {
   oldPassword?: string;
 }
 
+export interface PeerIdResp {
+  peerId: string;
+}
+
+export interface MakeCallResp extends PeerIdResp {
+  callId: string;
+}
+
+export interface EndCallReq {
+  sessionId: string;
+  duration: number;
+  declined?: boolean;
+}

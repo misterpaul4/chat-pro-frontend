@@ -7,17 +7,18 @@ import { useContext, useEffect } from "react";
 import Typing from "../../../app/common/IsTyping";
 import { IUser } from "../../auth/control/types";
 import { getMessageTime } from "../../../app/lib/helpers/time";
-import { PhoneOutlined } from "@ant-design/icons";
 import CallButton from "../../../app/common/CallButton";
 
 interface IProps {
   activeThread: IThread;
   userId: string;
   onlineUsers: $onlineStatus;
+  userName?: string;
 }
 
 interface IConfig {
   title: string;
+  recipientId?: string;
   isOnline?: boolean | string;
 }
 
@@ -38,6 +39,7 @@ const getConfig: (params: IProps) => IConfig = ({
           recipient.lastName
         )}`,
         isOnline: onlineUsers[recipient.id] || recipient.lastSeen,
+        recipientId: recipient.id,
       };
     case ThreadTypeEnum.Group:
       return { title: capitalize(activeThread.title) };
@@ -47,11 +49,15 @@ const getConfig: (params: IProps) => IConfig = ({
   }
 };
 
-const ActionHeader = ({ activeThread, userId, onlineUsers }: IProps) => {
+const ActionHeader = ({ activeThread, userId, onlineUsers, userName }: IProps) => {
   const typingState = useContext(typingContext);
   const typingClient = typingState[activeThread.id];
 
-  const { title, isOnline } = getConfig({ activeThread, userId, onlineUsers });
+  const { title, isOnline, recipientId } = getConfig({
+    activeThread,
+    userId,
+    onlineUsers,
+  });
 
   return (
     <Card
@@ -61,35 +67,34 @@ const ActionHeader = ({ activeThread, userId, onlineUsers }: IProps) => {
       bodyStyle={{ padding: 15 }}
     >
       <div className="d-flex align-items-center justify-content-between">
-      <Space align="end">
-        <Space>
-          <Typography.Title level={4} className="m-0">
-            {title}
-          </Typography.Title>
-          {isOnline && (
-            <span title="online">
-              {typeof isOnline === "boolean" ? (
-                <Badge status="processing" />
-              ) : (
-                <em>last seen {getMessageTime(isOnline as string)}</em>
-              )}
-            </span>
+        <Space align="end">
+          <Space>
+            <Typography.Title level={4} className="m-0">
+              {title}
+            </Typography.Title>
+            {isOnline && (
+              <span title="online">
+                {typeof isOnline === "boolean" ? (
+                  <Badge status="processing" />
+                ) : (
+                  <em>last seen {getMessageTime(isOnline as string)}</em>
+                )}
+              </span>
+            )}
+          </Space>
+          {typingClient && (
+            <Typing
+              typingClient={typingClient}
+              threadType={activeThread.type}
+              threadUsers={activeThread.users}
+            />
           )}
         </Space>
-        {typingClient && (
-          <Typing
-            typingClient={typingClient}
-            threadType={activeThread.type}
-            threadUsers={activeThread.users}
-          />
-        )}
-      </Space>
 
-      <CallButton userId={userId} />
+        {recipientId && <CallButton recipientName={title} recipientId={recipientId} userName={userName!} />}
       </div>
     </Card>
   );
 };
 
 export default ActionHeader;
-
