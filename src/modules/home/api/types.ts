@@ -128,8 +128,18 @@ export interface MakeCallResp extends PeerIdResp {
   callId: string;
 }
 
+
+export enum CallLogStatus {
+  Pending = 'Pending',
+  Finished = 'Finished',
+  Declined = 'Declined',
+  NotAnswered = 'Not Answered',
+  Cancelled = 'Cancelled'
+}
+
+
 export interface EndCallReq {
   sessionId: string;
   duration: number;
-  declined?: boolean;
+  status?: CallLogStatus;
 }

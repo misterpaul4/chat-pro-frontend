@@ -8,7 +8,7 @@ import {
   useInitializePeerCallMutation,
   useMakePeerCallMutation,
 } from "../../modules/home/api/mutationEndpoints";
-import { MakeCallResp } from "../../modules/home/api/types";
+import { CallLogStatus, MakeCallResp } from "../../modules/home/api/types";
 import { Button, notification } from "antd";
 import { PhoneOutlined } from "@ant-design/icons";
 import { v4 } from "uuid";
@@ -27,9 +27,15 @@ function convertSecondsToTime(seconds: number) {
   return `${minutesString}:${secondsString}`;
 }
 
+interface IEndCallSession {
+  duration?: number;
+  sessionId: string;
+  status?: CallLogStatus;
+}
+
 interface ICallSessionProps {
   callerName: string;
-  onFinish: () => void;
+  onFinish: (duration: number) => void;
 }
 
 const CallSession = ({ callerName, onFinish }: ICallSessionProps) => {
@@ -47,7 +53,7 @@ const CallSession = ({ callerName, onFinish }: ICallSessionProps) => {
     <div>
       <strong>{callerName}</strong>
       <div>{convertSecondsToTime(timer)}</div>
-      <Button onClick={onFinish}>Close</Button>
+      <Button onClick={() => onFinish(timer)}>Close</Button>
     </div>
   );
 };
@@ -83,7 +89,11 @@ const usePeer = () => {
     }
   };
 
-  const closeCallSession = (sessionId: string, declined?: boolean) => {
+  const closeCallSession = ({
+    duration = 0,
+    sessionId,
+    status,
+  }: IEndCallSession) => {
     if (localAudioRef.current) {
       resetTracks();
       localAudioRef.current.srcObject = null;
@@ -93,7 +103,7 @@ const usePeer = () => {
       remoteAudioRef.current.srcObject = null;
     }
 
-    endCallReq({ duration: 10, sessionId, declined });
+    endCallReq({ duration, sessionId, status });
     closeCallNotification();
   };
 
@@ -170,7 +180,13 @@ const usePeer = () => {
           message: (
             <CallSession
               callerName={recipient || call.metadata.name}
-              onFinish={() => endCall(call.metadata.sessionId)}
+              onFinish={(duration) =>
+                endCall({
+                  duration,
+                  sessionId: call.metadata.sessionId,
+                  status: CallLogStatus.Finished,
+                })
+              }
             />
           ),
           duration: 0,
@@ -184,8 +200,10 @@ const usePeer = () => {
     });
 
     call.on("close", () => {
-      setCallStatus("Call ended");
-      closeCallSession(call.metadata.sessionId);
+      if (callStatus === "In call") {
+        setCallStatus("Call ended");
+        closeCallSession({ sessionId: call.metadata.sessionId });
+      }
     });
   };
 
@@ -203,7 +221,13 @@ const usePeer = () => {
           <Button
             danger
             icon={<PhoneOutlined />}
-            onClick={() => endCall(sessionId)}
+            onClick={() =>
+              endCall({
+                duration: 0,
+                sessionId,
+                status: CallLogStatus.Cancelled,
+              })
+            }
           />
         </div>
       ),
@@ -249,12 +273,12 @@ const usePeer = () => {
       });
   };
 
-  const endCall = (sessionId: string) => {
+  const endCall = (payload: IEndCallSession) => {
     if (currentCall.current) {
       currentCall.current.close();
       currentCall.current = null;
       setCallStatus("Call ended");
-      closeCallSession(sessionId);
+      closeCallSession(payload);
     }
   };
 
@@ -282,7 +306,11 @@ const usePeer = () => {
     const sessionId = incomingCall.metadata.sessionId;
     incomingCall.close();
     setCallStatus("Call rejected");
-    closeCallSession(sessionId, true);
+    closeCallSession({
+      duration: 0,
+      sessionId,
+      status: CallLogStatus.Declined,
+    });
   };
 
   return useMemo(
