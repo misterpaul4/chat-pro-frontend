@@ -10,7 +10,7 @@ import {
 } from "../../modules/home/api/mutationEndpoints";
 import { MakeCallResp } from "../../modules/home/api/types";
 import { Button, notification } from "antd";
-import { CloseOutlined, PhoneOutlined } from "@ant-design/icons";
+import { PhoneOutlined } from "@ant-design/icons";
 import { v4 } from "uuid";
 import useSocketSubscription from "./useSocketSubscription";
 import { SocketEvents } from "../lib/types/webSocket";
@@ -159,17 +159,17 @@ const usePeer = () => {
     };
   }, []);
 
-  const handleStream = (call: MediaConnection) => {
+  const handleStream = (call: MediaConnection, recipient?: string) => {
     currentCall.current = call;
     setCallStatus("In call");
 
     call.on("stream", (remoteStream) => {
       if (remoteAudioRef.current) {
-        api.info({
+        api.success({
           key: callNotificationKey,
           message: (
             <CallSession
-              callerName={call.metadata.name}
+              callerName={recipient || call.metadata.name}
               onFinish={() => endCall(call.metadata.sessionId)}
             />
           ),
@@ -242,7 +242,7 @@ const usePeer = () => {
             sessionId,
           },
         });
-        handleStream(call);
+        handleStream(call, receiverName);
       })
       .catch((err) => {
         console.error("Failed to get local stream", err);
