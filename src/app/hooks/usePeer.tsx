@@ -15,7 +15,7 @@ import { v4 } from "uuid";
 import useSocketSubscription from "./useSocketSubscription";
 import { SocketEvents } from "../lib/types/webSocket";
 import { emitRingingEvent } from "../../modules/home/api/sockets";
-import { MAX_CALL_WAIT_TIME } from "../../settings";
+import { END_CALL_DELAY, MAX_CALL_WAIT_TIME } from "../../settings";
 
 const callNotificationKey = "call-notification";
 
@@ -43,17 +43,36 @@ interface ICallSessionProps {
 interface IOutgoingCallSessionProps {
   receiverName: string;
   onFinish: (status?: CallLogStatus) => void;
-  ringing?: boolean,
-  autoEnd?: boolean
+  ringing?: boolean;
+  autoEnd?: boolean;
 }
 
 const OutgoingCallSession = ({
   receiverName,
   onFinish,
   ringing,
-  autoEnd
+  autoEnd,
 }: IOutgoingCallSessionProps) => {
   const [timer, setTimer] = useState(0);
+  const [closeStatus, setCloseStatus] = useState<
+    CallLogStatus | undefined | null
+  >();
+
+  const onClose = (status?: CallLogStatus) => {
+    setCloseStatus(status || null);
+  };
+
+  useEffect(() => {
+    let timeout: NodeJS.Timeout;
+
+    if (closeStatus !== undefined) {
+      timeout = setTimeout(() => {
+        onFinish(closeStatus as CallLogStatus);
+      }, END_CALL_DELAY * 1000);
+    }
+
+    return () => timeout && clearTimeout(timeout);
+  }, [closeStatus]);
 
   useEffect(() => {
     let interval: NodeJS.Timeout;
@@ -64,19 +83,33 @@ const OutgoingCallSession = ({
       }, 1000);
     }
 
-    return () => clearInterval(interval);
+    return () => interval && clearInterval(interval);
   }, [!!autoEnd]);
 
   useEffect(() => {
     if (timer === MAX_CALL_WAIT_TIME) {
-      onFinish(CallLogStatus.NotAnswered);
+      onClose(CallLogStatus.NotAnswered);
     }
   }, [timer]);
 
+  const getStatus = () => {
+    if (closeStatus !== undefined) {
+      return <em>ended</em>;
+    }
+
+    if (ringing) {
+      return <em>ringing</em>;
+    }
+
+    return null;
+  };
+
   return (
     <div className="d-flex align-items-center justify-content-between">
-      <div>{`Calling ${receiverName}...`} {ringing && <em>ringing</em>}</div>
-      <Button danger icon={<PhoneOutlined />} onClick={() => onFinish()} />
+      <div>
+        {`Calling ${receiverName}...`} {getStatus()}
+      </div>
+      <Button danger icon={<PhoneOutlined />} onClick={() => onClose()} />
     </div>
   );
 };
@@ -297,7 +330,7 @@ const usePeer = () => {
     api.info({
       message: (
         <OutgoingCallSession
-        autoEnd
+          autoEnd
           receiverName={receiverName}
           onFinish={(status) =>
             endCall({
@@ -342,7 +375,7 @@ const usePeer = () => {
             name: userName,
             sessionId,
             callerId,
-            receiverName
+            receiverName,
           },
         });
         handleStream(call, receiverName);
