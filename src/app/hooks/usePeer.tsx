@@ -15,6 +15,7 @@ import { v4 } from "uuid";
 import useSocketSubscription from "./useSocketSubscription";
 import { SocketEvents } from "../lib/types/webSocket";
 import { emitRingingEvent } from "../../modules/home/api/sockets";
+import { MAX_CALL_WAIT_TIME } from "../../settings";
 
 const callNotificationKey = "call-notification";
 
@@ -41,19 +42,41 @@ interface ICallSessionProps {
 
 interface IOutgoingCallSessionProps {
   receiverName: string;
-  onFinish: () => void;
-  ringing?: boolean
+  onFinish: (status?: CallLogStatus) => void;
+  ringing?: boolean,
+  autoEnd?: boolean
 }
 
 const OutgoingCallSession = ({
   receiverName,
   onFinish,
-  ringing
+  ringing,
+  autoEnd
 }: IOutgoingCallSessionProps) => {
+  const [timer, setTimer] = useState(0);
+
+  useEffect(() => {
+    let interval: NodeJS.Timeout;
+
+    if (autoEnd) {
+      interval = setInterval(() => {
+        setTimer((timer) => timer + 1);
+      }, 1000);
+    }
+
+    return () => clearInterval(interval);
+  }, [!!autoEnd]);
+
+  useEffect(() => {
+    if (timer === MAX_CALL_WAIT_TIME) {
+      onFinish(CallLogStatus.NotAnswered);
+    }
+  }, [timer]);
+
   return (
     <div className="d-flex align-items-center justify-content-between">
       <div>{`Calling ${receiverName}...`} {ringing && <em>ringing</em>}</div>
-      <Button danger icon={<PhoneOutlined />} onClick={onFinish} />
+      <Button danger icon={<PhoneOutlined />} onClick={() => onFinish()} />
     </div>
   );
 };
@@ -111,11 +134,12 @@ const usePeer = () => {
             <OutgoingCallSession
               receiverName={currentCall.current?.metadata.receiverName}
               ringing
-              onFinish={() =>
+              autoEnd
+              onFinish={(status) =>
                 endCall({
                   duration: 0,
                   sessionId: currentCall.current?.metadata.sessionId,
-                  status: CallLogStatus.Cancelled,
+                  status: status || CallLogStatus.Cancelled,
                 })
               }
             />
@@ -273,12 +297,13 @@ const usePeer = () => {
     api.info({
       message: (
         <OutgoingCallSession
+        autoEnd
           receiverName={receiverName}
-          onFinish={() =>
+          onFinish={(status) =>
             endCall({
               duration: 0,
               sessionId,
-              status: CallLogStatus.Cancelled,
+              status: status || CallLogStatus.Cancelled,
             })
           }
         />

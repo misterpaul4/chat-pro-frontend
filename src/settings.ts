@@ -7,4 +7,4 @@ export const THREAD_MEMORY = new Map(); // { messageId as key }, IThreadMemory a
 export const SETTINGS = {
   maxLastScrolls: 5,
 };
-
+export const MAX_CALL_WAIT_TIME = 15 // in seconds
