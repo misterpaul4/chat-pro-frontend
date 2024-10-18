@@ -10,13 +10,18 @@ import {
 } from "../../modules/home/api/mutationEndpoints";
 import { CallLogStatus, MakeCallResp } from "../../modules/home/api/types";
 import { Button, notification } from "antd";
-import { PhoneOutlined } from "@ant-design/icons";
+import {
+  AudioMutedOutlined,
+  AudioOutlined,
+  PhoneOutlined,
+} from "@ant-design/icons";
 import { v4 } from "uuid";
 import useSocketSubscription from "./useSocketSubscription";
 import { SocketEvents } from "../lib/types/webSocket";
 import { emitRingingEvent } from "../../modules/home/api/sockets";
 import { END_CALL_DELAY, MAX_CALL_WAIT_TIME } from "../../settings";
 import callingSound from "../../../public/calling.mp3";
+import { AntdIconProps } from "@ant-design/icons/lib/components/AntdIcon";
 
 const callingAudio = new Audio(callingSound);
 
@@ -46,6 +51,7 @@ interface IEndCallSession {
 interface ICallSessionProps {
   callerName: string;
   onFinish: (duration: number) => void;
+  onMute: (mute: boolean) => void;
 }
 
 interface IOutgoingCallSessionProps {
@@ -109,13 +115,12 @@ const OutgoingCallSession = ({
 
       interval = setInterval(() => {
         callingAudio.play();
-      }, 4000)
+      }, 4000);
     }, 1000);
 
-
     return () => {
-      clearTimeout(timeout)
-      interval && clearInterval(interval)
+      clearTimeout(timeout);
+      interval && clearInterval(interval);
     };
   }, []);
 
@@ -141,8 +146,9 @@ const OutgoingCallSession = ({
   );
 };
 
-const CallSession = ({ callerName, onFinish }: ICallSessionProps) => {
+const CallSession = ({ callerName, onFinish, onMute }: ICallSessionProps) => {
   const [timer, setTimer] = useState(0);
+  const [mute, setMute] = useState(false);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -156,13 +162,30 @@ const CallSession = ({ callerName, onFinish }: ICallSessionProps) => {
     <div>
       <strong>{callerName}</strong>
       <div>{convertSecondsToTime(timer)}</div>
-      <Button
-        onClick={() => {
-          onFinish(timer);
-        }}
-      >
-        Close
-      </Button>
+      <div className="d-flex justify-content-between align-items-center">
+        <Button
+          onClick={() => {
+            setMute((m) => {
+              onMute(m);
+              return !m;
+            });
+          }}
+          icon={
+            mute ? (
+              <AudioMutedOutlined size={20} />
+            ) : (
+              <AudioOutlined size={20} />
+            )
+          }
+        />
+        <Button
+          onClick={() => {
+            onFinish(timer);
+          }}
+        >
+          Close
+        </Button>
+      </div>
     </div>
   );
 };
@@ -321,6 +344,9 @@ const usePeer = () => {
           message: (
             <CallSession
               callerName={recipient || call.metadata.name}
+              onMute={(mute: boolean) => {
+                remoteStream.getAudioTracks()[0].enabled = mute;
+              }}
               onFinish={(duration) =>
                 endCall({
                   duration,
