@@ -16,6 +16,14 @@ import useSocketSubscription from "./useSocketSubscription";
 import { SocketEvents } from "../lib/types/webSocket";
 import { emitRingingEvent } from "../../modules/home/api/sockets";
 import { END_CALL_DELAY, MAX_CALL_WAIT_TIME } from "../../settings";
+import callingSound from "../../../public/calling.mp3";
+
+const callingAudio = new Audio(callingSound);
+
+const closeCallingAudio = () => {
+  callingAudio.pause();
+  callingAudio.currentTime = 0;
+};
 
 const callNotificationKey = "call-notification";
 
@@ -59,6 +67,7 @@ const OutgoingCallSession = ({
   >();
 
   const onClose = (status?: CallLogStatus) => {
+    closeCallingAudio();
     setCloseStatus(status || null);
   };
 
@@ -91,6 +100,24 @@ const OutgoingCallSession = ({
       onClose(CallLogStatus.NotAnswered);
     }
   }, [timer]);
+
+  useEffect(() => {
+    let interval: NodeJS.Timeout;
+
+    const timeout = setTimeout(() => {
+      callingAudio.play();
+
+      interval = setInterval(() => {
+        callingAudio.play();
+      }, 4000)
+    }, 1000);
+
+
+    return () => {
+      clearTimeout(timeout)
+      interval && clearInterval(interval)
+    };
+  }, []);
 
   const getStatus = () => {
     if (closeStatus !== undefined) {
@@ -156,6 +183,7 @@ const usePeer = () => {
     {
       event: SocketEvents.END_CALL,
       handler: (declined) => {
+        closeCallingAudio();
         closeCallSession({ skipReq: true, sessionId: "" });
       },
     },
