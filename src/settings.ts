@@ -8,3 +8,7 @@ export const SETTINGS = {
   maxLastScrolls: 5,
 };
 
+// CALL: all in seconds
+export const MAX_CALL_WAIT_TIME = 20
+export const END_CALL_DELAY = 1
+export const CALL_RETRY_INTERVAL = 5

@@ -120,3 +120,26 @@ export interface IChangePassword {
   oldPassword?: string;
 }
 
+export interface PeerIdResp {
+  peerId: string;
+}
+
+export interface MakeCallResp extends PeerIdResp {
+  callId: string;
+}
+
+
+export enum CallLogStatus {
+  Pending = 'Pending',
+  Finished = 'Finished',
+  Declined = 'Declined',
+  NotAnswered = 'Not Answered',
+  Cancelled = 'Cancelled'
+}
+
+
+export interface EndCallReq {
+  sessionId: string;
+  duration: number;
+  status?: CallLogStatus;
+}

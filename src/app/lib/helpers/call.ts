@@ -1,0 +1,1 @@
+export const getPeerId = (userId: string) => `${import.meta.env.VITE_PEER_PREFIX}_${userId}`;

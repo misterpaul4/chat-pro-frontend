@@ -37,6 +37,8 @@ import { $tabType } from "./sidebar/types";
 import globalContext from "../../app/context/globalContext";
 import ContactAvatar from "../../app/common/ContactAvatar";
 import { emitReadMessage } from "./api/sockets";
+import usePeer from "../../app/hooks/usePeer";
+import CallContext from "./context/callContext";
 
 const { Sider, Content, Header, Footer } = Layout;
 
@@ -205,6 +207,8 @@ const Home = () => {
     },
   ]);
 
+  const {contextHolder, ...callContextValues} = usePeer(user.id);
+
   useEffect(() => {
     return () => {
       dispatch(setActiveThread(undefined));
@@ -212,57 +216,59 @@ const Home = () => {
   }, []);
 
   return (
-    <Layout hasSider className="message-container">
-      <Sider className="siderStyle">
-        <div className="p-3">
-          <typingContext.Provider value={typing}>
-            <SideBar
-              loading={loading}
-              dispatchInbox={dispatchInbox}
-              dispatchRequest={dispatchRequest}
-              inbox={inbox}
-              request={request}
-            />
-          </typingContext.Provider>
-        </div>
-      </Sider>
-      <Layout className="site-layout">
-        <Header className="headerStyle">
-          <div className="float-end">
-            <HeaderProvider>
-              <NewChatModal />
-              <ContactListDrawer contactList={contactList} />
-              <AppHeader user={user} darkMode={darkMode} />
-            </HeaderProvider>
-          </div>
-        </Header>
-        <Content className="contentStyle">
-          <div className="d-flex flex-column message-skeleton">
-            <ContentLoader loading={loading} />
-          </div>
-          <typingContext.Provider value={typing}>
-            {!loading && (
-              <MessageContent
+    <CallContext.Provider value={callContextValues}>
+      {contextHolder}
+      <Layout hasSider className="message-container">
+        <Sider className="siderStyle">
+          <div className="p-3">
+            <typingContext.Provider value={typing}>
+              <SideBar
+                loading={loading}
                 dispatchInbox={dispatchInbox}
-                onlineContacts={onlineContacts}
+                dispatchRequest={dispatchRequest}
+                inbox={inbox}
+                request={request}
               />
-            )}
-          </typingContext.Provider>
-        </Content>
-        <Footer className="footerStyle p-1">
-          <MessageInput
-            dispatch={dispatch}
-            dispatchInbox={dispatchInbox}
-            threadMemory={threadMemory}
-            activeThread={activeThread}
-            isNewThread={isNewThread}
-            user={user}
-          />
-        </Footer>
+            </typingContext.Provider>
+          </div>
+        </Sider>
+        <Layout className="site-layout">
+          <Header className="headerStyle">
+            <div className="float-end">
+              <HeaderProvider>
+                <NewChatModal />
+                <ContactListDrawer contactList={contactList} />
+                <AppHeader user={user} darkMode={darkMode} />
+              </HeaderProvider>
+            </div>
+          </Header>
+          <Content className="contentStyle">
+            <div className="d-flex flex-column message-skeleton">
+              <ContentLoader loading={loading} />
+            </div>
+            <typingContext.Provider value={typing}>
+              {!loading && (
+                <MessageContent
+                  dispatchInbox={dispatchInbox}
+                  onlineContacts={onlineContacts}
+                />
+              )}
+            </typingContext.Provider>
+          </Content>
+          <Footer className="footerStyle p-1">
+            <MessageInput
+              dispatch={dispatch}
+              dispatchInbox={dispatchInbox}
+              threadMemory={threadMemory}
+              activeThread={activeThread}
+              isNewThread={isNewThread}
+              user={user}
+            />
+          </Footer>
+        </Layout>
       </Layout>
-    </Layout>
+    </CallContext.Provider>
   );
 };
 
 export default Home;
-

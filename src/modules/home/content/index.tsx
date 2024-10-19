@@ -21,7 +21,7 @@ const MessageContent = ({ onlineContacts, dispatchInbox }: IProps) => {
     (state: RootState) => state.app.isNewThreadDisplay
   );
   const threadMemory = useSelector((state: RootState) => state.memory);
-  const userId = useSelector((state: RootState) => state.user.user.id);
+  const {id: userId, firstName, lastName} = useSelector((state: RootState) => state.user.user);
 
   const [onlineUsers, dispatchIsOnlineStatus] = useReducer(
     onlineStatusReducer,
@@ -46,6 +46,7 @@ const MessageContent = ({ onlineContacts, dispatchInbox }: IProps) => {
         activeThread={activeThread}
         userId={userId}
         onlineUsers={onlineUsers}
+        userName={firstName + " " +lastName}
       />
       {activeThread.type === ThreadTypeEnum.Request &&
       activeThread.createdBy !== userId ? (

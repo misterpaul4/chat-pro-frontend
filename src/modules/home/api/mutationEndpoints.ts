@@ -2,6 +2,7 @@ import apis from "../../../app/api";
 import { apiTags } from "../../../app/lib/constants/tags";
 import { IBaseUser, IUser } from "../../auth/control/types";
 import {
+  EndCallReq,
   IChangePassword,
   IChatRequestPayload,
   ICreateMessage,
@@ -9,6 +10,8 @@ import {
   IInbox,
   IMassUpdateContacts,
   IVerifyEmail,
+  MakeCallResp,
+  PeerIdResp,
 } from "./types";
 
 const endpoints = apis.injectEndpoints({
@@ -91,6 +94,26 @@ const endpoints = apis.injectEndpoints({
         },
       }),
     }),
+    initializePeerCall: builder.mutation<PeerIdResp, string>({
+      query: (peerId) => ({
+        url: `call-logs/call/initialize/${peerId}`,
+        method: "POST",
+      }),
+    }),
+    makePeerCall: builder.mutation<MakeCallResp, {receiverId: string, sessionId: string}>({
+      query: (body) => ({
+        url: `call-logs/call/make-call`,
+        method: "POST",
+        body
+      }),
+    }),
+    endPeerCall: builder.mutation<void, EndCallReq>({
+      query: (body) => ({
+        url: `call-logs/call/end-call`,
+        method: "POST",
+        body
+      }),
+    })
   }),
 });
 
@@ -106,5 +129,8 @@ export const {
   useEmailChangeReqSubmitMutation,
   useChangePasswordMutation,
   useConnectGoogleAuthMutation,
+  useInitializePeerCallMutation,
+  useMakePeerCallMutation,
+  useEndPeerCallMutation
 } = endpoints;
 

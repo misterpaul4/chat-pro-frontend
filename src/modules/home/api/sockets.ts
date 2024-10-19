@@ -13,3 +13,4 @@ export const emitNewMessage = (
 export const emitReadMessage = (threadId: string, responseCallback: Function) =>
   socket.emit(SocketEvents.READ_MESSAGE, threadId, responseCallback);
 
+export const emitRingingEvent = (callerId: string) => socket.emit(SocketEvents.CALL_RINGING, callerId);
