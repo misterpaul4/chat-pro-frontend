@@ -207,7 +207,7 @@ const Home = () => {
     },
   ]);
 
-  const {contextHolder, ...callContextValues} = usePeer();
+  const {contextHolder, ...callContextValues} = usePeer(user.id);
 
   useEffect(() => {
     return () => {

@@ -1,11 +1,8 @@
 import Peer, { MediaConnection } from "peerjs";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { setLS } from "../lib/helpers/localStorage";
-import { lsKeys } from "../lib/constants/localStorageKeys";
 import { TCallStatus } from "../lib/types/peertypes";
 import {
   useEndPeerCallMutation,
-  useInitializePeerCallMutation,
   useMakePeerCallMutation,
 } from "../../modules/home/api/mutationEndpoints";
 import { CallLogStatus, MakeCallResp } from "../../modules/home/api/types";
@@ -21,7 +18,7 @@ import { SocketEvents } from "../lib/types/webSocket";
 import { emitRingingEvent } from "../../modules/home/api/sockets";
 import { END_CALL_DELAY, MAX_CALL_WAIT_TIME } from "../../settings";
 import callingSound from "../../../public/calling.mp3";
-import { AntdIconProps } from "@ant-design/icons/lib/components/AntdIcon";
+import { getPeerId } from "../lib/helpers/call";
 
 const callingAudio = new Audio(callingSound);
 
@@ -190,7 +187,7 @@ const CallSession = ({ callerName, onFinish, onMute }: ICallSessionProps) => {
   );
 };
 
-const usePeer = () => {
+const usePeer = (userId: string) => {
   const [peerInstance, setPeerInstance] = useState<Peer>();
   const [callStatus, setCallStatus] = useState<TCallStatus>("Idle");
   const currentCall = useRef<MediaConnection | null>(null);
@@ -198,8 +195,7 @@ const usePeer = () => {
   const remoteAudioRef = useRef<HTMLAudioElement>(null);
   const [api, contextHolder] = notification.useNotification();
 
-  const [initialize] = useInitializePeerCallMutation();
-  const [getRemotePeerId] = useMakePeerCallMutation();
+  const [makeCallReq] = useMakePeerCallMutation();
   const [endCallReq] = useEndPeerCallMutation();
 
   useSocketSubscription([
@@ -270,15 +266,14 @@ const usePeer = () => {
   }
 
   useEffect(() => {
-    const peer = new Peer(v4(), {
+    const peer = new Peer(getPeerId(userId), {
       config: { iceServers: [{ url: "stun:stun.l.google.com:19302" }] },
     });
 
     setPeerInstance(peer);
 
     peer.on("open", (id) => {
-      setLS(lsKeys.PEER_ID, id);
-      initialize(id);
+      console.info("Peer connection established");
     });
 
     peer.on("error", (err) => {
@@ -409,13 +404,15 @@ const usePeer = () => {
     if (!peerInstance) return failedAttempt();
 
     // get remote peer id
-    const resp: any = await getRemotePeerId({ receiverId, sessionId });
+    const resp: any = await makeCallReq({ receiverId, sessionId });
 
-    const { peerId: remotePeerId } = (resp.data as MakeCallResp) || {};
+    const { callId } = (resp.data as MakeCallResp) || {};
 
-    if (!remotePeerId) {
+    if (!callId) {
       return failedAttempt();
     }
+
+    const remotePeerId = receiverId;
 
     navigator.mediaDevices
       .getUserMedia({ audio: true, video: false })
