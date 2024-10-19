@@ -412,7 +412,7 @@ const usePeer = (userId: string) => {
       return failedAttempt();
     }
 
-    const remotePeerId = receiverId;
+    const remotePeerId = getPeerId(receiverId);
 
     navigator.mediaDevices
       .getUserMedia({ audio: true, video: false })
