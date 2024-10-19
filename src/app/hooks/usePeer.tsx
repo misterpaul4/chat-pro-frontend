@@ -412,8 +412,7 @@ const usePeer = (userId: string) => {
   const makeCall = async (
     receiverId: string,
     receiverName: string,
-    userName: string,
-    callerId: string
+    userName: string
   ) => {
     const sessionId = v4();
 
@@ -467,7 +466,7 @@ const usePeer = (userId: string) => {
           metadata: {
             name: userName,
             sessionId,
-            callerId,
+            callerId: userId,
             receiverName,
             receiverId,
           },

@@ -91,7 +91,7 @@ const ActionHeader = ({ activeThread, userId, onlineUsers, userName }: IProps) =
           )}
         </Space>
 
-        {recipientId && <CallButton recipientName={title} recipientId={recipientId} userName={userName!} callerId={userId} />}
+        {recipientId && <CallButton recipientName={title} recipientId={recipientId} userName={userName!} />}
       </div>
     </Card>
   );

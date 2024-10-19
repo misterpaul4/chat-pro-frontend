@@ -6,15 +6,14 @@ interface IProps {
   recipientId: string;
   recipientName: string;
   userName: string
-  callerId: string
 }
 
-const CallButton = ({recipientId, recipientName, userName, callerId}: IProps) => {
+const CallButton = ({recipientId, recipientName, userName}: IProps) => {
   const { makeCall } = useContext(callContext);
 
   return (
     <PhoneOutlined
-      onClick={() => makeCall(recipientId, recipientName, userName, callerId)}
+      onClick={() => makeCall(recipientId, recipientName, userName)}
       className="cursor-pointer"
       style={{ fontSize: 20 }}
     />
