@@ -6,19 +6,42 @@ import {
   useMakePeerCallMutation,
 } from "../../modules/home/api/mutationEndpoints";
 import { CallLogStatus, MakeCallResp } from "../../modules/home/api/types";
-import { Button, notification } from "antd";
+import { Button, notification, Space } from "antd";
 import {
   AudioMutedOutlined,
   AudioOutlined,
-  PhoneOutlined,
+  PhoneFilled,
 } from "@ant-design/icons";
 import { v4 } from "uuid";
 import useSocketSubscription from "./useSocketSubscription";
 import { SocketEvents } from "../lib/types/webSocket";
 import { emitRingingEvent } from "../../modules/home/api/sockets";
-import { CALL_RETRY_INTERVAL, END_CALL_DELAY, MAX_CALL_WAIT_TIME } from "../../settings";
+import {
+  CALL_RETRY_INTERVAL,
+  END_CALL_DELAY,
+  MAX_CALL_WAIT_TIME,
+} from "../../settings";
 import callingSound from "../../../public/calling.mp3";
 import { getPeerId } from "../lib/helpers/call";
+import ContactAvatar from "../common/ContactAvatar";
+import { ArgsProps } from "antd/es/notification/interface";
+
+const CallActionButton = ({ onClick, backgroundColor, rotate = false }) => {
+  return (
+    <Button
+      className="border-0 me-2"
+      style={{
+        backgroundColor,
+        color: "white",
+        transform: rotate ? "rotate(225deg)" : undefined,
+      }}
+      shape="circle"
+      icon={<PhoneFilled />}
+      size="large"
+      onClick={onClick}
+    />
+  );
+};
 
 const callingAudio = new Audio(callingSound);
 
@@ -28,6 +51,14 @@ const closeCallingAudio = () => {
 };
 
 const callNotificationKey = "call-notification";
+
+const sharedCallNotificationProps: Partial<ArgsProps> = {
+  duration: 0,
+  key: callNotificationKey,
+  className: "p-0 incoming-call-notification",
+  icon: <></>,
+  closeIcon: null,
+};
 
 function convertSecondsToTime(seconds: number) {
   const minutes = Math.floor(seconds / 60);
@@ -138,7 +169,7 @@ const OutgoingCallSession = ({
     }
 
     if (ringing) {
-      setTimer(0)
+      setTimer(0);
     }
 
     return () => {
@@ -148,22 +179,37 @@ const OutgoingCallSession = ({
 
   const getStatus = () => {
     if (closeStatus !== undefined) {
-      return <em>ended</em>;
+      return "ended";
     }
 
     if (ringing) {
-      return <em>ringing</em>;
+      return "ringing";
     }
 
-    return null;
+    return "calling";
   };
 
   return (
-    <div className="d-flex align-items-center justify-content-between">
-      <div>
-        {`Calling ${receiverName}...`} {getStatus()}
-      </div>
-      <Button danger icon={<PhoneOutlined />} onClick={() => onClose()} />
+    <div className="p-3 d-flex align-items-center justify-content-between">
+      <Space>
+        <div>
+          <ContactAvatar size={50} name={receiverName} />
+        </div>
+
+        <div>
+          <small>{getStatus()}</small>
+          <div>
+            <strong className="text-capitalize" style={{ fontSize: "1.2rem" }}>
+              {receiverName}
+            </strong>
+          </div>
+        </div>
+      </Space>
+      <CallActionButton
+        backgroundColor="red"
+        onClick={() => onClose()}
+        rotate
+      />
     </div>
   );
 };
@@ -181,11 +227,25 @@ const CallSession = ({ callerName, onFinish, onMute }: ICallSessionProps) => {
   }, []);
 
   return (
-    <div>
-      <strong>{callerName}</strong>
-      <div>{convertSecondsToTime(timer)}</div>
-      <div className="d-flex justify-content-between align-items-center">
+    <div className="p-3 d-flex align-items-center justify-content-between">
+      <Space>
+        <div>
+          <ContactAvatar size={50} name={callerName} />
+        </div>
+
+        <div>
+          <div>
+            <strong className="text-capitalize" style={{ fontSize: "1.2rem" }}>
+              {callerName}
+            </strong>
+          </div>
+          <small>{convertSecondsToTime(timer)}</small>
+        </div>
+      </Space>
+      <Space size="large">
         <Button
+          type="text"
+          shape="circle"
           onClick={() => {
             setMute((m) => {
               onMute(m);
@@ -200,14 +260,12 @@ const CallSession = ({ callerName, onFinish, onMute }: ICallSessionProps) => {
             )
           }
         />
-        <Button
-          onClick={() => {
-            onFinish(timer);
-          }}
-        >
-          Close
-        </Button>
-      </div>
+        <CallActionButton
+          backgroundColor="red"
+          onClick={() => onFinish(timer)}
+          rotate
+        />
+      </Space>
     </div>
   );
 };
@@ -249,10 +307,7 @@ const usePeer = (userId: string) => {
               }
             />
           ),
-          duration: 0,
-          key: callNotificationKey,
-          icon: <PhoneOutlined style={{ fontSize: 20 }} />,
-          closeIcon: null,
+          ...sharedCallNotificationProps,
         });
       },
     },
@@ -310,30 +365,38 @@ const usePeer = (userId: string) => {
 
       api.info({
         message: (
-          <div>
-            <div>{`Incoming call from ${call.metadata.name}`}</div>
-            <div className="mt-3 d-flex justify-content-between align-items-center">
-              <Button
-                className="cursor-pointer"
-                color="green"
+          <div className="p-3 d-flex align-items-center justify-content-between">
+            <Space>
+              <div>
+                <ContactAvatar size={50} name={call.metadata.name} />
+              </div>
+
+              <div>
+                <small>Incoming call</small>
+                <div>
+                  <strong
+                    className="text-capitalize"
+                    style={{ fontSize: "1.2rem" }}
+                  >
+                    {call.metadata.name}
+                  </strong>
+                </div>
+              </div>
+            </Space>
+            <div>
+              <CallActionButton
+                backgroundColor="green"
                 onClick={() => answerCall(call)}
-              >
-                Accept
-              </Button>
-              <Button
-                className="cursor-pointer"
-                color="red"
+              />
+              <CallActionButton
+                backgroundColor="red"
                 onClick={() => rejectCall(call)}
-              >
-                Reject
-              </Button>
+                rotate
+              />
             </div>
           </div>
         ),
-        duration: 0,
-        key: callNotificationKey,
-        icon: <PhoneOutlined style={{ fontSize: 20 }} />,
-        closeIcon: null,
+        ...sharedCallNotificationProps,
       });
 
       setCallStatus("Incoming call");
@@ -354,12 +417,14 @@ const usePeer = (userId: string) => {
   }, []);
 
   const handleStream = (call: MediaConnection, recipient?: string) => {
+    if (!call) return;
+
     currentCall.current = call;
     setCallStatus("In call");
 
     call.on("stream", (remoteStream) => {
       if (remoteAudioRef.current) {
-        api.success({
+        api.info({
           key: callNotificationKey,
           message: (
             <CallSession
@@ -376,8 +441,7 @@ const usePeer = (userId: string) => {
               }
             />
           ),
-          duration: 0,
-          closeIcon: null,
+          ...sharedCallNotificationProps,
         });
         remoteAudioRef.current.srcObject = remoteStream;
         remoteAudioRef.current.play().catch((e) => {
@@ -418,23 +482,20 @@ const usePeer = (userId: string) => {
 
     api.info({
       message: (
-          <OutgoingCallSession
-            autoEnd
-            receiverName={receiverName}
-            retryCall={retryCall}
-            onFinish={(status) =>
-              endCall({
-                duration: 0,
-                sessionId,
-                status: status || CallLogStatus.Cancelled,
-              })
-            }
-          />
+        <OutgoingCallSession
+          autoEnd
+          receiverName={receiverName}
+          retryCall={retryCall}
+          onFinish={(status) =>
+            endCall({
+              duration: 0,
+              sessionId,
+              status: status || CallLogStatus.Cancelled,
+            })
+          }
+        />
       ),
-      duration: 0,
-      key: callNotificationKey,
-      icon: <PhoneOutlined style={{ fontSize: 20 }} />,
-      closeIcon: null,
+      ...sharedCallNotificationProps,
     });
 
     const failedAttempt = () => {
@@ -444,7 +505,7 @@ const usePeer = (userId: string) => {
 
     if (!peerInstance) return failedAttempt();
 
-    // get remote peer id
+    // save call log
     const resp: any = await makeCallReq({ receiverId, sessionId });
 
     const { callId } = (resp.data as MakeCallResp) || {};
