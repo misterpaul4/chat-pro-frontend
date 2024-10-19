@@ -16,7 +16,7 @@ import { v4 } from "uuid";
 import useSocketSubscription from "./useSocketSubscription";
 import { SocketEvents } from "../lib/types/webSocket";
 import { emitRingingEvent } from "../../modules/home/api/sockets";
-import { END_CALL_DELAY, MAX_CALL_WAIT_TIME } from "../../settings";
+import { CALL_RETRY_INTERVAL, END_CALL_DELAY, MAX_CALL_WAIT_TIME } from "../../settings";
 import callingSound from "../../../public/calling.mp3";
 import { getPeerId } from "../lib/helpers/call";
 
@@ -56,6 +56,7 @@ interface IOutgoingCallSessionProps {
   onFinish: (status?: CallLogStatus) => void;
   ringing?: boolean;
   autoEnd?: boolean;
+  retryCall?: () => void;
 }
 
 const OutgoingCallSession = ({
@@ -63,6 +64,7 @@ const OutgoingCallSession = ({
   onFinish,
   ringing,
   autoEnd,
+  retryCall,
 }: IOutgoingCallSessionProps) => {
   const [timer, setTimer] = useState(0);
   const [closeStatus, setCloseStatus] = useState<
@@ -74,6 +76,7 @@ const OutgoingCallSession = ({
     setCloseStatus(status || null);
   };
 
+  // end call
   useEffect(() => {
     let timeout: NodeJS.Timeout;
 
@@ -86,6 +89,7 @@ const OutgoingCallSession = ({
     return () => timeout && clearTimeout(timeout);
   }, [closeStatus]);
 
+  // timer
   useEffect(() => {
     let interval: NodeJS.Timeout;
 
@@ -98,12 +102,14 @@ const OutgoingCallSession = ({
     return () => interval && clearInterval(interval);
   }, [!!autoEnd]);
 
+  // auto end call after x seconds
   useEffect(() => {
     if (timer === MAX_CALL_WAIT_TIME) {
       onClose(CallLogStatus.NotAnswered);
     }
   }, [timer]);
 
+  // play calling audio
   useEffect(() => {
     let interval: NodeJS.Timeout;
 
@@ -120,6 +126,25 @@ const OutgoingCallSession = ({
       interval && clearInterval(interval);
     };
   }, []);
+
+  // call retry logic
+  useEffect(() => {
+    let interval: NodeJS.Timeout;
+
+    if (retryCall && !ringing) {
+      interval = setInterval(() => {
+        retryCall();
+      }, CALL_RETRY_INTERVAL * 1000);
+    }
+
+    if (ringing) {
+      setTimer(0)
+    }
+
+    return () => {
+      interval && clearInterval(interval);
+    };
+  }, [retryCall, ringing]);
 
   const getStatus = () => {
     if (closeStatus !== undefined) {
@@ -368,6 +393,22 @@ const usePeer = (userId: string) => {
     });
   };
 
+  const retryCall = () => {
+    if (!peerInstance || !currentCall.current || !localAudioRef.current) return;
+
+    const metadata = currentCall.current.metadata;
+
+    const call = peerInstance.call(
+      getPeerId(metadata.receiverId),
+      localAudioRef.current.srcObject as MediaStream,
+      {
+        metadata,
+      }
+    );
+
+    handleStream(call);
+  };
+
   const makeCall = async (
     receiverId: string,
     receiverName: string,
@@ -378,17 +419,18 @@ const usePeer = (userId: string) => {
 
     api.info({
       message: (
-        <OutgoingCallSession
-          autoEnd
-          receiverName={receiverName}
-          onFinish={(status) =>
-            endCall({
-              duration: 0,
-              sessionId,
-              status: status || CallLogStatus.Cancelled,
-            })
-          }
-        />
+          <OutgoingCallSession
+            autoEnd
+            receiverName={receiverName}
+            retryCall={retryCall}
+            onFinish={(status) =>
+              endCall({
+                duration: 0,
+                sessionId,
+                status: status || CallLogStatus.Cancelled,
+              })
+            }
+          />
       ),
       duration: 0,
       key: callNotificationKey,
@@ -427,6 +469,7 @@ const usePeer = (userId: string) => {
             sessionId,
             callerId,
             receiverName,
+            receiverId,
           },
         });
         handleStream(call, receiverName);
