@@ -100,12 +100,13 @@ const endpoints = apis.injectEndpoints({
         method: "POST",
       }),
     }),
-    makePeerCall: builder.mutation<MakeCallResp, {receiverId: string, sessionId: string}>({
+    makePeerCall: builder.mutation<MakeCallResp, { receiverId: string, sessionId: string }>({
       query: (body) => ({
         url: `call-logs/call/make-call`,
         method: "POST",
         body
       }),
+      invalidatesTags: (x) => (x ? [apiTags.CALL_HISTORY] : []),
     }),
     endPeerCall: builder.mutation<void, EndCallReq>({
       query: (body) => ({
@@ -113,6 +114,7 @@ const endpoints = apis.injectEndpoints({
         method: "POST",
         body
       }),
+      invalidatesTags: (x) => (x ? [apiTags.CALL_HISTORY] : []),
     })
   }),
 });
