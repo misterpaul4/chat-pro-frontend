@@ -18,6 +18,20 @@ interface IProps {
   user: IBaseUser;
 }
 
+const MissedCall = () => {
+  return (
+    <>
+      <Icon
+        style={{
+          color: "red",
+        }}
+        component={MissedCallIcon}
+      />{" "}
+      Missed call
+    </>
+  );
+};
+
 const CallHistoryDrawer = ({ user }: IProps) => {
   const { data, isFetching, refetch } = useGetCallHistoryQuery();
 
@@ -34,20 +48,10 @@ const CallHistoryDrawer = ({ user }: IProps) => {
 
   const getCallStatusComponent = (
     isMissedCall: boolean,
-    isIncomingCall: boolean
+    isIncomingCall: boolean,
   ) => {
     if (isMissedCall) {
-      return (
-        <>
-          <Icon
-            style={{
-              color: "red",
-            }}
-            component={MissedCallIcon}
-          />{" "}
-          Missed call
-        </>
-      );
+      return <MissedCall />;
     }
 
     if (isIncomingCall) {
@@ -104,7 +108,8 @@ const CallHistoryDrawer = ({ user }: IProps) => {
               recipient = item.callTo;
             } else {
               recipient = item.callFrom;
-              isMissedCall = item.status === CallLogStatus.NotAnswered;
+              isMissedCall =
+                item.status === CallLogStatus.NotAnswered || !item.duration;
               isIncomingCall = true;
             }
 
