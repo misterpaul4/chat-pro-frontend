@@ -1,6 +1,6 @@
 import apis from "../../../app/api";
 import { apiTags } from "../../../app/lib/constants/tags";
-import { $onlineStatus, IContact, IInbox } from "./types";
+import { $onlineStatus, ICallLog, IContact, IInbox } from "./types";
 
 const endpoints = apis.injectEndpoints({
   endpoints: (builder) => ({
@@ -19,6 +19,10 @@ const endpoints = apis.injectEndpoints({
     getOnlineContacts: builder.query<string[], void>({
       query: () => "users/online-contacts",
     }),
+    getCallHistory: builder.query<ICallLog, void>({
+      query: () => "call-logs?sort=createdAt,DESC&join=callFrom||firstName,lastName&join=callTo||firstName,lastName",
+      providesTags: [apiTags.CALL_HISTORY],
+    }),
   }),
 });
 
@@ -27,5 +31,6 @@ export const {
   useLazyGetRequestsQuery,
   useLazyGetInboxQuery,
   useGetOnlineContactsQuery,
+  useGetCallHistoryQuery
 } = endpoints;
 

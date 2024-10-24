@@ -15,6 +15,7 @@ import headerContext from "../context/headerContext";
 import { DarkModeIcon, LightModeIcon } from "../../../utils/icons";
 import { MenuItemGroupType, MenuItemType } from "antd/es/menu/hooks/useItems";
 import ProfileModal from "../components/ProfileModal";
+import CallHistoryDrawer from "../components/CallHistoryDrawer";
 
 interface IProps {
   user: IBaseUser;
@@ -86,6 +87,7 @@ const AppHeader = ({ user, darkMode }: IProps) => {
         <Button shape="circle" title="Contact List" onClick={onContactListOpen}>
           <UsergroupAddOutlined />
         </Button>
+        <CallHistoryDrawer user={user} />
         <Button
           shape="circle"
           onClick={() => {

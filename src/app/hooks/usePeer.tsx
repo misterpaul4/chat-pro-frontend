@@ -22,7 +22,7 @@ import {
   MAX_CALL_WAIT_TIME,
 } from "../../settings";
 import callingSound from "../../../public/calling.mp3";
-import { getPeerId } from "../lib/helpers/call";
+import { convertSecondsToTime, getPeerId } from "../lib/helpers/call";
 import ContactAvatar from "../common/ContactAvatar";
 import { ArgsProps } from "antd/es/notification/interface";
 
@@ -59,16 +59,6 @@ const sharedCallNotificationProps: Partial<ArgsProps> = {
   icon: <></>,
   closeIcon: null,
 };
-
-function convertSecondsToTime(seconds: number) {
-  const minutes = Math.floor(seconds / 60);
-  const remainingSeconds = seconds % 60;
-
-  const minutesString = String(minutes).padStart(2, "0");
-  const secondsString = String(remainingSeconds).padStart(2, "0");
-
-  return `${minutesString}:${secondsString}`;
-}
 
 interface IEndCallSession {
   duration?: number;

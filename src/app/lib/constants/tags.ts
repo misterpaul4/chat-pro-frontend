@@ -3,5 +3,6 @@ export enum apiTags {
   CHAT_REQUESTS = "CHAT_REQUEST",
   INBOX = "INBOX",
   SELF = "SELF",
+  CALL_HISTORY = "CALL_HISTORY",
 }
 

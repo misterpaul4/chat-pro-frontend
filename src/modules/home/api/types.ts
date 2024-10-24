@@ -143,3 +143,21 @@ export interface EndCallReq {
   duration: number;
   status?: CallLogStatus;
 }
+
+export enum CallLogType {
+  Audio = 'Audio',
+}
+
+export interface ICallLog {
+  data: {
+    id: string;
+    createdAt: string;
+    duration?: number;
+    type: CallLogType;
+    status: CallLogStatus;
+    callFromId: string;
+    callToId: string;
+    callFrom: IBaseUser;
+    callTo: IBaseUser;
+  }[]
+}
