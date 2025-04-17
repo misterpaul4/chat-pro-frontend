@@ -25,6 +25,8 @@ import callingSound from "../../../public/calling.mp3";
 import { convertSecondsToTime, getPeerId } from "../lib/helpers/call";
 import ContactAvatar from "../common/ContactAvatar";
 import { ArgsProps } from "antd/es/notification/interface";
+import { useSelector } from "react-redux";
+import { RootState } from "../../store";
 
 const CallActionButton = ({ onClick, backgroundColor, rotate = false }) => {
   return (
@@ -271,6 +273,15 @@ const usePeer = (userId: string) => {
   const [makeCallReq] = useMakePeerCallMutation();
   const [endCallReq] = useEndPeerCallMutation();
 
+  const micPermission = useSelector(
+    (state: RootState) => state.app.micPermission
+  );
+  const micPermissionRef = useRef(micPermission);
+
+  useEffect(() => {
+    micPermissionRef.current = micPermission;
+  }, [micPermission]);
+
   useSocketSubscription([
     {
       event: SocketEvents.END_CALL,
@@ -463,11 +474,42 @@ const usePeer = (userId: string) => {
     handleStream(call);
   };
 
+
   const makeCall = async (
     receiverId: string,
     receiverName: string,
     userName: string
   ) => {
+    if (micPermissionRef.current === 'denied') {
+      api.error({
+        message: "Microphone Permission Required",
+        description: "Please allow microphone access to make calls",
+        duration: 3,
+      });
+
+      return;
+    }
+
+    if (micPermissionRef.current === undefined) {
+      try {
+      // prompt user for mic access
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      stream.getTracks().forEach(track => track.stop()); // stop the stream to prevent lingering mic usage
+      console.log('✅ Microphone access granted after prompt.');
+
+        micPermissionRef.current = 'granted';
+      } catch (err) {
+        micPermissionRef.current = 'denied';
+        api.error({
+          message: "Microphone Permission Required",
+          description: "Please allow microphone access to make calls",
+          duration: 3,
+        });
+
+        return;
+      }
+    }
+
     const sessionId = v4();
 
     api.info({

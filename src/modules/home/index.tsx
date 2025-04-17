@@ -27,6 +27,7 @@ import {
   setNewMessage,
   setRequestApprovalUpdate,
   setRequestRejectionUpdate,
+  setMicPermission,
 } from "./slice/homeSlice";
 import MessageInput from "./components/MessageInput";
 import { typingInitialState, typingReducer } from "./context/typingReducer";
@@ -213,6 +214,26 @@ const Home = () => {
     return () => {
       dispatch(setActiveThread(undefined));
     };
+  }, []);
+
+  useEffect(() => {
+    const checkMicPermission = async () => {
+      try {
+        const status = await navigator.permissions.query({ name: 'microphone' as any });
+        if (status.state !== 'prompt') {
+          dispatch(setMicPermission(status.state));
+        }
+
+        // Add event listener for permission changes
+        status.onchange = () => {
+          dispatch(setMicPermission(status.state));
+        };
+      } catch (err) {
+        console.error('Could not query mic permission:', err);
+      }
+    };
+
+    checkMicPermission();
   }, []);
 
   return (
