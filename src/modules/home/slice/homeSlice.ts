@@ -11,12 +11,14 @@ export interface IHomeSliceBase {
 
 export interface IHomeSlice extends IHomeSliceBase {
   isNewThreadDisplay: boolean;
+  micPermission: PermissionStatus['state'];
 }
 
 const initialState: IHomeSlice = {
   activeThread: undefined,
   activeTab: getLs("activeTab") ?? "inbox",
   isNewThreadDisplay: false,
+  micPermission: 'prompt',
 };
 
 export const homeSlice = createSlice({
@@ -76,6 +78,9 @@ export const homeSlice = createSlice({
           action.payload.type === ThreadTypeEnum.Request ? "request" : "inbox",
       };
     },
+    setMicPermission: (state, action: PayloadAction<PermissionStatus['state']>) => {
+      return { ...state, micPermission: action.payload };
+    },
   },
 });
 
@@ -87,6 +92,7 @@ export const {
   setRequestApprovalUpdate,
   setRequestRejectionUpdate,
   setNewMessage,
+  setMicPermission,
   goToClickedThread,
 } = homeSlice.actions;
 
