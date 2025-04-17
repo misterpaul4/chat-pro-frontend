@@ -276,7 +276,7 @@ const usePeer = (userId: string) => {
   const micPermission = useSelector(
     (state: RootState) => state.app.micPermission
   );
-  const micPermissionRef = useRef(micPermission);
+  const micPermissionRef = useRef<PermissionStatus['state']>(micPermission);
 
   useEffect(() => {
     micPermissionRef.current = micPermission;
@@ -490,7 +490,7 @@ const usePeer = (userId: string) => {
       return;
     }
 
-    if (micPermissionRef.current === undefined) {
+    if (micPermissionRef.current === 'prompt') {
       try {
       // prompt user for mic access
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
@@ -499,6 +499,8 @@ const usePeer = (userId: string) => {
 
         micPermissionRef.current = 'granted';
       } catch (err) {
+        console.log('❌ Microphone access denied after prompt.');
+
         micPermissionRef.current = 'denied';
         api.error({
           message: "Microphone Permission Required",
