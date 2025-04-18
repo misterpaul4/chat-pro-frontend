@@ -223,11 +223,6 @@ const Home = () => {
         if (status.state !== 'prompt') {
           dispatch(setMicPermission(status.state));
         }
-
-        // Add event listener for permission changes
-        status.onchange = () => {
-          dispatch(setMicPermission(status.state));
-        };
       } catch (err) {
         console.error('Could not query mic permission:', err);
       }
