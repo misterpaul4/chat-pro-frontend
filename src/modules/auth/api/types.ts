@@ -1,5 +1,5 @@
 import { IBaseType } from "../../../app/lib/types/baseType";
-import { IUser } from "../control/types";
+import { IBaseUser, IUser } from "../control/types";
 
 export interface ILogin {
   email: string;
@@ -21,3 +21,9 @@ export interface IVerificationCodePayload {
 export interface IResetPasswordPayload extends IVerificationCodePayload {
   password: string;
 }
+
+export interface IAuthResponse {
+  user: IBaseUser;
+  token: string;
+}
+

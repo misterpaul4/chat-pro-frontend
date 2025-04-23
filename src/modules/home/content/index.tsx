@@ -9,23 +9,23 @@ import { onlineStatusReducer } from "../context/onlineStatusReducer";
 import useSocketSubscription from "../../../app/hooks/useSocketSubscription";
 
 interface IProps {
-  onlineContacts: $onlineStatus;
+  onlineContacts: string[];
   dispatchInbox: Function;
 }
 
 const MessageContent = ({ onlineContacts, dispatchInbox }: IProps) => {
-  const { activeThread, userId, isNewThread, threadMemory } = useSelector(
-    (state: RootState) => ({
-      activeThread: state.app.activeThread,
-      isNewThread: state.app.isNewThreadDisplay,
-      userId: state.user.user.id,
-      threadMemory: state.memory,
-    })
+  const activeThread = useSelector(
+    (state: RootState) => state.app.activeThread
   );
+  const isNewThread = useSelector(
+    (state: RootState) => state.app.isNewThreadDisplay
+  );
+  const threadMemory = useSelector((state: RootState) => state.memory);
+  const {id: userId, firstName, lastName} = useSelector((state: RootState) => state.user.user);
 
   const [onlineUsers, dispatchIsOnlineStatus] = useReducer(
     onlineStatusReducer,
-    onlineContacts
+    onlineContacts.reduce((obj, item) => ((obj[item] = true), obj), {})
   );
 
   useSocketSubscription([
@@ -46,6 +46,7 @@ const MessageContent = ({ onlineContacts, dispatchInbox }: IProps) => {
         activeThread={activeThread}
         userId={userId}
         onlineUsers={onlineUsers}
+        userName={firstName + " " +lastName}
       />
       {activeThread.type === ThreadTypeEnum.Request &&
       activeThread.createdBy !== userId ? (

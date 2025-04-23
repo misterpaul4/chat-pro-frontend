@@ -1,6 +1,7 @@
 import apis from "../../../app/api";
 import { apiTags } from "../../../app/lib/constants/tags";
 import {
+  IAuthResponse,
   IGetSelf,
   ILogin,
   IResetPasswordPayload,
@@ -13,8 +14,26 @@ const endpoints = apis.injectEndpoints({
     login: builder.mutation<void, ILogin>({
       query: (body) => ({ url: "auth/login", method: "POST", body }),
     }),
+    login3rdParty: builder.mutation<IAuthResponse, string>({
+      query: (token) => ({
+        url: "auth/login/firebase",
+        method: "POST",
+        headers: {
+          authorization: `Bearer ${token}`,
+        },
+      }),
+    }),
     signup: builder.mutation<void, ISignUp>({
       query: (body) => ({ url: "auth/signup", method: "POST", body }),
+    }),
+    signup3rdParty: builder.mutation<IAuthResponse, string>({
+      query: (token) => ({
+        url: "auth/signup/firebase",
+        method: "POST",
+        headers: {
+          authorization: `Bearer ${token}`,
+        },
+      }),
     }),
     getSelf: builder.query<IGetSelf, void>({
       query: () => "auth/get-self",
@@ -51,5 +70,7 @@ export const {
   useSubmitForgotPassMutation,
   useSubmitVerificationCodeMutation,
   useResetPasswordMutation,
+  useSignup3rdPartyMutation,
+  useLogin3rdPartyMutation,
 } = endpoints;
 

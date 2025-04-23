@@ -27,6 +27,7 @@ import { useDispatch } from "react-redux";
 import { setGetSelf } from "../../auth/control/userSlice";
 import EmailChange from "./EmailChange";
 import ChangePassword from "./ChangePassword";
+import ConnectGoogle from "./ConnectGoogle";
 
 interface IProps {
   visible: boolean;
@@ -111,7 +112,11 @@ const ProfileModal = ({ visible, onClose, user }: IProps) => {
         {screen === "email" ? (
           <EmailChange backToProfile={backToProfile} />
         ) : screen === "password" ? (
-          <ChangePassword backToProfile={backToProfile} />
+          <ChangePassword
+            hasPassword={user.hasPassword}
+            backToProfile={backToProfile}
+            dispatch={dispatch}
+          />
         ) : (
           <>
             <Avatar
@@ -125,7 +130,6 @@ const ProfileModal = ({ visible, onClose, user }: IProps) => {
               {editMode ? (
                 <>
                   <Button
-                    size="small"
                     type="dashed"
                     className="mt-5 mb-2"
                     icon={<CloseOutlined />}
@@ -134,7 +138,6 @@ const ProfileModal = ({ visible, onClose, user }: IProps) => {
                     Cancel
                   </Button>
                   <Button
-                    size="small"
                     type="primary"
                     className="mt-5 mb-2"
                     icon={<SaveOutlined />}
@@ -146,7 +149,6 @@ const ProfileModal = ({ visible, onClose, user }: IProps) => {
                 </>
               ) : (
                 <Button
-                  size="small"
                   type="primary"
                   className="mt-5 mb-2"
                   icon={<EditOutlined />}
@@ -162,14 +164,17 @@ const ProfileModal = ({ visible, onClose, user }: IProps) => {
                 onConfirm={() => onScreenChange("password")}
               >
                 <Button
-                  size="small"
                   type="primary"
                   className="mt-5 mb-2 bg-secondary ms-3"
                   icon={<KeyOutlined />}
                 >
-                  Change Password
+                  {user.hasPassword ? "Change" : "Add"} Password
                 </Button>
               </Popconfirm>
+
+              {!user.has3rdPartyAuth && (
+                <ConnectGoogle id={user.id} dispatch={dispatch} />
+              )}
             </Space>
 
             <Descriptions bordered column={1}>

@@ -3,7 +3,7 @@
 # + sidebar
 # + content
 # - non-active tab new message notification *
-- message send status *
+- message send status
 # - new message alert
   # + if in active thread and lastmessage not in view, show pop up
   # + when pop up should disappear *
@@ -22,7 +22,7 @@
   + scroll to replied message on click
 # - remember typing message *
 # - scroll to bottom button *
-- last seen
+- last seen *
 # - fix sidebar scroll
 - basic e2e encryption
 - call (pairjs)

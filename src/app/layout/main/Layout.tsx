@@ -14,10 +14,9 @@ import useThemeEffect from "../../hooks/useThemeEffect";
 import globalContext from "../../context/globalContext";
 
 const Layout = () => {
-  const { loggedIn, darkMode } = useSelector((state: RootState) => ({
-    loggedIn: state.user.auth.loggedIn,
-    darkMode: state.user.darkMode,
-  }));
+  const darkMode = useSelector((state: RootState) => state.user.darkMode);
+  const loggedIn = useSelector((state: RootState) => state.user.auth.loggedIn);
+
   const navigate = useNavigate();
   const dispatch = useDispatch();
 

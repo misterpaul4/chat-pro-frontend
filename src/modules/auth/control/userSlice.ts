@@ -60,7 +60,7 @@ export const userSlice = createSlice({
       return {
         ..._,
         auth: { loggedIn: true, token },
-        user: action.payload,
+        user: { ...(_.user ?? {}), ...action.payload },
       };
     },
     logout: (state) => {
@@ -75,11 +75,14 @@ export const userSlice = createSlice({
       setLS("darkMode", action.payload);
       return { ...state, darkMode: action.payload };
     },
+    setUser: (state, action: PayloadAction<Partial<IBaseUser>>) => {
+      return { ...state, user: { ...state.user, ...action.payload } };
+    },
   },
 });
 
 // Action creators are generated for each case reducer function
-export const { logout, setAppState, setGetSelf, toggleDarkMode } =
+export const { logout, setAppState, setGetSelf, toggleDarkMode, setUser } =
   userSlice.actions;
 
 export default userSlice.reducer;

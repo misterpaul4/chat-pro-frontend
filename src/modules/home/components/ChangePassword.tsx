@@ -3,12 +3,16 @@ import { passwordRule } from "../../../app/lib/helpers/form";
 import SubmitButton from "../../../app/common/SubmitButton";
 import { useChangePasswordMutation } from "../api/mutationEndpoints";
 import useApiResponseHandler from "../../../app/hooks/useApiResponseHandler";
+import { AnyAction, Dispatch } from "@reduxjs/toolkit";
+import { setUser } from "../../auth/control/userSlice";
 
 interface IProps {
   backToProfile: () => void;
+  hasPassword?: boolean;
+  dispatch: Dispatch<AnyAction>;
 }
 
-const ChangePassword = ({ backToProfile }: IProps) => {
+const ChangePassword = ({ backToProfile, hasPassword, dispatch }: IProps) => {
   const [form] = Form.useForm();
   const [updatePassword, { isLoading }] = useChangePasswordMutation();
   const handleResponse = useApiResponseHandler();
@@ -16,22 +20,35 @@ const ChangePassword = ({ backToProfile }: IProps) => {
   const onFinish = async (values) => {
     const resp = await updatePassword(values);
     handleResponse(resp, {
-      onSuccess: { callBack: backToProfile, display: true },
+      onSuccess: {
+        callBack: () => {
+          if (!hasPassword) {
+            dispatch(setUser({ hasPassword: true }));
+          }
+          backToProfile();
+        },
+        display: true,
+        message: `Password ${hasPassword ? "changed" : "added"} successfully`,
+      },
     });
   };
 
   return (
     <div className="d-flex flex-column align-items-center mb-5">
-      <Typography.Title level={3}>Change Password</Typography.Title>
+      <Typography.Title level={3}>
+        {hasPassword ? "Change" : "Add"} Password
+      </Typography.Title>
 
       <Form layout="vertical" form={form} onFinish={onFinish}>
-        <Form.Item
-          label="Old Password"
-          name="oldPassword"
-          rules={[{ required: true }]}
-        >
-          <Input.Password type="password" required size="large" />
-        </Form.Item>
+        {hasPassword && (
+          <Form.Item
+            label="Old Password"
+            name="oldPassword"
+            rules={[{ required: true }]}
+          >
+            <Input.Password type="password" required size="large" />
+          </Form.Item>
+        )}
         <Form.Item
           label="New Password"
           name="newPassword"

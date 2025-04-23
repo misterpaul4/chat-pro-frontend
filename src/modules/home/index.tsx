@@ -27,29 +27,32 @@ import {
   setNewMessage,
   setRequestApprovalUpdate,
   setRequestRejectionUpdate,
+  setMicPermission,
 } from "./slice/homeSlice";
 import MessageInput from "./components/MessageInput";
 import { typingInitialState, typingReducer } from "./context/typingReducer";
 import { typingContext } from "./context/typingContext";
-import { playNotificationSound } from "../../app/lib/helpers/media";
 import { inputFocus } from "../../utils/dom";
 import { getLs } from "../../app/lib/helpers/localStorage";
 import { $tabType } from "./sidebar/types";
 import globalContext from "../../app/context/globalContext";
 import ContactAvatar from "../../app/common/ContactAvatar";
 import { emitReadMessage } from "./api/sockets";
+import usePeer from "../../app/hooks/usePeer";
+import CallContext from "./context/callContext";
 
 const { Sider, Content, Header, Footer } = Layout;
 
 const Home = () => {
-  const { user, darkMode, activeThread, isNewThread, threadMemory } =
-    useSelector((state: RootState) => ({
-      user: state.user.user,
-      darkMode: state.user.darkMode,
-      activeThread: state.app.activeThread,
-      isNewThread: state.app.isNewThreadDisplay,
-      threadMemory: state.memory,
-    }));
+  const darkMode = useSelector((state: RootState) => state.user.darkMode);
+  const user = useSelector((state: RootState) => state.user.user);
+  const activeThread = useSelector(
+    (state: RootState) => state.app.activeThread
+  );
+  const isNewThread = useSelector(
+    (state: RootState) => state.app.isNewThreadDisplay
+  );
+  const threadMemory = useSelector((state: RootState) => state.memory);
 
   const dispatch = useDispatch();
   const { notificationApi } = useContext(globalContext);
@@ -142,8 +145,6 @@ const Home = () => {
               });
             }
           }
-
-          playNotificationSound();
         }
         dispatch(setNewMessage(data.message));
         dispatchInbox({ type: messageActionType.NewMessage, payload: data });
@@ -207,64 +208,83 @@ const Home = () => {
     },
   ]);
 
+  const {contextHolder, ...callContextValues} = usePeer(user.id);
+
   useEffect(() => {
     return () => {
       dispatch(setActiveThread(undefined));
     };
   }, []);
 
+  useEffect(() => {
+    const checkMicPermission = async () => {
+      try {
+        const status = await navigator.permissions.query({ name: 'microphone' as any });
+        if (status.state !== 'prompt') {
+          dispatch(setMicPermission(status.state));
+        }
+      } catch (err) {
+        console.error('Could not query mic permission:', err);
+      }
+    };
+
+    checkMicPermission();
+  }, []);
+
   return (
-    <Layout hasSider className="message-container">
-      <Sider className="siderStyle">
-        <div className="p-3">
-          <typingContext.Provider value={typing}>
-            <SideBar
-              loading={loading}
-              dispatchInbox={dispatchInbox}
-              dispatchRequest={dispatchRequest}
-              inbox={inbox}
-              request={request}
-            />
-          </typingContext.Provider>
-        </div>
-      </Sider>
-      <Layout className="site-layout">
-        <Header className="headerStyle">
-          <div className="float-end">
-            <HeaderProvider>
-              <NewChatModal />
-              <ContactListDrawer contactList={contactList} />
-              <AppHeader user={user} darkMode={darkMode} />
-            </HeaderProvider>
-          </div>
-        </Header>
-        <Content className="contentStyle">
-          <div className="d-flex flex-column message-skeleton">
-            <ContentLoader loading={loading} />
-          </div>
-          <typingContext.Provider value={typing}>
-            {!loading && (
-              <MessageContent
+    <CallContext.Provider value={callContextValues}>
+      {contextHolder}
+      <Layout hasSider className="message-container">
+        <Sider className="siderStyle">
+          <div className="p-3">
+            <typingContext.Provider value={typing}>
+              <SideBar
+                loading={loading}
                 dispatchInbox={dispatchInbox}
-                onlineContacts={onlineContacts}
+                dispatchRequest={dispatchRequest}
+                inbox={inbox}
+                request={request}
               />
-            )}
-          </typingContext.Provider>
-        </Content>
-        <Footer className="footerStyle p-1">
-          <MessageInput
-            dispatch={dispatch}
-            dispatchInbox={dispatchInbox}
-            threadMemory={threadMemory}
-            activeThread={activeThread}
-            isNewThread={isNewThread}
-            user={user}
-          />
-        </Footer>
+            </typingContext.Provider>
+          </div>
+        </Sider>
+        <Layout className="site-layout">
+          <Header className="headerStyle">
+            <div className="float-end">
+              <HeaderProvider>
+                <NewChatModal />
+                <ContactListDrawer contactList={contactList} />
+                <AppHeader user={user} darkMode={darkMode} />
+              </HeaderProvider>
+            </div>
+          </Header>
+          <Content className="contentStyle">
+            <div className="d-flex flex-column message-skeleton">
+              <ContentLoader loading={loading} />
+            </div>
+            <typingContext.Provider value={typing}>
+              {!loading && (
+                <MessageContent
+                  dispatchInbox={dispatchInbox}
+                  onlineContacts={onlineContacts}
+                />
+              )}
+            </typingContext.Provider>
+          </Content>
+          <Footer className="footerStyle p-1">
+            <MessageInput
+              dispatch={dispatch}
+              dispatchInbox={dispatchInbox}
+              threadMemory={threadMemory}
+              activeThread={activeThread}
+              isNewThread={isNewThread}
+              user={user}
+            />
+          </Footer>
+        </Layout>
       </Layout>
-    </Layout>
+    </CallContext.Provider>
   );
 };
 
 export default Home;
-

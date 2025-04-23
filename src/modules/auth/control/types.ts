@@ -7,6 +7,11 @@ export interface IBaseUser {
   id: string;
   createdAt: string;
   updatedAt: string;
+  lastEmailChangeDate?: string;
+  lastPasswordChangeDate?: string;
+  lastSeen?: string;
+  hasPassword?: boolean;
+  has3rdPartyAuth?: boolean;
 }
 
 export interface IUser extends IBaseType, IBaseUser {}

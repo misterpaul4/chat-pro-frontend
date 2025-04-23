@@ -17,13 +17,11 @@ const SideBar = ({
   request,
   loading,
 }) => {
-  const { activeTab, activeThread, userId } = useSelector(
-    (state: RootState) => ({
-      activeTab: state.app.activeTab,
-      activeThread: state.app.activeThread,
-      userId: state.user.user.id,
-    })
+  const activeTab = useSelector((state: RootState) => state.app.activeTab);
+  const activeThread = useSelector(
+    (state: RootState) => state.app.activeThread
   );
+  const userId = useSelector((state: RootState) => state.user.user.id);
 
   const [getChatRequests, { isFetching: requestsFetching }] =
     useLazyGetRequestsQuery();

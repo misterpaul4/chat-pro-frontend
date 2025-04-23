@@ -95,12 +95,13 @@ export interface ITypingResponse {
 export interface IOnlineStatus {
   user: string;
   isOnline: boolean;
+  lastSeen?: string;
 }
 
 // key is threadId
 export type $typing = { [key in string]: ITypingResponse["clientId"] };
 
-export type $onlineStatus = string[];
+export type $onlineStatus = Record<string, string | true>;
 
 export interface IThreadMemory {
   pos: number;
@@ -116,6 +117,47 @@ export interface IEmailChange {
 
 export interface IChangePassword {
   newPassword: string;
-  oldPassword: string;
+  oldPassword?: string;
 }
 
+export interface PeerIdResp {
+  peerId: string;
+}
+
+export interface MakeCallResp extends PeerIdResp {
+  callId: string;
+}
+
+
+export enum CallLogStatus {
+  Pending = 'Pending',
+  Finished = 'Finished',
+  Declined = 'Declined',
+  NotAnswered = 'Not Answered',
+  Cancelled = 'Cancelled'
+}
+
+
+export interface EndCallReq {
+  sessionId: string;
+  duration: number;
+  status?: CallLogStatus;
+}
+
+export enum CallLogType {
+  Audio = 'Audio',
+}
+
+export interface ICallLog {
+  data: {
+    id: string;
+    createdAt: string;
+    duration?: number;
+    type: CallLogType;
+    status: CallLogStatus;
+    callFromId: string;
+    callToId: string;
+    callFrom: IBaseUser;
+    callTo: IBaseUser;
+  }[]
+}
