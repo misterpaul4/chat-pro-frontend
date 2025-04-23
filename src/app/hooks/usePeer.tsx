@@ -28,6 +28,26 @@ import { ArgsProps } from "antd/es/notification/interface";
 import { useSelector } from "react-redux";
 import { RootState } from "../../store";
 
+
+const errorHandlers: Record<string, { message: string; description: string }> = {
+  NotFoundError: {
+    message: "No Microphone Found",
+    description: "Please connect a microphone device to make calls"
+  },
+  NotAllowedError: {
+    message: "Microphone Permission Required",
+    description: "Please allow microphone access to make calls"
+  },
+  NotReadableError: {
+    message: "Microphone In Use",
+    description: "Another application is using your microphone. Please close it and try again"
+  },
+  default: {
+    message: "Microphone Error",
+    description: "An unexpected error occurred while accessing your microphone"
+  }
+};
+
 const CallActionButton = ({ onClick, backgroundColor, rotate = false }) => {
   return (
     <Button
@@ -492,19 +512,24 @@ const usePeer = (userId: string) => {
 
     if (micPermissionRef.current === 'prompt') {
       try {
-      // prompt user for mic access
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      stream.getTracks().forEach(track => track.stop()); // stop the stream to prevent lingering mic usage
-      console.log('✅ Microphone access granted after prompt.');
+        console.log('🔴 Microphone access requested.');
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        console.log('✅ Microphone access granted after prompt.');
+
+        if (stream) {
+          stream.getTracks().forEach(track => track.stop());
+        }
 
         micPermissionRef.current = 'granted';
-      } catch (err) {
-        console.log('❌ Microphone access denied after prompt.');
+      } catch (err: any) {
+        console.error('❌ Microphone access error:', err);
 
-        micPermissionRef.current = 'denied';
+        const errorType = err.name || 'default';
+        const handler = errorHandlers[errorType] || errorHandlers.default;
+
         api.error({
-          message: "Microphone Permission Required",
-          description: "Please allow microphone access to make calls",
+          message: handler.message,
+          description: handler.description,
           duration: 3,
         });
 
