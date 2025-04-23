@@ -37,7 +37,7 @@ const AuthLayout = () => {
   const dispatch = useDispatch();
 
   const [messageApi, mContextHolder] = message.useMessage();
-  const [notificationApi, nContextHolder] = message.useMessage();
+  const [notificationApi, nContextHolder] = notification.useNotification();
 
   const [getself] = useLazyGetSelfQuery();
 
@@ -45,7 +45,7 @@ const AuthLayout = () => {
     const expired = getLs(lsKeys.SESSION_EXPIRED);
     if (expired) {
       clearLs(lsKeys.SESSION_EXPIRED);
-      notificationApi.error({
+      messageApi.error({
         content: "Session Expired. Please log in again.",
         duration: 4,
       });

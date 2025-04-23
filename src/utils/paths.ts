@@ -7,3 +7,8 @@ export const paths = {
   home: "/",
 };
 
+export const isAuthPath = (path: string) => {
+  return [paths.login, paths.signup, paths.forgotPassword, paths.resetPassword, paths.verificationCode].some(authPath =>
+    path.startsWith(authPath)
+  );
+};
