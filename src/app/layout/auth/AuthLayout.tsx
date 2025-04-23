@@ -17,14 +17,15 @@ import s3 from "../../../../public/slide-3.jpg";
 import s4 from "../../../../public/slide-4.jpg";
 import s5 from "../../../../public/slide-5.jpg";
 import { paths } from "../../../utils/paths";
-import { useEffect } from "react";
-import { getLs } from "../../lib/helpers/localStorage";
+import { useEffect, useState } from "react";
+import { clearLs, getLs } from "../../lib/helpers/localStorage";
 import { useLazyGetSelfQuery } from "../../../modules/auth/api";
 import { setGetSelf } from "../../../modules/auth/control/userSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../../store";
 import useThemeEffect from "../../hooks/useThemeEffect";
 import globalContext from "../../context/globalContext";
+import { lsKeys } from "../../lib/constants/localStorageKeys";
 
 const AuthLayout = () => {
   const path = useLocation().pathname;
@@ -36,9 +37,20 @@ const AuthLayout = () => {
   const dispatch = useDispatch();
 
   const [messageApi, mContextHolder] = message.useMessage();
-  const [notificationApi, nContextHolder] = notification.useNotification();
+  const [notificationApi, nContextHolder] = message.useMessage();
 
   const [getself] = useLazyGetSelfQuery();
+
+  useEffect(() => {
+    const expired = getLs(lsKeys.SESSION_EXPIRED);
+    if (expired) {
+      clearLs(lsKeys.SESSION_EXPIRED);
+      notificationApi.error({
+        content: "Session Expired. Please log in again.",
+        duration: 4,
+      });
+    }
+  }, []);
 
   useThemeEffect(dispatch);
 
