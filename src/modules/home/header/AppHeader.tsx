@@ -15,8 +15,7 @@ import headerContext from "../context/headerContext";
 import { DarkModeIcon, LightModeIcon } from "../../../utils/icons";
 import ProfileModal from "../components/ProfileModal";
 import CallHistoryDrawer from "../components/CallHistoryDrawer";
-import { MenuItemGroupType } from "antd/es/menu/interface";
-import { MenuItemType } from "antd/es/menu/interface";
+import { MenuItemGroupType, MenuItemType } from "antd/es/menu/interface";
 
 interface IProps {
   user: IBaseUser;
