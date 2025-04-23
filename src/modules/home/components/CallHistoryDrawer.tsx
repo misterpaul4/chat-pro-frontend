@@ -1,7 +1,7 @@
 import { Button, Drawer, List, Typography } from "antd";
 import { useGetCallHistoryQuery } from "../api/queryEndpoints";
 import Icon, { PhoneOutlined } from "@ant-design/icons";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { drawerSharedProps } from "../constants/props";
 import ContactAvatar from "../../../app/common/ContactAvatar";
 import { IBaseUser } from "../../auth/control/types";
@@ -13,6 +13,7 @@ import {
   MissedCallIcon,
   OutgoingCallIcon,
 } from "../../../utils/icons";
+import callContext from "../context/callContext";
 
 interface IProps {
   user: IBaseUser;
@@ -36,6 +37,8 @@ const CallHistoryDrawer = ({ user }: IProps) => {
   const { data, isFetching, refetch } = useGetCallHistoryQuery();
 
   const [isOpen, setIsOpen] = useState(false);
+
+  const { makeCall } = useContext(callContext);
 
   const onClose = () => {
     setIsOpen(false);
@@ -119,7 +122,11 @@ const CallHistoryDrawer = ({ user }: IProps) => {
                 actions={[<span>{getLastMessageTime(item.createdAt)}</span>]}
               >
                 <div className="d-flex">
-                  <ContactAvatar name={recipient.firstName} />{" "}
+                  <span
+                    onClick={() => makeCall(recipient.id, recipient.firstName, user.firstName)}
+                  >
+                    <ContactAvatar className="cursor-pointer" name={recipient.firstName} />
+                  </span>{" "}
                   <div
                     className={`ms-3 text-capitalize ${
                       isMissedCall ? "text-danger" : ""
