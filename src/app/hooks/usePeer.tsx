@@ -219,7 +219,10 @@ const OutgoingCallSession = ({
       </Space>
       <CallActionButton
         backgroundColor="red"
-        onClick={() => onClose()}
+        onClick={() => {
+          onClose();
+          onFinish();
+        }}
         rotate
       />
     </div>
