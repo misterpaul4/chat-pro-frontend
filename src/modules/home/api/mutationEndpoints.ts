@@ -114,7 +114,7 @@ const endpoints = apis.injectEndpoints({
         method: "POST",
         body
       }),
-      invalidatesTags: (x) => (x ? [apiTags.CALL_HISTORY] : []),
+      invalidatesTags: (x) => [apiTags.CALL_HISTORY],
     })
   }),
 });
