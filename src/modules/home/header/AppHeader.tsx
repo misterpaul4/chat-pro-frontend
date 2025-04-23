@@ -13,9 +13,10 @@ import { logout, toggleDarkMode } from "../../auth/control/userSlice";
 import { useContext, useState } from "react";
 import headerContext from "../context/headerContext";
 import { DarkModeIcon, LightModeIcon } from "../../../utils/icons";
-import { MenuItemGroupType, MenuItemType } from "antd/es/menu/hooks/useItems";
 import ProfileModal from "../components/ProfileModal";
 import CallHistoryDrawer from "../components/CallHistoryDrawer";
+import { MenuItemGroupType } from "antd/es/menu/interface";
+import { MenuItemType } from "antd/es/menu/interface";
 
 interface IProps {
   user: IBaseUser;
@@ -25,6 +26,7 @@ interface IProps {
 interface ItemProps extends Partial<MenuItemGroupType<MenuItemType>> {
   onClick?: Function;
   disabled?: boolean;
+  label?: React.ReactNode;
 }
 
 const AppHeader = ({ user, darkMode }: IProps) => {
