@@ -3,9 +3,15 @@ import { BASE_URL } from "../../settings";
 import { getLs, setLS } from "../lib/helpers/localStorage";
 import { apiTags } from "../lib/constants/tags";
 import { clearLs } from "../lib/helpers/localStorage";
-import { paths } from "../../utils/paths";
+import { paths, isAuthPath } from "../../utils/paths";
 import { lsKeys } from "../lib/constants/localStorageKeys";
 
+const isSuccessStatus = (status: number) => {
+  // 1xx: Informational responses
+  // 2xx: Success responses
+  // 3xx: Redirection messages
+  return (status >= 100 && status < 400) || status === 404;
+};
 
 const apis = createApi({
   reducerPath: "apis",
@@ -20,7 +26,7 @@ const apis = createApi({
       }
     },
     validateStatus: (response) => {
-      if (response.status === 401) {
+      if (response.status === 401 && !isAuthPath(window.location.pathname)) {
         // Clear token and redirect to login
         clearLs("token");
         // Set session expired flag in localStorage
@@ -28,7 +34,8 @@ const apis = createApi({
         window.location.href = paths.login;
         return false;
       }
-      return response.status >= 200 && response.status <= 299;
+
+      return isSuccessStatus(response.status);
     }
   }),
   endpoints: () => ({}),
