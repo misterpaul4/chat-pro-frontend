@@ -26,7 +26,8 @@ const apis = createApi({
       }
     },
     validateStatus: (response) => {
-      if (response.status === 401 && !isAuthPath(window.location.pathname)) {
+      const skipForEndpoint = response.url.endsWith("/auth/get-self")
+      if (response.status === 401 && !isAuthPath(window.location.pathname) && !skipForEndpoint) {
         // Clear token and redirect to login
         clearLs("token");
         // Set session expired flag in localStorage
