@@ -6,7 +6,7 @@ import {
   useMakePeerCallMutation,
 } from "../../modules/home/api/mutationEndpoints";
 import { CallLogStatus, MakeCallResp } from "../../modules/home/api/types";
-import { Button, notification, Space } from "antd";
+import { Button, message, notification, Space } from "antd";
 import {
   AudioMutedOutlined,
   AudioOutlined,
@@ -292,6 +292,7 @@ const usePeer = (userId: string) => {
   const localAudioRef = useRef<HTMLAudioElement>(null);
   const remoteAudioRef = useRef<HTMLAudioElement>(null);
   const [api, contextHolder] = notification.useNotification();
+  const [messageApi, messageContextHolder] = message.useMessage();
 
   const [makeCallReq] = useMakePeerCallMutation();
   const [endCallReq] = useEndPeerCallMutation();
@@ -598,6 +599,14 @@ const usePeer = (userId: string) => {
       })
       .catch((err) => {
         console.error("Failed to get local stream", err);
+        closeCallingAudio();
+        closeCallSession({
+          duration: 0,
+          sessionId,
+          status: CallLogStatus.Cancelled,
+        });
+
+        messageApi.error('Failed to get local stream: Please connect a microphone device to make calls', 5);
       });
   };
 
@@ -648,6 +657,7 @@ const usePeer = (userId: string) => {
       contextHolder: (
         <div>
           {contextHolder}
+          {messageContextHolder}
           <audio muted ref={localAudioRef} />
           <audio ref={remoteAudioRef} />
         </div>
