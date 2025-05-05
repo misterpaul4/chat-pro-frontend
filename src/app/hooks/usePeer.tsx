@@ -543,30 +543,35 @@ const usePeer = (userId: string) => {
 
     const sessionId = v4();
 
-    api.info({
-      message: (
-        <OutgoingCallSession
-          autoEnd
-          receiverName={receiverName}
-          retryCall={retryCall}
-          onFinish={(status) =>
-            endCall({
-              duration: 0,
-              sessionId,
-              status: status || CallLogStatus.Cancelled,
-            })
-          }
-        />
-      ),
-      ...sharedCallNotificationProps,
-    });
-
     const failedAttempt = () => {
       closeCallNotification();
       return false;
     };
 
     if (!peerInstance) return failedAttempt();
+
+
+    navigator.mediaDevices
+    .getUserMedia({ audio: true, video: false })
+    .then(async (stream) => {
+      api.info({
+        message: (
+          <OutgoingCallSession
+            autoEnd
+            receiverName={receiverName}
+            retryCall={retryCall}
+            onFinish={(status) =>
+              endCall({
+                duration: 0,
+                sessionId,
+                status: status || CallLogStatus.Cancelled,
+              })
+            }
+          />
+        ),
+        ...sharedCallNotificationProps,
+      });
+
 
     // save call log
     const resp: any = await makeCallReq({ receiverId, sessionId });
@@ -577,14 +582,11 @@ const usePeer = (userId: string) => {
       return failedAttempt();
     }
 
-    const remotePeerId = getPeerId(receiverId);
+      if (localAudioRef.current) {
+        localAudioRef.current.srcObject = stream;
+      }
 
-    navigator.mediaDevices
-      .getUserMedia({ audio: true, video: false })
-      .then((stream) => {
-        if (localAudioRef.current) {
-          localAudioRef.current.srcObject = stream;
-        }
+      const remotePeerId = getPeerId(receiverId);
 
         const call = peerInstance.call(remotePeerId, stream, {
           metadata: {
@@ -604,9 +606,12 @@ const usePeer = (userId: string) => {
           duration: 0,
           sessionId,
           status: CallLogStatus.Cancelled,
+          skipReq: true,
         });
 
-        messageApi.error('Failed to get local stream: Please connect a microphone device to make calls', 5);
+        messageApi.warning({
+          content: "Please connect a microphone device to make calls",
+        });
       });
   };
 
