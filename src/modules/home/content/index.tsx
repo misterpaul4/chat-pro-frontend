@@ -50,7 +50,7 @@ const MessageContent = ({ onlineContacts, dispatchInbox }: IProps) => {
       />
       {activeThread.type === ThreadTypeEnum.Request &&
       activeThread.createdBy !== userId ? (
-        <RequestContent {...activeThread} />
+        <RequestContent {...activeThread} userId={userId} />
       ) : (
         <InboxContent
           dispatchInbox={dispatchInbox}

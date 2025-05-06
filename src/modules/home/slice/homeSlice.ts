@@ -3,7 +3,7 @@ import type { PayloadAction } from "@reduxjs/toolkit";
 import { $tabType } from "../sidebar/types";
 import { getLs, setLS } from "../../../app/lib/helpers/localStorage";
 import { IMessage, IThread, ThreadTypeEnum } from "../api/types";
-
+import cloneDeep from "lodash/cloneDeep";
 export interface IHomeSliceBase {
   activeThread: IThread | undefined;
   activeTab: $tabType;
@@ -81,6 +81,47 @@ export const homeSlice = createSlice({
     setMicPermission: (state, action: PayloadAction<PermissionStatus['state']>) => {
       return { ...state, micPermission: action.payload };
     },
+    setStarMessage: (state, action: PayloadAction<{ messageId: string, isStarred: boolean, userId: string }>) => {
+      const { messageId, isStarred, userId } = action.payload;
+
+      const messageIndex = state.activeThread?.messages.findIndex(
+        (msg) => msg.id === messageId
+      );
+
+      if (messageIndex === -1) return state;
+
+      const activeThreadCopy: IThread = cloneDeep(state.activeThread);
+
+
+      const message = activeThreadCopy.messages[messageIndex!];
+
+
+      const starredUsers = message.starredBy
+        ? message.starredBy.split(',').filter(Boolean)
+        : [];
+      const isStarredByUser = starredUsers.includes(userId);
+
+      if (isStarred === isStarredByUser) {
+        return state;
+      }
+
+      if (isStarred) {
+        starredUsers.push(userId);
+      } else {
+        const index = starredUsers.indexOf(userId);
+        if (index > -1) {
+          starredUsers.splice(index, 1);
+        }
+      }
+
+
+      message.starredBy = starredUsers.join(',');
+      message.starred = starredUsers.length > 0;
+
+      activeThreadCopy.messages[messageIndex!] = message;
+
+      return {...state, activeThread: activeThreadCopy};
+    },
   },
 });
 
@@ -94,6 +135,7 @@ export const {
   setNewMessage,
   setMicPermission,
   goToClickedThread,
+  setStarMessage,
 } = homeSlice.actions;
 
 export default homeSlice.reducer;

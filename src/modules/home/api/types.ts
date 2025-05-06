@@ -46,6 +46,7 @@ export interface IMessage extends IBaseType, IThreadMessagePayload {
     senderId: string;
   };
   threadId: string;
+  starredBy?: string;
 }
 
 export interface IThread extends IBaseType {

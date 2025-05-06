@@ -4,13 +4,15 @@ import { CheckOutlined, CloseOutlined } from "@ant-design/icons";
 import {
   useApproveRequestMutation,
   useDeclineRequestMutation,
+  useStarMessageMutation,
 } from "../api/mutationEndpoints";
 import { useDispatch } from "react-redux";
-import { setActiveThread, setRequestApproval } from "../slice/homeSlice";
+import { setActiveThread, setRequestApproval, setStarMessage } from "../slice/homeSlice";
 import { IThread } from "../api/types";
 import useApiResponseHandler from "../../../app/hooks/useApiResponseHandler";
+import { messageActionType } from "../context/messageReducer";
 
-const RequestContent = (props: IThread) => {
+const RequestContent = (props: IThread & { userId: string }) => {
   const apiResponseHandler = useApiResponseHandler();
 
   const dispatch = useDispatch();
@@ -43,6 +45,14 @@ const RequestContent = (props: IThread) => {
     });
   };
 
+  const [starMessage] = useStarMessageMutation();
+
+
+  const onStarMessage = (messageId: string, shouldStar: boolean) => {
+    starMessage({ messageId, shouldStar });
+    dispatch(setStarMessage({ messageId, isStarred: shouldStar, userId: props.userId }));
+  }
+
   const threadMessage = props.messages[0];
 
   return (
@@ -55,6 +65,8 @@ const RequestContent = (props: IThread) => {
           props.users.find((user) => user.id === threadMessage.senderId)
             ?.firstName
         }
+        starredBy={threadMessage.starredBy}
+        onStarMessage={onStarMessage}
       />
 
       <Card className="d-inline-block mt-5">

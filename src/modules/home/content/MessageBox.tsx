@@ -5,6 +5,7 @@ import Icon, {
   DownOutlined,
   EnterOutlined,
   StarOutlined,
+  StarFilled,
 } from "@ant-design/icons";
 import { IMessage } from "../api/types";
 import { ForwardIcon } from "../../../utils/icons";
@@ -17,6 +18,8 @@ interface IProps {
   payload: IMessage;
   userId?: string;
   senderName?: string;
+  starredBy?: string; // concatinated user ids
+  onStarMessage?: (messageId: string, shouldStar: boolean) => void;
 }
 
 const MessageBox = ({
@@ -25,6 +28,8 @@ const MessageBox = ({
   payload,
   userId,
   senderName,
+  starredBy,
+  onStarMessage,
 }: IProps) => {
   const { containerStyle, userImg } = fromUser
     ? {
@@ -43,6 +48,8 @@ const MessageBox = ({
       };
 
   const { createdAt, message } = payload;
+
+  const isStarred = userId && starredBy?.includes(userId);
 
   return (
     <>
@@ -67,9 +74,9 @@ const MessageBox = ({
                   onClick: () => withActions.onReply(payload),
                 },
                 {
-                  label: "Star",
+                  label: isStarred ? "Unstar" : "Star",
                   icon: <StarOutlined />,
-                  disabled: true,
+                  onClick: () => onStarMessage?.(payload.id, !isStarred),
                 },
                 {
                   label: "Forward",
@@ -119,6 +126,30 @@ const MessageBox = ({
           {userImg}
           {message}
         </Typography.Paragraph>
+          {userId && (<div className={`d-inline-block mt-${userImg ? '2' : '1'}`}>
+            {isStarred ? (
+              <StarFilled
+                style={{
+                  color: '#faad14',
+                  cursor: 'pointer'
+                }}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onStarMessage?.(payload.id, !isStarred);
+                }}
+              />
+            ) : (
+              <StarOutlined
+                style={{
+                  cursor: 'pointer'
+                }}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onStarMessage?.(payload.id, !isStarred);
+                }}
+              />
+            )}
+          </div>)}
         <small className="text-start px-2 rounded">
           {getMessageTime(createdAt).toLowerCase()}
         </small>

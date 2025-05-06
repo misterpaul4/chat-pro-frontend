@@ -10,6 +10,8 @@ import { useDispatch } from "react-redux";
 import { $threadMemory, setThreadMemory } from "../slice/threadMemorySlice";
 import { emitReadMessage } from "../api/sockets";
 import { messageActionType } from "../context/messageReducer";
+import { useStarMessageMutation } from "../api/mutationEndpoints";
+import { setStarMessage } from "../slice/homeSlice";
 
 interface IProps {
   thread: IThread;
@@ -31,6 +33,7 @@ const InboxContent = ({
   const { type } = thread;
   const ref = useRef<HTMLDivElement>(null);
   const lastMessageRef = useRef<HTMLDivElement>(null);
+  const isStarUpdate = useRef(false);
   const replyingTo = threadMemory[thread.id]?.replyingTo;
 
   const messageLength = thread.messages.length - 1;
@@ -64,7 +67,7 @@ const InboxContent = ({
   };
 
   const chatScroll = () => {
-    if (ref.current) {
+    if (ref.current && !isStarUpdate.current) {
       const lastMessageSender = thread.messages[0].senderId;
       if (
         isNewThread ||
@@ -72,24 +75,16 @@ const InboxContent = ({
           checkIfElementVisible(lastMessageRef.current, true)) ||
         lastMessageSender === userId
       ) {
-        // const savedScroll: IThreadMemory | undefined = THREAD_MEMORY.get(
-        //   thread.id
-        // );
-        // scrollTo(
-        //   savedScroll?.mSize === messageLength + 1
-        //     ? savedScroll.pos
-        //     : ref.current.scrollHeight
-        // );
         scrollTo(ref.current.scrollHeight);
 
         if (lastMessageSender !== userId && !isNewThread) {
-          // READ MESSAGE
           readMessage();
         }
       } else {
         setNewMessagePopUp(true);
       }
     }
+    isStarUpdate.current = false;
   };
 
   useEffect(() => {
@@ -145,6 +140,14 @@ const InboxContent = ({
   const messageActions =
     type === ThreadTypeEnum.Request ? undefined : { onReply: onMessageReply };
 
+  const [starMessage] = useStarMessageMutation();
+
+  const onStarMessage = (messageId: string, shouldStar: boolean) => {
+    isStarUpdate.current = true;
+    starMessage({ messageId, shouldStar });
+    dispatch(setStarMessage({ messageId, isStarred: shouldStar, userId }));
+  }
+
   return (
     <div ref={ref} id="message-list">
       <List
@@ -169,6 +172,8 @@ const InboxContent = ({
                 payload={threadMessage}
                 userId={userId}
                 senderName={usersInitials[threadMessage.senderId]}
+                starredBy={threadMessage.starredBy}
+                onStarMessage={onStarMessage}
               />
             </List.Item>
           );

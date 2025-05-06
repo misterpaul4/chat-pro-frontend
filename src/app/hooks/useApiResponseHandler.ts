@@ -23,13 +23,15 @@ const useApiResponseHandler: () => (
     response: any,
     { onError, onSuccess }: IApiResponseHandler = {}
   ) => {
-    if (response.error) {
+
+    const error = response.error || response.data?.error;
+    if (error) {
       onError?.display !== false &&
         notificationApi.error({
           message:
+          error?.data?.message ||
             onError?.message ||
-            response.error?.data?.message ||
-            response.message ||
+            error?.message ||
             "Request failed",
         });
       onError?.callBack && onError.callBack();

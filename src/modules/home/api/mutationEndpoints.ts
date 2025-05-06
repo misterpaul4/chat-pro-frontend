@@ -45,6 +45,22 @@ const endpoints = apis.injectEndpoints({
         method: "POST",
       }),
     }),
+    starMessage: builder.mutation<void, { messageId: string, shouldStar: boolean }>({
+      query: ({ messageId, shouldStar }) => ({
+        url: `inbox/${messageId}/${shouldStar ? "star" : "unstar"}`,
+        method: "PATCH",
+      }),
+      onQueryStarted: (_, { queryFulfilled }) => {
+        queryFulfilled
+          .then(({ data }) => {
+            console.log(data);
+          })
+          .catch((error) => {
+            // if error message is "Message already starred" or "Message already unstarred", dispatch a re-render of the message list
+            console.error('Error in starMessage mutation:', error);
+          });
+      },
+    }),
     massUpdateContacts: builder.mutation<void, IMassUpdateContacts>({
       query: (body) => ({
         url: `users/mass-update-contacts`,
@@ -133,6 +149,7 @@ export const {
   useConnectGoogleAuthMutation,
   useInitializePeerCallMutation,
   useMakePeerCallMutation,
-  useEndPeerCallMutation
+  useEndPeerCallMutation,
+  useStarMessageMutation,
 } = endpoints;
 
