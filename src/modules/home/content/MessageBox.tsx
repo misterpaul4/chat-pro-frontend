@@ -121,14 +121,13 @@ const MessageBox = ({
 
         <Typography.Paragraph
           ellipsis={{ rows: 10, expandable: true, symbol: "more" }}
-          className="m-0"
+          className="mb-2"
         >
           {userImg}
           {message}
         </Typography.Paragraph>
-          {userId && (<div className={`d-inline-block mt-${userImg ? '2' : '1'}`}>
-            {isStarred ? (
-              <StarFilled
+          <div>{userId && isStarred && (<div className="d-inline-block">
+            <StarFilled
                 style={{
                   color: '#faad14',
                   cursor: 'pointer'
@@ -138,21 +137,10 @@ const MessageBox = ({
                   onStarMessage?.(payload.id, !isStarred);
                 }}
               />
-            ) : (
-              <StarOutlined
-                style={{
-                  cursor: 'pointer'
-                }}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onStarMessage?.(payload.id, !isStarred);
-                }}
-              />
-            )}
           </div>)}
         <small className="text-start px-2 rounded">
           {getMessageTime(createdAt).toLowerCase()}
-        </small>
+        </small></div>
       </Card>
     </>
   );
