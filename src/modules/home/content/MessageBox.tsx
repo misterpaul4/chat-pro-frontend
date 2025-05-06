@@ -126,7 +126,7 @@ const MessageBox = ({
           {userImg}
           {message}
         </Typography.Paragraph>
-          <div>{userId && isStarred && (<div className="d-inline-block">
+          <div>{userId && isStarred && (<div className="d-inline-block me-2">
             <StarFilled
                 style={{
                   color: '#faad14',
@@ -138,7 +138,7 @@ const MessageBox = ({
                 }}
               />
           </div>)}
-        <small className="text-start px-2 rounded">
+        <small className="text-start rounded">
           {getMessageTime(createdAt).toLowerCase()}
         </small></div>
       </Card>
