@@ -24,9 +24,10 @@ import {
 import callingSound from "../../../public/calling.mp3";
 import { convertSecondsToTime, getPeerId } from "../lib/helpers/call";
 import ContactAvatar from "../common/ContactAvatar";
-import { ArgsProps } from "antd/es/notification/interface";
 import { useSelector } from "react-redux";
 import { RootState } from "../../store";
+
+type NotificationArgs = Parameters<typeof notification.open>[0];
 
 
 const errorHandlers: Record<string, { message: string; description: string }> = {
@@ -74,7 +75,7 @@ const closeCallingAudio = () => {
 
 const callNotificationKey = "call-notification";
 
-const sharedCallNotificationProps: Partial<ArgsProps> = {
+const sharedCallNotificationProps: Partial<NotificationArgs> = {
   duration: 0,
   key: callNotificationKey,
   className: "p-0 incoming-call-notification",

@@ -1,10 +1,13 @@
-import { MessageInstance, MessageType } from "antd/es/message/interface";
-import { NotificationInstance } from "antd/es/notification/interface";
+import { message, notification } from "antd";
 import { createContext } from "react";
 
+type MessageApi = ReturnType<typeof message.useMessage>[0];
+type MessageType = ReturnType<MessageApi["open"]>;
+type NotificationApi = ReturnType<typeof notification.useNotification>[0];
+
 interface IInitialValue {
-  messageApi: MessageInstance;
-  notificationApi: NotificationInstance;
+  messageApi: MessageApi;
+  notificationApi: NotificationApi;
 }
 
 const initializeMessage = () => ({} as unknown as MessageType);
@@ -17,7 +20,7 @@ const initialValue: IInitialValue = {
     warning: () => {},
     open: () => {},
     destroy: () => {},
-  },
+  } as NotificationApi,
   messageApi: {
     success: initializeMessage,
     error: initializeMessage,
@@ -26,10 +29,9 @@ const initialValue: IInitialValue = {
     open: initializeMessage,
     destroy: () => {},
     loading: initializeMessage,
-  },
+  } as MessageApi,
 };
 
 const globalContext = createContext(initialValue);
 
 export default globalContext;
-

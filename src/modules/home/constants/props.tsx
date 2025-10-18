@@ -1,5 +1,4 @@
 import { DrawerProps, Typography } from "antd";
-import { DrawerPanelProps } from "antd/es/drawer/DrawerPanel";
 
 interface IDrawerSharedProps {
   title: string;
@@ -12,4 +11,3 @@ export const drawerSharedProps: (
   title: <Typography.Title className="m-0">{title}</Typography.Title>,
   closable: false,
 });
-

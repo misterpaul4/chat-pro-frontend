@@ -1,4 +1,4 @@
-import { Rule } from "antd/es/form";
+import type { FormRule } from "antd";
 
 interface IPasswordRule {
   name?: string;
@@ -12,7 +12,7 @@ interface IPasswordRule {
   verifyLength?: boolean;
 }
 
-export const passwordRule: (param?: IPasswordRule) => Rule[] = ({
+export const passwordRule: (param?: IPasswordRule) => FormRule[] = ({
   name = "password",
   max = 20,
   min = 8,
@@ -22,7 +22,7 @@ export const passwordRule: (param?: IPasswordRule) => Rule[] = ({
   required = true,
   verifyLength = true,
 } = {}) => {
-  const rules: Rule[] = [];
+  const rules: FormRule[] = [];
 
   verifyLength &&
     rules.push({
@@ -64,5 +64,4 @@ export const requiredRule = (name = "Field") =>
       required: true,
       message: `${name} is required`,
     },
-  ] satisfies Rule[];
-
+  ] satisfies FormRule[];

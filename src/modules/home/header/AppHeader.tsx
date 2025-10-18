@@ -15,17 +15,11 @@ import headerContext from "../context/headerContext";
 import { DarkModeIcon, LightModeIcon } from "../../../utils/icons";
 import ProfileModal from "../components/ProfileModal";
 import CallHistoryDrawer from "../components/CallHistoryDrawer";
-import type { MenuItemGroupType, MenuItemType } from "antd/es/menu/interface";
+import type { MenuProps } from "antd";
 
 interface IProps {
   user: IBaseUser;
   darkMode: boolean;
-}
-
-interface ItemProps extends Partial<MenuItemGroupType<MenuItemType>> {
-  onClick?: Function;
-  disabled?: boolean;
-  label?: React.ReactNode;
 }
 
 const AppHeader = ({ user, darkMode }: IProps) => {
@@ -39,11 +33,13 @@ const AppHeader = ({ user, darkMode }: IProps) => {
     setProfileVisible(false);
   };
 
-  const items: ItemProps[] = [
+  const items: MenuProps["items"] = [
     {
+      key: "user-email",
       label: <Typography.Text copyable>{user.email}</Typography.Text>,
     },
     {
+      key: "user-profile",
       label: (
         <>
           <UserOutlined className="me-2" /> Profile
@@ -52,6 +48,7 @@ const AppHeader = ({ user, darkMode }: IProps) => {
       onClick: () => setProfileVisible(true),
     },
     {
+      key: "starred-messages",
       label: (
         <>
           <StarFilled className="me-2" style={{ color: "#ebdb34" }} /> Starred
@@ -61,6 +58,7 @@ const AppHeader = ({ user, darkMode }: IProps) => {
       disabled: true,
     },
     {
+      key: "logout",
       label: (
         <span className="text-danger">
           <LogoutOutlined className="me-2" /> Logout
