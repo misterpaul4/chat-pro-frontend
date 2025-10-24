@@ -26,6 +26,7 @@ import { RootState } from "../../../store";
 import useThemeEffect from "../../hooks/useThemeEffect";
 import globalContext from "../../context/globalContext";
 import { lsKeys } from "../../lib/constants/localStorageKeys";
+import useResponsive from "../../hooks/useResponsive";
 
 const AuthLayout = () => {
   const path = useLocation().pathname;
@@ -53,6 +54,7 @@ const AuthLayout = () => {
   }, []);
 
   useThemeEffect(dispatch);
+  const responsive = useResponsive();
 
   useEffect(() => {
     const token = getLs("token");
@@ -73,7 +75,7 @@ const AuthLayout = () => {
         algorithm: darkMode ? theme.darkAlgorithm : theme.defaultAlgorithm,
       }}
     >
-      <globalContext.Provider value={{ messageApi, notificationApi }}>
+      <globalContext.Provider value={{ messageApi, notificationApi, responsive }}>
         {mContextHolder}
         {nContextHolder}
         <Row>

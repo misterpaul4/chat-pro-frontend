@@ -4,10 +4,16 @@ import { createContext } from "react";
 type MessageApi = ReturnType<typeof message.useMessage>[0];
 type MessageType = ReturnType<MessageApi["open"]>;
 type NotificationApi = ReturnType<typeof notification.useNotification>[0];
+type Responsive = {
+  isMobile?: boolean;
+  isTablet?: boolean;
+  isDesktop?: boolean;
+};
 
 interface IInitialValue {
   messageApi: MessageApi;
   notificationApi: NotificationApi;
+  responsive: Responsive;
 }
 
 const initializeMessage = () => ({} as unknown as MessageType);
@@ -30,6 +36,11 @@ const initialValue: IInitialValue = {
     destroy: () => {},
     loading: initializeMessage,
   } as MessageApi,
+  responsive: {
+    isMobile: undefined,
+    isTablet: undefined,
+    isDesktop: undefined,
+  },
 };
 
 const globalContext = createContext(initialValue);

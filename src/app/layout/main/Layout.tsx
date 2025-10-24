@@ -12,6 +12,7 @@ import { layoutPrimaryColor } from "../../../settings";
 import { clearLs } from "../../lib/helpers/localStorage";
 import useThemeEffect from "../../hooks/useThemeEffect";
 import globalContext from "../../context/globalContext";
+import useResponsive from "../../hooks/useResponsive";
 
 const Layout = () => {
   const darkMode = useSelector((state: RootState) => state.user.darkMode);
@@ -19,6 +20,7 @@ const Layout = () => {
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const responsive = useResponsive();
 
   const [messageApi, mContextHolder] = message.useMessage();
   const [notificationApi, nContextHolder] = notification.useNotification();
@@ -47,7 +49,7 @@ const Layout = () => {
         algorithm: darkMode ? theme.darkAlgorithm : theme.defaultAlgorithm,
       }}
     >
-      <globalContext.Provider value={{ messageApi, notificationApi }}>
+      <globalContext.Provider value={{ messageApi, notificationApi, responsive }}>
         {mContextHolder}
         {nContextHolder}
         {loggedIn ? (
